@@ -11,32 +11,33 @@
   <meta name="description" content="Boomer Bot connects OU fans to every Sooner sport — football, softball, basketball, gymnastics, and more. Get live scores, trivia, and updates all in one place." />
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- ===== CUSTOM CSS ANIMATIONS & TICKER ===== -->
+  <!-- ===== CUSTOM CSS ANIMATIONS ===== -->
+  <!-- Includes: button pulse effect, fade-in animations, gradient text styling -->
   <style>
     /* ===== BUTTON PULSE ANIMATION ===== */
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+    @keyframes pulse { 
+      0%, 100% { transform: scale(1); } 
+      50% { transform: scale(1.05); } 
     }
-    .btn-pulse:hover {
-      animation: pulse 0.5s infinite;
+    .btn-pulse:hover { 
+      animation: pulse 0.5s infinite; 
     }
 
     /* ===== FADE IN UP ANIMATION ===== */
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
+    @keyframes fadeInUp { 
+      from { opacity: 0; transform: translateY(30px); } 
+      to { opacity: 1; transform: translateY(0); } 
     }
-    .fade-in-section {
-      opacity: 0;
-      animation: fadeInUp 0.8s ease-out forwards;
+    .fade-in-section { 
+      opacity: 0; 
+      animation: fadeInUp 0.8s ease-out forwards; 
     }
 
     /* ===== GRADIENT TEXT EFFECT ===== */
-    .gradient-text {
+    .gradient-text { 
       background: linear-gradient(135deg, #841617, #FDF9E1);
       -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      -webkit-text-fill-color: transparent; 
     }
 
     /* ===== SMOOTH SCROLL BEHAVIOR ===== */
@@ -49,30 +50,63 @@
       scroll-margin-top: 100px;
     }
 
-    /* ===== ESPN-STYLE TICKER ===== */
-    .ticker-container {
+    /* ===== OU ESPN-STYLE TICKER STYLES ===== */
+    #ouTickerBar {
+      background: #5e0e0e;
+      color: white;
       width: 100%;
-      white-space: nowrap;
       overflow: hidden;
-      background: #841617;
-      color: #FDF9E1;
-      padding: 8px 0;
-      font-weight: bold;
-      font-size: 0.9rem;
-      border-bottom: 3px solid #630F12;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      white-space: nowrap;
+      padding: 6px 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+      font-family: sans-serif;
+      font-size: 15px;
+      position: relative;
+      z-index: 9999;
     }
 
-    .ticker-text {
+    #ouTickerText {
       display: inline-block;
       padding-left: 100%;
-      animation: ticker-scroll 28s linear infinite;
+      animation: tickerScroll 25s linear infinite;
     }
 
-    @keyframes ticker-scroll {
-      from { transform: translateX(0%); }
-      to   { transform: translateX(-100%); }
+    #ouTickerBar:hover #ouTickerText {
+      animation-play-state: paused;
+    }
+
+    @keyframes tickerScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .chip {
+      background: rgba(255,255,255,0.15);
+      padding: 2px 6px;
+      border-radius: 6px;
+      margin-right: 6px;
+      font-weight: bold;
+    }
+
+    .sep {
+      margin: 0 18px;
+      opacity: 0.5;
+    }
+
+    .liveDot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: #ff4444;
+      border-radius: 50%;
+      margin-right: 5px;
+      animation: pulseDot 1.2s infinite;
+    }
+
+    @keyframes pulseDot {
+      0% { opacity: 1; }
+      50% { opacity: 0.3; }
+      100% { opacity: 1; }
     }
   </style>
 </head>
@@ -80,12 +114,149 @@
 <body class="bg-[#FDF9E1] text-gray-900 font-sans">
 
   <!-- ============================================================================ -->
-  <!-- ESPN OU MULTI-SPORT LIVE / 72-HR / UPCOMING TICKER                         -->
+  <!-- OU ESPN-STYLE LIVE / RECENT / UPCOMING TICKER                               -->
   <!-- Replaces the previous yellow banner                                         -->
   <!-- ============================================================================ -->
-  <div class="ticker-container">
-    <span id="tickerText" class="ticker-text">Loading Sooner scoreboard…</span>
+  <div id="ouTickerBar">
+    <span id="ouTickerText">Updating Sooner action…</span>
   </div>
+
+  <script>
+    /* ============================
+       ESPN API Fetch Helpers
+       ============================ */
+
+    async function fetchESPN(url) {
+      try {
+        let res = await fetch(url);
+        return await res.json();
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Extract team + score safely
+    function getTeam(g, i) {
+      try {
+        return {
+          name: g.competitors[i].team.shortDisplayName,
+          score: g.competitors[i].score
+        };
+      } catch {
+        return null;
+      }
+    }
+
+    // Convert timestamp → local readable
+    function fmtTime(iso) {
+      try {
+        const d = new Date(iso);
+        return d.toLocaleString("en-US", {
+          weekday: "short",
+          hour: "numeric",
+          minute: "2-digit"
+        });
+      } catch {
+        return "";
+      }
+    }
+
+    // Map sport → emoji + chip
+    function sportInfo(sport) {
+      const map = {
+        football: { icon: "🏈", chip: "FOOTBALL" },
+        softball: { icon: "🥎", chip: "SOFTBALL" },
+        baseball: { icon: "⚾", chip: "BASEBALL" },
+        "mens-basketball": { icon: "🏀", chip: "MBB" },
+        "womens-basketball": { icon: "🏀", chip: "WBB" },
+        soccer: { icon: "⚽", chip: "SOCCER" },
+        volleyball: { icon: "🏐", chip: "VOLLEYBALL" },
+        "mens-gymnastics": { icon: "🤸‍♂️", chip: "MGYM" },
+        "womens-gymnastics": { icon: "🤸‍♀️", chip: "WGYM" }
+      };
+      return map[sport] || { icon: "🎽", chip: "OU" };
+    }
+
+    /* ============================
+       Load OU Sports Scores
+       ============================ */
+
+    async function loadOUTicker() {
+      const sports = [
+        {sport: "football", url: "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard"},
+        {sport: "mens-basketball", url: "https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard"},
+        {sport: "womens-basketball", url: "https://site.api.espn.com/apis/site/v2/sports/basketball/womens-college-basketball/scoreboard"},
+        {sport: "softball", url: "https://site.api.espn.com/apis/site/v2/sports/softball/college-softball/scoreboard"},
+        {sport: "baseball", url: "https://site.api.espn.com/apis/site/v2/sports/baseball/college-baseball/scoreboard"},
+        {sport: "soccer", url: "https://site.api.espn.com/apis/site/v2/sports/soccer/college-women/scoreboard"},
+        {sport: "volleyball", url: "https://site.api.espn.com/apis/site/v2/sports/volleyball/womens-college-volleyball/scoreboard"},
+        {sport: "mens-gymnastics", url: "https://site.api.espn.com/apis/site/v2/sports/gymnastics/mens-college-gymnastics/scoreboard"},
+        {sport: "womens-gymnastics", url: "https://site.api.espn.com/apis/site/v2/sports/gymnastics/womens-college-gymnastics/scoreboard"}
+      ];
+
+      let items = [];
+      const now = Date.now();
+
+      for (let s of sports) {
+        const data = await fetchESPN(s.url);
+        if (!data || !data.events) continue;
+
+        for (let ev of data.events) {
+          if (!ev.shortName || !ev.shortName.includes("Oklahoma")) continue;
+
+          const g = ev.competitions && ev.competitions[0];
+          if (!g) continue;
+
+          const t1 = getTeam(g, 0);
+          const t2 = getTeam(g, 1);
+          if (!t1 || !t2) continue;
+
+          const info = sportInfo(s.sport);
+
+          // LIVE games
+          if (ev.status?.type?.state === "in") {
+            items.push(
+              `<span class="chip">${info.icon} ${info.chip}</span> 
+               <span class="liveDot"></span><strong>${t1.name} ${t1.score} — ${t2.score} ${t2.name}</strong>`
+            );
+            continue;
+          }
+
+          const gameTime = new Date(ev.date).getTime();
+
+          // FINAL games (last 72 hours)
+          if (ev.status?.type?.completed) {
+            if (now - gameTime <= 72 * 3600 * 1000) {
+              items.push(
+                `<span class="chip">${info.icon} ${info.chip}</span> 
+                 ${t1.name} ${t1.score} — ${t2.score} ${t2.name} (FINAL)`
+              );
+            }
+            continue;
+          }
+
+          // UPCOMING (next 7 days)
+          if (gameTime > now && gameTime - now <= 7 * 24 * 3600 * 1000) {
+            items.push(
+              `<span class="chip">${info.icon} ${info.chip}</span> 
+               ${t1.name} vs ${t2.name} — ${fmtTime(ev.date)}`
+            );
+          }
+        }
+      }
+
+      if (items.length === 0) {
+        items = ["Updating Sooner action…"];
+      }
+
+      document.getElementById("ouTickerText").innerHTML =
+        items.join(` <span class="sep">│</span> `);
+    }
+
+    // Load immediately + refresh every 30 seconds
+    loadOUTicker();
+    setInterval(loadOUTicker, 30000);
+  </script>
 
   <!-- ============================================================================ -->
   <!-- NAVIGATION: Fixed header with logo, brand name, and navigation links        -->
@@ -130,17 +301,15 @@
   </nav>
 
   <!-- ============================================================================ -->
-  <!-- HERO SECTION                                                                -->
+  <!-- HERO SECTION                                                                 -->
   <!-- ============================================================================ -->
   <section class="bg-gradient-to-r from-[#841617] to-red-800 text-[#FDF9E1] pt-36 md:pt-40 pb-16 md:pb-20 px-4 md:px-6 text-center fade-in-section" data-section="hero">
     <div class="max-w-6xl mx-auto">
 
-      <!-- Main Headline -->
       <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 md:mb-6 leading-tight px-2">
         All OU Sports. One Bot.
       </h1>
 
-      <!-- Subheadline -->
       <p class="text-base sm:text-lg md:text-xl italic mb-6 max-w-3xl mx-auto px-2">
         Boomer Bot is your AI-powered sports companion — connecting Sooner fans to football, softball,
         basketball, gymnastics, and more with scores, trivia, and highlights 24/7.
@@ -149,9 +318,9 @@
       <!-- Featured Video Embed -->
       <div class="max-w-xl md:max-w-2xl mx-auto mb-6 px-2">
         <div class="relative w-full" style="padding-bottom: 56.25%;">
-          <iframe
-            allow="fullscreen"
-            allowfullscreen
+          <iframe 
+            allow="fullscreen" 
+            allowfullscreen 
             src="https://streamable.com/e/jv1qe2?"
             class="absolute inset-0 w-full h-full rounded-xl shadow-lg"
             style="border: none;">
@@ -159,21 +328,17 @@
         </div>
       </div>
 
-      <!-- Supporting Quote -->
       <p class="italic text-sm sm:text-base md:text-lg mb-6 md:mb-8 max-w-2xl mx-auto px-2">
         "From the gridiron to the gym, Boomer Bot celebrates all Sooner athletics — football, softball,
         basketball, gymnastics, and beyond."
       </p>
 
-      <!-- Subscription CTA Buttons -->
       <div class="flex flex-col sm:flex-row gap-4 justify-center mt-6 md:mt-8 px-2">
-        <!-- Basic Plan Button -->
         <a href="https://app.thebotosphere.com/agents/37094353/boomerbotbasic"
            class="inline-block bg-[#841617] text-[#FDF9E1] border-2 border-[#FDF9E1] font-bold px-6 md:px-10 py-3 md:py-4 rounded-xl shadow-md hover:bg-red-900 transition text-base md:text-xl text-center w-full sm:w-72">
            🔥 Join Basic — $9.99/Month
         </a>
 
-        <!-- Premium Plan Button -->
         <a href="https://app.thebotosphere.com/agents/57704198/boomerbotpremium"
            class="inline-block bg-[#FDF9E1] text-[#841617] border-2 border-[#FDF9E1] font-bold px-6 md:px-10 py-3 md:py-4 rounded-xl shadow-md hover:bg-white transition text-base md:text-xl text-center w-full sm:w-72">
            🚀 Premium — $14.99/Month
@@ -183,13 +348,13 @@
   </section>
 
   <!-- ============================================================================ -->
-  <!-- BOT EMBED SECTION                                                           -->
+  <!-- BOT EMBED SECTION                                                            -->
   <!-- ============================================================================ -->
   <section class="py-8 md:py-12 px-4 md:px-6 bg-[#FDF9E1]" data-section="bot-embed">
     <div class="max-w-4xl mx-auto">
       <h2 class="text-2xl md:text-3xl font-bold text-center mb-6 text-[#841617]">Try Boomer Bot Now</h2>
       <div class="w-full max-w-3xl mx-auto rounded-xl overflow-hidden shadow-lg border-4 border-[#841617]">
-        <iframe
+        <iframe 
           src="https://app.thebotosphere.com/agents/8499193/embed"
           data-auto-resize="true"
           frameborder="0"
@@ -200,12 +365,11 @@
         Chat with Boomer Bot above to see what it can do!
       </p>
     </div>
-    <!-- Auto-resize script for embedded iframe -->
     <script src="https://app.thebotosphere.com/iframe-auto-resize.js"></script>
   </section>
 
   <!-- ============================================================================ -->
-  <!-- FEATURES SECTION                                                            -->
+  <!-- FEATURES SECTION                                                             -->
   <!-- ============================================================================ -->
   <section id="features" class="bg-[#841617] text-[#FDF9E1] py-12 md:py-16 px-4 md:px-6 text-center fade-in-section" data-section="features">
     <div class="max-w-6xl mx-auto">
@@ -236,7 +400,7 @@
   </section>
 
   <!-- ============================================================================ -->
-  <!-- HOW IT WORKS SECTION                                                        -->
+  <!-- HOW IT WORKS SECTION                                                         -->
   <!-- ============================================================================ -->
   <section id="how-it-works" class="py-12 md:py-16 px-4 md:px-6 bg-gray-50 fade-in-section" data-section="how-it-works">
     <div class="max-w-5xl mx-auto">
@@ -265,7 +429,7 @@
   </section>
 
   <!-- ============================================================================ -->
-  <!-- TESTIMONIALS SECTION                                                        -->
+  <!-- TESTIMONIALS SECTION                                                         -->
   <!-- ============================================================================ -->
   <section class="py-12 md:py-16 px-4 md:px-6 bg-[#FDF9E1]" data-section="testimonials">
     <div class="max-w-4xl mx-auto">
@@ -286,7 +450,7 @@
   </section>
 
   <!-- ============================================================================ -->
-  <!-- PRICING SECTION                                                             -->
+  <!-- PRICING SECTION                                                              -->
   <!-- ============================================================================ -->
   <section id="pricing" class="py-16 md:py-20 px-4 md:px-6 bg-gray-50" data-section="pricing">
     <div class="max-w-6xl mx-auto text-center">
@@ -373,7 +537,7 @@
   </section>
 
   <!-- ============================================================================ -->
-  <!-- FAQ SECTION                                                                 -->
+  <!-- FAQ SECTION                                                                  -->
   <!-- ============================================================================ -->
   <section class="py-12 md:py-16 px-4 md:px-6 bg-[#FDF9E1]" data-section="faq">
     <div class="max-w-4xl mx-auto">
@@ -420,7 +584,7 @@
   </section>
 
   <!-- ============================================================================ -->
-  <!-- FINAL CTA SECTION                                                           -->
+  <!-- FINAL CTA SECTION                                                            -->
   <!-- ============================================================================ -->
   <section class="py-16 md:py-20 px-4 md:px-6 text-center bg-gradient-to-r from-[#841617] to-red-800 text-[#FDF9E1]" data-section="final-cta">
     <div class="max-w-4xl mx-auto">
@@ -429,8 +593,7 @@
       </h2>
 
       <p class="text-base md:text-xl mb-6 md:mb-8 max-w-2xl mx-auto">
-        Football in the fall, softball in the spring, and basketball in between —
-        Boomer Bot keeps you connected year-round.
+        Football in the fall, softball in the spring, and basketball in between — Boomer Bot keeps you connected year-round.
       </p>
 
       <a href="#pricing"
@@ -450,15 +613,15 @@
   <footer class="bg-[#841617] text-[#FDF9E1] py-10" data-section="footer">
     <div class="max-w-6xl mx-auto px-4 md:px-6 grid sm:grid-cols-2 md:grid-cols-4 gap-8">
       <div>
-        <img src="https://raw.githubusercontent.com/myvfc/botosphere-images/main/BB%20all%20sports.png"
+        <img src="https://raw.githubusercontent.com/myvfc/botosphere-images/main/BB%20all%20sports.png" 
              alt="Boomer Bot Logo" class="w-12 h-12 mb-4 rounded-full">
         <p class="text-sm mb-3">
           Boomer Bot — Your Sooner Sports Companion for all seasons.
         </p>
-        <p class="text-sm"><strong>Email:</strong>
+        <p class="text-sm"><strong>Email:</strong> 
           <a href="mailto:info@boomerbot.fun" class="underline hover:text-white transition">info@boomerbot.fun</a>
         </p>
-        <p class="text-sm"><strong>Phone:</strong>
+        <p class="text-sm"><strong>Phone:</strong> 
           <a href="tel:+14051234567" class="underline hover:text-white transition">(405) 123-4567</a>
         </p>
       </div>
@@ -503,7 +666,7 @@
         <div class="flex items-center justify-center gap-2 mt-3">
           <a href="https://thebotosphere.com" target="_blank" rel="noopener noreferrer"
              class="flex items-center gap-2 hover:opacity-90 transition">
-            <img src="https://raw.githubusercontent.com/myvfc/botosphere-images/main/boto%20logo.png"
+            <img src="https://raw.githubusercontent.com/myvfc/botosphere-images/main/boto%20logo.png" 
                  alt="The Botosphere Logo" class="h-6">
             <span class="text-sm font-semibold">Powered by <span class="underline">The Botosphere</span></span>
           </a>
@@ -513,7 +676,7 @@
   </footer>
 
   <!-- ============================================================================ -->
-  <!-- CORE PAGE JS: Mobile menu, FAQ, scroll animations                           -->
+  <!-- JAVASCRIPT: Mobile menu toggle, FAQ accordion, scroll animations            -->
   <!-- ============================================================================ -->
   <script>
     const mobileMenuToggle = document.getElementById('mobileMenuToggle');
@@ -531,16 +694,28 @@
     });
 
     const faqToggles = document.querySelectorAll('.faq-toggle');
+
     faqToggles.forEach(function(toggle) {
       toggle.addEventListener('click', function() {
         const content = this.nextElementSibling;
         const icon = this.querySelector('.faq-icon');
+
         content.classList.toggle('hidden');
-        icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+
+        if (content.classList.contains('hidden')) {
+          icon.style.transform = 'rotate(0deg)';
+        } else {
+          icon.style.transform = 'rotate(180deg)';
+        }
       });
     });
 
-    const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.1
+    };
+
     const observer = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
         if (entry.isIntersecting) {
@@ -556,105 +731,7 @@
     });
   </script>
 
-  <!-- ============================================================================ -->
-  <!-- ESPN OU MULTI-SPORT TICKER JS (LIVE + LAST 72 HRS + UPCOMING)              -->
-  <!-- ============================================================================ -->
-  <script>
-    const OU_KEYWORDS = ["Oklahoma", "Sooners", "OU"];
-    const HOURS_LOOKBACK = 72;
-    const UPCOMING_DAYS = 7;
-
-    const SPORTS = [
-      { icon: "🏈", url: "football/college-football" },
-      { icon: "🏀", url: "basketball/mens-college-basketball" },
-      { icon: "🏀", url: "basketball/womens-college-basketball" },
-      { icon: "🥎", url: "softball/college-softball" },
-      { icon: "⚾", url: "baseball/college-baseball" },
-      { icon: "🤸", url: "gymnastics/mens-college-gymnastics" },
-      { icon: "🤸", url: "gymnastics/womens-college-gymnastics" },
-      { icon: "⚽", url: "soccer/college-soccer" },
-      { icon: "🏐", url: "volleyball/womens-college-volleyball" }
-    ];
-
-    async function fetchESPN(url) {
-      try {
-        const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/${url}/scoreboard`);
-        return await res.json();
-      } catch (err) {
-        return null;
-      }
-    }
-
-    function isOU(event) {
-      return OU_KEYWORDS.some(k => event.shortName?.includes(k));
-    }
-
-    function getScoreLine(event, icon) {
-      const comp = event.competitions[0].competitors;
-      const t1 = comp[0];
-      const t2 = comp[1];
-      return `${icon} ${t1.team.abbreviation} ${t1.score} — ${t2.score} ${t2.team.abbreviation}`;
-    }
-
-    function isRecent(event) {
-      const start = new Date(event.date).getTime();
-      const now = Date.now();
-      const diffHrs = (now - start) / 1000 / 3600;
-      return diffHrs >= 0 && diffHrs <= HOURS_LOOKBACK;
-    }
-
-    function isUpcoming(event) {
-      const start = new Date(event.date).getTime();
-      const now = Date.now();
-      const diffHrs = (start - now) / 1000 / 3600;
-      return diffHrs >= 0 && diffHrs <= UPCOMING_DAYS * 24;
-    }
-
-    function getUpcomingLine(event, icon) {
-      const comp = event.competitions[0].competitors;
-      const t1 = comp[0].team.abbreviation;
-      const t2 = comp[1].team.abbreviation;
-
-      const dateStr = new Date(event.date).toLocaleString("en-US", {
-        weekday: "short",
-        hour: "numeric",
-        minute: "numeric"
-      });
-
-      return `${icon} ${t1} vs ${t2} • ${dateStr}`;
-    }
-
-    async function loadTicker() {
-      let ticker = [];
-
-      for (const sport of SPORTS) {
-        const data = await fetchESPN(sport.url);
-        if (!data || !data.events) continue;
-
-        data.events.forEach(event => {
-          if (!isOU(event)) return;
-
-          if (isRecent(event)) {
-            ticker.push(getScoreLine(event, sport.icon));
-          }
-
-          if (isUpcoming(event)) {
-            ticker.push(getUpcomingLine(event, sport.icon));
-          }
-        });
-      }
-
-      if (ticker.length === 0) {
-        ticker = ["Sooner scoreboard updating…"];
-      }
-
-      document.getElementById("tickerText").textContent = ticker.join(" • ");
-    }
-
-    loadTicker();
-    setInterval(loadTicker, 60000);
-  </script>
-
 </body>
 </html>
+
 
