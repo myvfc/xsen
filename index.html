@@ -4,54 +4,85 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>eXpereince Sports & Entertainment Network</title>
-  <link rel="stylesheet" href="assets/styles.css" />
+ <script>
+async function fetchESPN(url) {
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    return null;
+  }
+}
 
-  <!-- ESPN-STYLE SCROLLING TICKER -->
-  <style>
-    .ticker-container {
-      background: #841617; /* OU Crimson */
-      color: #FDF9E1;       /* Cream white */
-      font-weight: bold;
-      width: 100%;
-      overflow: hidden;
-      white-space: nowrap;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 9999;
-      padding: 10px 0;
-      border-bottom: 2px solid #FDF9E1;
-      font-family: Arial, sans-serif;
-    }
+function extractTeamScore(game, teamIndex) {
+  try {
+    return {
+      name: game.competitors[teamIndex].team.shortDisplayName,
+      score: game.competitors[teamIndex].score
+    };
+  } catch {
+    return null;
+  }
+}
 
-    .ticker-text {
-      display: inline-block;
-      padding-left: 100%;
-      animation: ticker-scroll 25s linear infinite;
-      font-size: 1rem;
-      letter-spacing: 0.5px;
-    }
+async function loadScores() {
+  let tickerItems = [];
 
-    @keyframes ticker-scroll {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-100%); }
-    }
+  // ======= FOOTBALL =======
+  const fb = await fetchESPN("https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard");
+  if (fb && fb.events) {
+    fb.events.forEach(event => {
+      if (event.shortName.includes("Oklahoma")) {
+        const g = event.competitions[0];
+        const t1 = extractTeamScore(g, 0);
+        const t2 = extractTeamScore(g, 1);
+        tickerItems.push(`🏈 ${t1.name} ${t1.score} — ${t2.score} ${t2.name}`);
+      }
+    });
+  }
 
-    /* Push page content down so header doesn't overlap ticker */
-    body {
-      margin-top: 55px;
-    }
-  </style>
-</head>
+  // ======= MEN'S BASKETBALL =======
+  const mbb = await fetchESPN("https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard");
+  if (mbb && mbb.events) {
+    mbb.events.forEach(event => {
+      if (event.shortName.includes("Oklahoma")) {
+        const g = event.competitions[0];
+        const t1 = extractTeamScore(g, 0);
+        const t2 = extractTeamScore(g, 1);
+        tickerItems.push(`🏀 ${t1.name} ${t1.score} — ${t2.score} ${t2.name}`);
+      }
+    });
+  }
 
-<body>
+  // ======= SOFTBALL =======
+  const sb = await fetchESPN("https://site.api.espn.com/apis/site/v2/sports/softball/college-softball/scoreboard");
+  if (sb && sb.events) {
+    sb.events.forEach(event => {
+      if (event.shortName.includes("Oklahoma")) {
+        const g = event.competitions[0];
+        const t1 = extractTeamScore(g, 0);
+        const t2 = extractTeamScore(g, 1);
+        tickerItems.push(`🥎 ${t1.name} ${t1.score} — ${t2.score} ${t2.name}`);
+      }
+    });
+  }
 
-  <!-- ESPN-STYLE TICKER -->
-  <div class="ticker-container">
-    <span class="ticker-text">
-      🏈 OU Football: Spring Preparations Underway • 🥎 OU Softball: Ranked #1 Again • 🏀 OU Basketball: Big 12 Conference Play Begins • 🤸 OU Gymnastics: National Title Defense Season Kicks Off • 🎤 More Channels Coming Soon on XSEN!
-    </span>
-  </div>
+  // ======= FINAL ASSEMBLY =======
+  if (tickerItems.length === 0) {
+    tickerItems = ["OU Scores loading..."];
+  }
+
+  document.getElementById("tickerText").textContent = tickerItems.join(" • ");
+}
+
+// Load immediately
+loadScores();
+
+// Refresh every 30 seconds
+setInterval(loadScores, 30000);
+</script>
+
 
   <!-- HEADER -->
   <header>
