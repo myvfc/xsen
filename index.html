@@ -1,485 +1,660 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ============================================================================ -->
+  <!-- HEAD SECTION: Meta tags, Tailwind CSS, custom styles, and configuration     -->
+  <!-- Purpose: Document setup, SEO meta tags, responsive viewport, styling        -->
+  <!-- ============================================================================ -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>eXperience Sports & Entertainment Network</title>
-<style>
+  <title>Boomer Bot — Your AI-Powered Sooner Sports Companion</title>
+  <meta name="description" content="Boomer Bot connects OU fans to every Sooner sport — football, softball, basketball, gymnastics, and more. Get live scores, trivia, and updates all in one place." />
+  <script src="https://cdn.tailwindcss.com"></script>
 
-/* ===== GLOBAL BLACK THEME ===== */
-body {
-  margin: 0;
-  padding: 0;
-  background-color: #000;   /* Full black backdrop */
-  color: #fff;              /* White text globally */
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-/* ===== HEADER ===== */
-header {
-  background: #111; /* Slightly lighter black */
-  color: #fff;
-  text-align: center;
-  padding: 30px 20px;
-  border-bottom: 2px solid #444;
-}
-
-header h1 {
-  font-size: 2rem;
-  margin: 0;
-}
-
-header p {
-  font-size: 1rem;
-  opacity: 0.85;
-}
-
-/* ===== TICKER ===== */
-.ticker-container {
-  background: #d32f2f; /* ESPN red */
-  color: #fff;
-  width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-  border-top: 2px solid #b71c1c;
-  border-bottom: 2px solid #b71c1c;
-  padding: 6px 0;
-}
-
-.ticker-text {
-  display: inline-block;
-  padding-left: 100%;
-  animation: ticker-scroll 22s linear infinite;
-  font-weight: bold;
-  font-size: 1rem;
-}
-
-@keyframes ticker-scroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
-}
-
-/* ===== MAIN CONTENT WRAPPER ===== */
-.container {
-  max-width: 1200px;
-  margin: 40px auto;
-  padding: 20px;
-}
-
-/* ===== BOT GRID ===== */
-.bot-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 30px;
-}
-
-/* ===== BOT CARD ===== */
-.bot-card {
-  background: #111;
-  border: 2px solid #333;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-  color: #fff;
-  transition: 0.3s;
-}
-
-.bot-card:hover {
-  border-color: #d32f2f;
-  transform: translateY(-5px);
-}
-
-.bot-card img {
-  width: 120px;
-  height: auto;
-  margin-bottom: 15px;
-}
-
-.bot-card h3 {
-  font-size: 1.4rem;
-  margin: 10px 0;
-}
-
-.bot-card p {
-  opacity: 0.85;
-  line-height: 1.4;
-}
-
-/* ===== BUTTONS ===== */
-.btn {
-  display: inline-block;
-  text-decoration: none;
-  background: #d32f2f;
-  padding: 12px 20px;
-  color: #fff;
-  border-radius: 6px;
-  margin-top: 10px;
-  font-weight: bold;
-  transition: 0.3s;
-}
-
-.btn:hover {
-  background: #b71c1c;
-}
-
-/* ===== FOOTER ===== */
-footer {
-  background: #111;
-  text-align: center;
-  padding: 25px;
-  color: #bbb;
-  margin-top: 40px;
-  border-top: 1px solid #333;
-}
-
-footer a {
-  color: #ff5252;
-  text-decoration: none;
-}
-
-footer a:hover {
-  text-decoration: underline;
-}
-
-</style>
-
-<script>
-/* ===========================================================
-   ESPN MULTI-SPORT OU SCORE TICKER — 72 HOUR HISTORY
-   Supports: FB, MBB, WBB, Softball, Baseball, Soccer, Volleyball, Wrestling
-   =========================================================== */
-
-async function fetchESPN(url) {
-  try {
-    const res = await fetch(url);
-    return await res.json();
-  } catch {
-    return null;
-  }
-}
-
-// Extract team + score safely
-function extractTeamScore(game, teamIndex) {
-  try {
-    return {
-      name: game.competitors[teamIndex].team.shortDisplayName,
-      score: game.competitors[teamIndex].score
-    };
-  } catch {
-    return { name: "?", score: "?" };
-  }
-}
-
-// Convert emoji per sport
-function getSportEmoji(url) {
-  if (url.includes("football")) return "🏈";
-  if (url.includes("mens")) return "🏀";
-  if (url.includes("womens-college-basketball")) return "🏀";
-  if (url.includes("softball")) return "🥎";
-  if (url.includes("baseball")) return "⚾";
-  if (url.includes("soccer")) return "⚽";
-  if (url.includes("volleyball")) return "🏐";
-  if (url.includes("wrestling")) return "🤼‍♂️";
-  return "🎯";
-}
-
-// Pull games for TODAY + last 72 hours
-async function loadSport(sportUrl, searchName) {
-  const results = [];
-
-  // Generate date list (today, yesterday, 2 days ago)
-  const dates = [];
-  for (let i = 0; i < 3; i++) {
-    let d = new Date();
-    d.setDate(d.getDate() - i);
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    dates.push(`${y}${m}${day}`);
-  }
-
-  for (const date of dates) {
-    const data = await fetchESPN(`${sportUrl}?dates=${date}`);
-    if (data?.events) {
-      data.events.forEach(event => {
-        if (event.shortName.includes(searchName)) {
-          const g = event.competitions[0];
-          const t1 = extractTeamScore(g, 0);
-          const t2 = extractTeamScore(g, 1);
-          const emoji = getSportEmoji(sportUrl);
-          results.push(
-            `${emoji} ${t1.name} ${t1.score} — ${t2.score} ${t2.name}`
-          );
-        }
-      });
+  <!-- ===== CUSTOM CSS ANIMATIONS & TICKER ===== -->
+  <style>
+    /* ===== BUTTON PULSE ANIMATION ===== */
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
     }
-  }
-  return results;
-}
-
-// Master loader for all OU sports
-async function loadScores() {
-  let tickerItems = [];
-
-  const sports = [
-    "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard",
-    "https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard",
-    "https://site.api.espn.com/apis/site/v2/sports/basketball/womens-college-basketball/scoreboard",
-    "https://site.api.espn.com/apis/site/v2/sports/softball/college-softball/scoreboard",
-    "https://site.api.espn.com/apis/site/v2/sports/baseball/college-baseball/scoreboard",
-    "https://site.api.espn.com/apis/site/v2/sports/soccer/womens-college-soccer/scoreboard",
-    "https://site.api.espn.com/apis/site/v2/sports/volleyball/womens-college-volleyball/scoreboard",
-    "https://site.api.espn.com/apis/site/v2/sports/wrestling/college-wrestling/scoreboard"
-  ];
-
-  for (const sport of sports) {
-    const scores = await loadSport(sport, "Oklahoma");
-    tickerItems.push(...scores);
-  }
-
-  if (tickerItems.length === 0) {
-    tickerItems = ["OU scores loading..."];
-  }
-
-  document.getElementById("tickerText").textContent =
-    tickerItems.join("  •  ");
-}
-
-loadScores();
-setInterval(loadScores, 30000);
-</script>
-<script>
-/* ===========================================================
-   ESPN MULTI-SPORT OU SCORE TICKER — 72 HOUR HISTORY
-   Supports: FB, MBB, WBB, Softball, Baseball, Soccer, Volleyball, Wrestling
-   =========================================================== */
-
-async function fetchESPN(url) {
-  try {
-    const res = await fetch(url);
-    return await res.json();
-  } catch {
-    return null;
-  }
-}
-
-// Extract team + score safely
-function extractTeamScore(game, teamIndex) {
-  try {
-    return {
-      name: game.competitors[teamIndex].team.shortDisplayName,
-      score: game.competitors[teamIndex].score
-    };
-  } catch {
-    return { name: "?", score: "?" };
-  }
-}
-
-// Convert emoji per sport
-function getSportEmoji(url) {
-  if (url.includes("football")) return "🏈";
-  if (url.includes("mens")) return "🏀";
-  if (url.includes("womens-college-basketball")) return "🏀";
-  if (url.includes("softball")) return "🥎";
-  if (url.includes("baseball")) return "⚾";
-  if (url.includes("soccer")) return "⚽";
-  if (url.includes("volleyball")) return "🏐";
-  if (url.includes("wrestling")) return "🤼‍♂️";
-  return "🎯";
-}
-
-// Pull games for TODAY + last 72 hours
-async function loadSport(sportUrl, searchName) {
-  const results = [];
-
-  // Generate date list (today, yesterday, 2 days ago)
-  const dates = [];
-  for (let i = 0; i < 3; i++) {
-    let d = new Date();
-    d.setDate(d.getDate() - i);
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    dates.push(`${y}${m}${day}`);
-  }
-
-  for (const date of dates) {
-    const data = await fetchESPN(`${sportUrl}?dates=${date}`);
-    if (data?.events) {
-      data.events.forEach(event => {
-        if (event.shortName.includes(searchName)) {
-          const g = event.competitions[0];
-          const t1 = extractTeamScore(g, 0);
-          const t2 = extractTeamScore(g, 1);
-          const emoji = getSportEmoji(sportUrl);
-          results.push(
-            `${emoji} ${t1.name} ${t1.score} — ${t2.score} ${t2.name}`
-          );
-        }
-      });
+    .btn-pulse:hover {
+      animation: pulse 0.5s infinite;
     }
-  }
-  return results;
-}
 
-// Master loader for all OU sports
-async function loadScores() {
-  let tickerItems = [];
+    /* ===== FADE IN UP ANIMATION ===== */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in-section {
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
 
-  const sports = [
-    "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard",
-    "https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard",
-    "https://site.api.espn.com/apis/site/v2/sports/basketball/womens-college-basketball/scoreboard",
-    "https://site.api.espn.com/apis/site/v2/sports/softball/college-softball/scoreboard",
-    "https://site.api.espn.com/apis/site/v2/sports/baseball/college-baseball/scoreboard",
-    "https://site.api.espn.com/apis/site/v2/sports/soccer/womens-college-soccer/scoreboard",
-    "https://site.api.espn.com/apis/site/v2/sports/volleyball/womens-college-volleyball/scoreboard",
-    "https://site.api.espn.com/apis/site/v2/sports/wrestling/college-wrestling/scoreboard"
-  ];
+    /* ===== GRADIENT TEXT EFFECT ===== */
+    .gradient-text {
+      background: linear-gradient(135deg, #841617, #FDF9E1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
-  for (const sport of sports) {
-    const scores = await loadSport(sport, "Oklahoma");
-    tickerItems.push(...scores);
-  }
+    /* ===== SMOOTH SCROLL BEHAVIOR ===== */
+    html {
+      scroll-behavior: smooth;
+    }
 
-  if (tickerItems.length === 0) {
-    tickerItems = ["OU scores loading..."];
-  }
+    /* ===== NAVIGATION OFFSET FOR FIXED HEADER ===== */
+    [id] {
+      scroll-margin-top: 100px;
+    }
 
-  document.getElementById("tickerText").textContent =
-    tickerItems.join("  •  ");
-}
+    /* ===== ESPN-STYLE TICKER ===== */
+    .ticker-container {
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      background: #841617;
+      color: #FDF9E1;
+      padding: 8px 0;
+      font-weight: bold;
+      font-size: 0.9rem;
+      border-bottom: 3px solid #630F12;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
 
-loadScores();
-setInterval(loadScores, 30000);
-</script>
-v
+    .ticker-text {
+      display: inline-block;
+      padding-left: 100%;
+      animation: ticker-scroll 28s linear infinite;
+    }
 
+    @keyframes ticker-scroll {
+      from { transform: translateX(0%); }
+      to   { transform: translateX(-100%); }
+    }
+  </style>
+</head>
 
-  <!-- ========================= -->
-  <!-- HEADER                    -->
-  <!-- ========================= -->
-  <header>
-    <h1>eXperience Sports & Entertainment Network</h1>
-    <p>Your AI-powered sports channels — powered by The Botosphere</p>
-  </header>
+<body class="bg-[#FDF9E1] text-gray-900 font-sans">
 
-  <!-- ========================= -->
-  <!-- CONTENT                   -->
-  <!-- ========================= -->
-  <div class="container">
-    <h2 style="margin-bottom: 20px;">Available Channels</h2>
-
-    <div class="bot-grid">
-
-      <!-- BOOMER BOT CARD -->
-      <div class="bot-card">
-        <img src="tbsn-site/assets/BB all sports.png" alt="Boomer Bot" width="200" />
-        <h3>Boomer Bot</h3>
-        <p>
-          Oklahoma Sooners all-sports AI companion.<br>
-          Scores • Stats • Highlights • News • Analysis • Videos
-        </p>
-        <a href="https://boomerbot.fun" class="btn">Visit Channel</a>
-      </div>
-
-    </div>
+  <!-- ============================================================================ -->
+  <!-- ESPN OU MULTI-SPORT LIVE / 72-HR / UPCOMING TICKER                         -->
+  <!-- Replaces the previous yellow banner                                         -->
+  <!-- ============================================================================ -->
+  <div class="ticker-container">
+    <span id="tickerText" class="ticker-text">Loading Sooner scoreboard…</span>
   </div>
 
-  <!-- ========================= -->
-  <!-- FOOTER                    -->
-  <!-- ========================= -->
-  <footer>
-    © <span id="year"></span> eXperience Sports & Entertainment Network • Powered by The Botosphere<br>
-    <a href="https://thebotosphere.com" target="_blank">Visit The Botosphere</a>
+  <!-- ============================================================================ -->
+  <!-- NAVIGATION: Fixed header with logo, brand name, and navigation links        -->
+  <!-- ============================================================================ -->
+  <nav class="fixed top-8 md:top-10 w-full bg-[#841617] text-[#FDF9E1] z-50 shadow-lg" data-section="navigation">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4 flex justify-between items-center">
+      <!-- Logo and Brand Name -->
+      <div class="flex items-center space-x-2 md:space-x-3">
+        <img src="https://raw.githubusercontent.com/myvfc/botosphere-images/main/BB%20all%20sports.png"
+             alt="Boomer Bot Logo" class="w-8 h-8 md:w-10 md:h-10 rounded-full">
+        <div>
+          <span class="text-lg md:text-2xl font-bold">Boomer Bot</span><br>
+          <span class="text-xs md:text-sm italic hidden sm:inline">Powered by The Botosphere, Our AI Hosting Companion</span>
+        </div>
+      </div>
+
+      <!-- Mobile Menu Toggle Button -->
+      <button id="mobileMenuToggle" class="md:hidden p-2 rounded-lg hover:bg-red-700 transition" aria-label="Toggle mobile menu">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+
+      <!-- Desktop Navigation Links -->
+      <div class="hidden md:flex space-x-6 items-center">
+        <a href="#features" class="hover:underline transition">Features</a>
+        <a href="#how-it-works" class="hover:underline transition">How It Works</a>
+        <a href="#pricing" class="hover:underline transition">Pricing</a>
+        <a href="#pricing" class="bg-[#FDF9E1] text-[#841617] px-4 py-2 rounded-lg font-bold hover:bg-white transition">Get Started</a>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Menu (Hidden by default) -->
+    <div id="mobileMenu" class="hidden md:hidden bg-[#841617] border-t border-red-700 px-4 py-4">
+      <div class="flex flex-col space-y-3">
+        <a href="#features" class="hover:bg-red-700 px-3 py-2 rounded-lg transition">Features</a>
+        <a href="#how-it-works" class="hover:bg-red-700 px-3 py-2 rounded-lg transition">How It Works</a>
+        <a href="#pricing" class="hover:bg-red-700 px-3 py-2 rounded-lg transition">Pricing</a>
+        <a href="#pricing" class="bg-[#FDF9E1] text-[#841617] px-4 py-2 rounded-lg font-bold text-center hover:bg-white transition">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================================================ -->
+  <!-- HERO SECTION                                                                -->
+  <!-- ============================================================================ -->
+  <section class="bg-gradient-to-r from-[#841617] to-red-800 text-[#FDF9E1] pt-36 md:pt-40 pb-16 md:pb-20 px-4 md:px-6 text-center fade-in-section" data-section="hero">
+    <div class="max-w-6xl mx-auto">
+
+      <!-- Main Headline -->
+      <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 md:mb-6 leading-tight px-2">
+        All OU Sports. One Bot.
+      </h1>
+
+      <!-- Subheadline -->
+      <p class="text-base sm:text-lg md:text-xl italic mb-6 max-w-3xl mx-auto px-2">
+        Boomer Bot is your AI-powered sports companion — connecting Sooner fans to football, softball,
+        basketball, gymnastics, and more with scores, trivia, and highlights 24/7.
+      </p>
+
+      <!-- Featured Video Embed -->
+      <div class="max-w-xl md:max-w-2xl mx-auto mb-6 px-2">
+        <div class="relative w-full" style="padding-bottom: 56.25%;">
+          <iframe
+            allow="fullscreen"
+            allowfullscreen
+            src="https://streamable.com/e/jv1qe2?"
+            class="absolute inset-0 w-full h-full rounded-xl shadow-lg"
+            style="border: none;">
+          </iframe>
+        </div>
+      </div>
+
+      <!-- Supporting Quote -->
+      <p class="italic text-sm sm:text-base md:text-lg mb-6 md:mb-8 max-w-2xl mx-auto px-2">
+        "From the gridiron to the gym, Boomer Bot celebrates all Sooner athletics — football, softball,
+        basketball, gymnastics, and beyond."
+      </p>
+
+      <!-- Subscription CTA Buttons -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-center mt-6 md:mt-8 px-2">
+        <!-- Basic Plan Button -->
+        <a href="https://app.thebotosphere.com/agents/37094353/boomerbotbasic"
+           class="inline-block bg-[#841617] text-[#FDF9E1] border-2 border-[#FDF9E1] font-bold px-6 md:px-10 py-3 md:py-4 rounded-xl shadow-md hover:bg-red-900 transition text-base md:text-xl text-center w-full sm:w-72">
+           🔥 Join Basic — $9.99/Month
+        </a>
+
+        <!-- Premium Plan Button -->
+        <a href="https://app.thebotosphere.com/agents/57704198/boomerbotpremium"
+           class="inline-block bg-[#FDF9E1] text-[#841617] border-2 border-[#FDF9E1] font-bold px-6 md:px-10 py-3 md:py-4 rounded-xl shadow-md hover:bg-white transition text-base md:text-xl text-center w-full sm:w-72">
+           🚀 Premium — $14.99/Month
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================================ -->
+  <!-- BOT EMBED SECTION                                                           -->
+  <!-- ============================================================================ -->
+  <section class="py-8 md:py-12 px-4 md:px-6 bg-[#FDF9E1]" data-section="bot-embed">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-2xl md:text-3xl font-bold text-center mb-6 text-[#841617]">Try Boomer Bot Now</h2>
+      <div class="w-full max-w-3xl mx-auto rounded-xl overflow-hidden shadow-lg border-4 border-[#841617]">
+        <iframe
+          src="https://app.thebotosphere.com/agents/8499193/embed"
+          data-auto-resize="true"
+          frameborder="0"
+          style="width: 100%; height: 1px; border: none; display: block;">
+        </iframe>
+      </div>
+      <p class="text-center text-sm text-gray-600 mt-4">
+        Chat with Boomer Bot above to see what it can do!
+      </p>
+    </div>
+    <!-- Auto-resize script for embedded iframe -->
+    <script src="https://app.thebotosphere.com/iframe-auto-resize.js"></script>
+  </section>
+
+  <!-- ============================================================================ -->
+  <!-- FEATURES SECTION                                                            -->
+  <!-- ============================================================================ -->
+  <section id="features" class="bg-[#841617] text-[#FDF9E1] py-12 md:py-16 px-4 md:px-6 text-center fade-in-section" data-section="features">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-2xl md:text-3xl font-bold mb-6 md:mb-8">Why Fans Love Boomer Bot</h2>
+
+      <div class="grid sm:grid-cols-2 gap-4 md:gap-8 text-left">
+        <div class="bg-red-900 bg-opacity-50 p-4 md:p-6 rounded-lg">
+          <h3 class="font-bold text-lg md:text-xl mb-2">🏈 Football Focused, Multi-Sport Ready</h3>
+          <p class="text-sm md:text-base">Real-time football insights today — expanding to all OU sports this season.</p>
+        </div>
+
+        <div class="bg-red-900 bg-opacity-50 p-4 md:p-6 rounded-lg">
+          <h3 class="font-bold text-lg md:text-xl mb-2">🥎 Softball & Hoops Coverage</h3>
+          <p class="text-sm md:text-base">Follow OU's powerhouse softball and basketball programs as they dominate.</p>
+        </div>
+
+        <div class="bg-red-900 bg-opacity-50 p-4 md:p-6 rounded-lg">
+          <h3 class="font-bold text-lg md:text-xl mb-2">🤸‍♂️ National Championship Gymnastics</h3>
+          <p class="text-sm md:text-base">Celebrate OU's legendary men's and women's gymnastics teams and champions.</p>
+        </div>
+
+        <div class="bg-red-900 bg-opacity-50 p-4 md:p-6 rounded-lg">
+          <h3 class="font-bold text-lg md:text-xl mb-2">🎧 Voice or Text Chat</h3>
+          <p class="text-sm md:text-base">Talk or type — Boomer Bot answers instantly with personality and spirit.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================================ -->
+  <!-- HOW IT WORKS SECTION                                                        -->
+  <!-- ============================================================================ -->
+  <section id="how-it-works" class="py-12 md:py-16 px-4 md:px-6 bg-gray-50 fade-in-section" data-section="how-it-works">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-2xl md:text-3xl font-bold text-center mb-8 md:mb-12 text-[#841617]">How It Works</h2>
+
+      <div class="grid sm:grid-cols-3 gap-6 md:gap-8 text-center">
+        <div class="bg-white p-4 md:p-6 rounded-xl shadow-md">
+          <div class="w-12 h-12 md:w-16 md:h-16 bg-[#841617] text-[#FDF9E1] rounded-full flex items-center justify-center mx-auto mb-4 text-xl md:text-2xl font-bold">1</div>
+          <h3 class="font-bold text-lg md:text-xl mb-2">Sign Up</h3>
+          <p class="text-sm md:text-base text-gray-600">Subscribe in seconds and start chatting instantly.</p>
+        </div>
+
+        <div class="bg-white p-4 md:p-6 rounded-xl shadow-md">
+          <div class="w-12 h-12 md:w-16 md:h-16 bg-[#841617] text-[#FDF9E1] rounded-full flex items-center justify-center mx-auto mb-4 text-xl md:text-2xl font-bold">2</div>
+          <h3 class="font-bold text-lg md:text-xl mb-2">Choose Your Sport</h3>
+          <p class="text-sm md:text-base text-gray-600">Ask about football now — basketball, softball, and more are next!</p>
+        </div>
+
+        <div class="bg-white p-4 md:p-6 rounded-xl shadow-md">
+          <div class="w-12 h-12 md:w-16 md:h-16 bg-[#841617] text-[#FDF9E1] rounded-full flex items-center justify-center mx-auto mb-4 text-xl md:text-2xl font-bold">3</div>
+          <h3 class="font-bold text-lg md:text-xl mb-2">Chat Anytime</h3>
+          <p class="text-sm md:text-base text-gray-600">Get scores, schedules, trivia, and Sooner stories on demand.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================================ -->
+  <!-- TESTIMONIALS SECTION                                                        -->
+  <!-- ============================================================================ -->
+  <section class="py-12 md:py-16 px-4 md:px-6 bg-[#FDF9E1]" data-section="testimonials">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-2xl md:text-3xl font-bold text-center mb-8 text-[#841617]">What Fans Are Saying</h2>
+      
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-[#841617]">
+          <p class="text-gray-700 italic mb-4">"Boomer Bot keeps me updated on every Sooner game. It's like having a sports buddy who never sleeps!"</p>
+          <p class="font-bold text-[#841617]">— Jake M., Norman, OK</p>
+        </div>
+        
+        <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-[#841617]">
+          <p class="text-gray-700 italic mb-4">"The trivia feature is addictive. I've learned so much about OU history I never knew!"</p>
+          <p class="font-bold text-[#841617]">— Sarah T., Tulsa, OK</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================================ -->
+  <!-- PRICING SECTION                                                             -->
+  <!-- ============================================================================ -->
+  <section id="pricing" class="py-16 md:py-20 px-4 md:px-6 bg-gray-50" data-section="pricing">
+    <div class="max-w-6xl mx-auto text-center">
+
+      <h2 class="text-3xl md:text-4xl font-extrabold mb-4 text-[#841617]">Choose Your Boomer Bot Plan</h2>
+      <p class="text-base md:text-lg mb-8 md:mb-12 text-gray-700 max-w-2xl mx-auto">
+        All plans include 24/7 access, trivia, scores, and Sooner spirit year-round.
+      </p>
+
+      <div class="grid md:grid-cols-3 gap-6 md:gap-8">
+
+        <div class="bg-white border-4 border-[#841617] rounded-2xl shadow-lg p-6 md:p-8 flex flex-col justify-between">
+          <div>
+            <h3 class="text-xl md:text-2xl font-bold text-[#841617] mb-2">🔥 Basic</h3>
+            <p class="text-gray-600 mb-4 text-sm md:text-base">Perfect for everyday Sooner fans.</p>
+
+            <div class="text-4xl md:text-5xl font-extrabold text-[#841617] mb-2">$9</div>
+            <div class="text-gray-500 mb-6">per month</div>
+
+            <ul class="text-left space-y-2 mb-6 text-gray-700 text-sm md:text-base">
+              <li>✔️ Text & voice chat access</li>
+              <li>✔️ Real-time football updates</li>
+              <li>✔️ Daily OU trivia</li>
+              <li>✔️ Cancel anytime</li>
+            </ul>
+          </div>
+
+          <a href="https://app.thebotosphere.com/agents/37094353/boomerbotbasic"
+             class="inline-block bg-white text-[#841617] border-2 border-[#841617] font-bold px-6 md:px-10 py-3 md:py-4 rounded-xl shadow-md hover:bg-[#FDF9E1] transition text-lg md:text-xl w-full">
+            Join Basic
+          </a>
+        </div>
+
+        <div class="bg-[#841617] text-[#FDF9E1] border-4 border-[#841617] rounded-2xl shadow-xl p-6 md:p-8 flex flex-col justify-between md:scale-105 relative">
+          <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-[#841617] px-4 py-1 rounded-full text-sm font-bold">
+            Most Popular
+          </div>
+          <div>
+            <h3 class="text-xl md:text-2xl font-bold mb-2 mt-2">🚀 Premium</h3>
+            <p class="opacity-90 mb-4 text-sm md:text-base">For superfans who want the full Sooner experience.</p>
+
+            <div class="text-4xl md:text-5xl font-extrabold mb-2">$14</div>
+            <div class="opacity-90 mb-6">per month</div>
+
+            <ul class="text-left space-y-2 mb-6 opacity-90 text-sm md:text-base">
+              <li>✔️ Everything in Basic</li>
+              <li>✔️ Multi-sport coverage (softball, basketball +)</li>
+              <li>✔️ Exclusive OU history & stats</li>
+              <li>✔️ Premium fan trivia drops</li>
+            </ul>
+          </div>
+
+          <a href="https://app.thebotosphere.com/agents/57704198/boomerbotpremium"
+             class="inline-block bg-white text-[#841617] font-bold px-6 md:px-10 py-3 md:py-4 rounded-xl shadow-md hover:opacity-90 transition text-lg md:text-xl w-full">
+            Join Premium
+          </a>
+        </div>
+
+        <div class="bg-white border-4 border-gray-300 rounded-2xl shadow-md p-6 md:p-8 flex flex-col justify-between opacity-90">
+          <div>
+            <h3 class="text-xl md:text-2xl font-bold text-[#841617] mb-2">⭐ Deluxe</h3>
+            <p class="text-gray-700 mb-4 text-sm md:text-base">
+              Coming Soon — featuring Sooner celebrity voices & special fan interactions!
+            </p>
+
+            <div class="text-3xl md:text-4xl font-extrabold text-gray-400 mb-2">Coming Soon</div>
+            <div class="text-gray-500 mb-6">Available soon — stay tuned!</div>
+
+            <ul class="text-left space-y-2 mb-6 text-gray-600 text-sm md:text-base">
+              <li>🎤 OU Legends & Celebrity Voices</li>
+              <li>💬 Personalized Fan Experiences</li>
+              <li>🏆 Behind-the-Scenes Extras</li>
+              <li>🚧 Early Access Waitlist Coming</li>
+            </ul>
+          </div>
+
+          <button class="inline-block bg-gray-300 text-gray-600 font-bold px-6 md:px-10 py-3 md:py-4 rounded-xl cursor-not-allowed text-lg md:text-xl w-full" disabled>
+            Coming Soon
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================================ -->
+  <!-- FAQ SECTION                                                                 -->
+  <!-- ============================================================================ -->
+  <section class="py-12 md:py-16 px-4 md:px-6 bg-[#FDF9E1]" data-section="faq">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-2xl md:text-3xl font-bold text-center mb-8 text-[#841617]">Frequently Asked Questions</h2>
+      
+      <div class="space-y-4">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+          <button class="faq-toggle w-full text-left p-4 md:p-6 font-bold text-[#841617] flex justify-between items-center hover:bg-gray-50 transition">
+            <span>What sports does Boomer Bot cover?</span>
+            <svg class="w-5 h-5 transform transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </button>
+          <div class="faq-content hidden px-4 md:px-6 pb-4 md:pb-6 text-gray-700">
+            <p>Currently, Boomer Bot focuses on OU Football with real-time updates, scores, and trivia. We're actively expanding to include softball, basketball, gymnastics, and all other Sooner sports throughout 2025!</p>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+          <button class="faq-toggle w-full text-left p-4 md:p-6 font-bold text-[#841617] flex justify-between items-center hover:bg-gray-50 transition">
+            <span>Can I cancel my subscription anytime?</span>
+            <svg class="w-5 h-5 transform transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </button>
+          <div class="faq-content hidden px-4 md:px-6 pb-4 md:pb-6 text-gray-700">
+            <p>Absolutely! All Boomer Bot plans come with no long-term commitment. You can cancel anytime, and we offer a 30-day money-back guarantee if you're not completely satisfied.</p>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+          <button class="faq-toggle w-full text-left p-4 md:p-6 font-bold text-[#841617] flex justify-between items-center hover:bg-gray-50 transition">
+            <span>Does Boomer Bot work on mobile devices?</span>
+            <svg class="w-5 h-5 transform transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </button>
+          <div class="faq-content hidden px-4 md:px-6 pb-4 md:pb-6 text-gray-700">
+            <p>Yes! Boomer Bot works seamlessly on all devices — desktop, tablet, and mobile. Chat via text or use voice commands on any modern browser.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================================ -->
+  <!-- FINAL CTA SECTION                                                           -->
+  <!-- ============================================================================ -->
+  <section class="py-16 md:py-20 px-4 md:px-6 text-center bg-gradient-to-r from-[#841617] to-red-800 text-[#FDF9E1]" data-section="final-cta">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 md:mb-6 leading-tight">
+        Be More Than a Fan.<br class="hidden sm:block"> Be a Sooner for All Seasons.
+      </h2>
+
+      <p class="text-base md:text-xl mb-6 md:mb-8 max-w-2xl mx-auto">
+        Football in the fall, softball in the spring, and basketball in between —
+        Boomer Bot keeps you connected year-round.
+      </p>
+
+      <a href="#pricing"
+         class="inline-block bg-[#FDF9E1] text-[#841617] font-bold px-8 md:px-10 py-3 md:py-4 rounded-xl shadow-lg hover:bg-white transition btn-pulse text-lg md:text-xl">
+         🔥 Join Boomer Bot Today
+      </a>
+
+      <p class="mt-6 text-sm opacity-90">
+        30-day money-back guarantee • Cancel anytime • No hidden fees
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================================ -->
+  <!-- FOOTER                                                                      -->
+  <!-- ============================================================================ -->
+  <footer class="bg-[#841617] text-[#FDF9E1] py-10" data-section="footer">
+    <div class="max-w-6xl mx-auto px-4 md:px-6 grid sm:grid-cols-2 md:grid-cols-4 gap-8">
+      <div>
+        <img src="https://raw.githubusercontent.com/myvfc/botosphere-images/main/BB%20all%20sports.png"
+             alt="Boomer Bot Logo" class="w-12 h-12 mb-4 rounded-full">
+        <p class="text-sm mb-3">
+          Boomer Bot — Your Sooner Sports Companion for all seasons.
+        </p>
+        <p class="text-sm"><strong>Email:</strong>
+          <a href="mailto:info@boomerbot.fun" class="underline hover:text-white transition">info@boomerbot.fun</a>
+        </p>
+        <p class="text-sm"><strong>Phone:</strong>
+          <a href="tel:+14051234567" class="underline hover:text-white transition">(405) 123-4567</a>
+        </p>
+      </div>
+
+      <div>
+        <h3 class="font-bold mb-3">Quick Links</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#features" class="hover:underline transition">Features</a></li>
+          <li><a href="#how-it-works" class="hover:underline transition">How It Works</a></li>
+          <li><a href="#pricing" class="hover:underline transition">Pricing</a></li>
+          <li><a href="#pricing" class="hover:underline transition">Sign Up</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-bold mb-3">Connect</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:underline transition">Facebook</a></li>
+          <li><a href="#" class="hover:underline transition">Twitter / X</a></li>
+          <li><a href="#" class="hover:underline transition">Instagram</a></li>
+          <li><a href="#" class="hover:underline transition">YouTube</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-bold mb-3">Legal</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:underline transition">Privacy Policy</a></li>
+          <li><a href="#" class="hover:underline transition">Terms of Service</a></li>
+          <li><a href="#" class="hover:underline transition">Disclaimer</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="border-t border-[#FDF9E1]/40 mt-8 pt-6 text-center text-sm px-4">
+      <div class="flex flex-col items-center justify-center gap-2">
+        <p>© 2025 Boomer Bot. All rights reserved. Built by fans, for fans.</p>
+        <p class="text-xs opacity-90 max-w-2xl mx-auto">
+          Boomer Bot is not affiliated with or endorsed by the University of Oklahoma
+          or its athletic department. All trademarks belong to their respective owners.
+        </p>
+        <div class="flex items-center justify-center gap-2 mt-3">
+          <a href="https://thebotosphere.com" target="_blank" rel="noopener noreferrer"
+             class="flex items-center gap-2 hover:opacity-90 transition">
+            <img src="https://raw.githubusercontent.com/myvfc/botosphere-images/main/boto%20logo.png"
+                 alt="The Botosphere Logo" class="h-6">
+            <span class="text-sm font-semibold">Powered by <span class="underline">The Botosphere</span></span>
+          </a>
+        </div>
+      </div>
+    </div>
   </footer>
 
+  <!-- ============================================================================ -->
+  <!-- CORE PAGE JS: Mobile menu, FAQ, scroll animations                           -->
+  <!-- ============================================================================ -->
   <script>
-    // Auto-update footer year
-    document.getElementById("year").textContent = new Date().getFullYear();
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    mobileMenuToggle.addEventListener('click', function() {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+    mobileMenuLinks.forEach(function(link) {
+      link.addEventListener('click', function() {
+        mobileMenu.classList.add('hidden');
+      });
+    });
+
+    const faqToggles = document.querySelectorAll('.faq-toggle');
+    faqToggles.forEach(function(toggle) {
+      toggle.addEventListener('click', function() {
+        const content = this.nextElementSibling;
+        const icon = this.querySelector('.faq-icon');
+        content.classList.toggle('hidden');
+        icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+      });
+    });
+
+    const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.style.animationPlayState = 'running';
+        }
+      });
+    }, observerOptions);
+
+    const fadeInSections = document.querySelectorAll('.fade-in-section');
+    fadeInSections.forEach(function(section) {
+      section.style.animationPlayState = 'paused';
+      observer.observe(section);
+    });
   </script>
 
-  <!-- ========================= -->
-  <!-- ESPN LIVE SCORE SCRIPT    -->
-  <!-- ========================= -->
+  <!-- ============================================================================ -->
+  <!-- ESPN OU MULTI-SPORT TICKER JS (LIVE + LAST 72 HRS + UPCOMING)              -->
+  <!-- ============================================================================ -->
   <script>
-async function fetchESPN(url) {
-  try {
-    const res = await fetch(url);
-    const data = await res.json();
-    return data;
-  } catch (err) {
-    return null;
-  }
-}
+    const OU_KEYWORDS = ["Oklahoma", "Sooners", "OU"];
+    const HOURS_LOOKBACK = 72;
+    const UPCOMING_DAYS = 7;
 
-function extractTeamScore(game, teamIndex) {
-  try {
-    return {
-      name: game.competitors[teamIndex].team.shortDisplayName,
-      score: game.competitors[teamIndex].score
-    };
-  } catch {
-    return null;
-  }
-}
+    const SPORTS = [
+      { icon: "🏈", url: "football/college-football" },
+      { icon: "🏀", url: "basketball/mens-college-basketball" },
+      { icon: "🏀", url: "basketball/womens-college-basketball" },
+      { icon: "🥎", url: "softball/college-softball" },
+      { icon: "⚾", url: "baseball/college-baseball" },
+      { icon: "🤸", url: "gymnastics/mens-college-gymnastics" },
+      { icon: "🤸", url: "gymnastics/womens-college-gymnastics" },
+      { icon: "⚽", url: "soccer/college-soccer" },
+      { icon: "🏐", url: "volleyball/womens-college-volleyball" }
+    ];
 
-async function loadScores() {
-  let tickerItems = [];
-
-  // ======= FOOTBALL =======
-  const fb = await fetchESPN("https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard");
-  if (fb && fb.events) {
-    fb.events.forEach(event => {
-      if (event.shortName.includes("Oklahoma")) {
-        const g = event.competitions[0];
-        const t1 = extractTeamScore(g, 0);
-        const t2 = extractTeamScore(g, 1);
-        tickerItems.push(`🏈 ${t1.name} ${t1.score} — ${t2.score} ${t2.name}`);
+    async function fetchESPN(url) {
+      try {
+        const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/${url}/scoreboard`);
+        return await res.json();
+      } catch (err) {
+        return null;
       }
-    });
-  }
+    }
 
-  // ======= MEN'S BASKETBALL =======
-  const mbb = await fetchESPN("https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard");
-  if (mbb && mbb.events) {
-    mbb.events.forEach(event => {
-      if (event.shortName.includes("Oklahoma")) {
-        const g = event.competitions[0];
-        const t1 = extractTeamScore(g, 0);
-        const t2 = extractTeamScore(g, 1);
-        tickerItems.push(`🏀 ${t1.name} ${t1.score} — ${t2.score} ${t2.name}`);
+    function isOU(event) {
+      return OU_KEYWORDS.some(k => event.shortName?.includes(k));
+    }
+
+    function getScoreLine(event, icon) {
+      const comp = event.competitions[0].competitors;
+      const t1 = comp[0];
+      const t2 = comp[1];
+      return `${icon} ${t1.team.abbreviation} ${t1.score} — ${t2.score} ${t2.team.abbreviation}`;
+    }
+
+    function isRecent(event) {
+      const start = new Date(event.date).getTime();
+      const now = Date.now();
+      const diffHrs = (now - start) / 1000 / 3600;
+      return diffHrs >= 0 && diffHrs <= HOURS_LOOKBACK;
+    }
+
+    function isUpcoming(event) {
+      const start = new Date(event.date).getTime();
+      const now = Date.now();
+      const diffHrs = (start - now) / 1000 / 3600;
+      return diffHrs >= 0 && diffHrs <= UPCOMING_DAYS * 24;
+    }
+
+    function getUpcomingLine(event, icon) {
+      const comp = event.competitions[0].competitors;
+      const t1 = comp[0].team.abbreviation;
+      const t2 = comp[1].team.abbreviation;
+
+      const dateStr = new Date(event.date).toLocaleString("en-US", {
+        weekday: "short",
+        hour: "numeric",
+        minute: "numeric"
+      });
+
+      return `${icon} ${t1} vs ${t2} • ${dateStr}`;
+    }
+
+    async function loadTicker() {
+      let ticker = [];
+
+      for (const sport of SPORTS) {
+        const data = await fetchESPN(sport.url);
+        if (!data || !data.events) continue;
+
+        data.events.forEach(event => {
+          if (!isOU(event)) return;
+
+          if (isRecent(event)) {
+            ticker.push(getScoreLine(event, sport.icon));
+          }
+
+          if (isUpcoming(event)) {
+            ticker.push(getUpcomingLine(event, sport.icon));
+          }
+        });
       }
-    });
-  }
 
-  // ======= SOFTBALL =======
-  const sb = await fetchESPN("https://site.api.espn.com/apis/site/v2/sports/softball/college-softball/scoreboard");
-  if (sb && sb.events) {
-    sb.events.forEach(event => {
-      if (event.shortName.includes("Oklahoma")) {
-        const g = event.competitions[0];
-        const t1 = extractTeamScore(g, 0);
-        const t2 = extractTeamScore(g, 1);
-        tickerItems.push(`🥎 ${t1.name} ${t1.score} — ${t2.score} ${t2.name}`);
+      if (ticker.length === 0) {
+        ticker = ["Sooner scoreboard updating…"];
       }
-    });
-  }
 
-  // ======= FINAL ASSEMBLY =======
-  if (tickerItems.length === 0) {
-    tickerItems = ["No current OU games in progress — check back soon!"];
-  }
+      document.getElementById("tickerText").textContent = ticker.join(" • ");
+    }
 
-  document.getElementById("tickerText").textContent = tickerItems.join(" • ");
-}
-
-// Load immediately
-loadScores();
-
-// Refresh every 30 seconds
-setInterval(loadScores, 30000);
+    loadTicker();
+    setInterval(loadTicker, 60000);
   </script>
 
 </body>
 </html>
+
