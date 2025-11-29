@@ -5,9 +5,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>eXpereince Sports & Entertainment Network</title>
   <link rel="stylesheet" href="assets/styles.css" />
+
+  <!-- ESPN-STYLE SCROLLING TICKER -->
+  <style>
+    .ticker-container {
+      background: #841617; /* OU Crimson */
+      color: #FDF9E1;       /* Cream white */
+      font-weight: bold;
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 9999;
+      padding: 10px 0;
+      border-bottom: 2px solid #FDF9E1;
+      font-family: Arial, sans-serif;
+    }
+
+    .ticker-text {
+      display: inline-block;
+      padding-left: 100%;
+      animation: ticker-scroll 14s linear infinite;
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+    }
+
+    @keyframes ticker-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* Push page content down so header doesn't overlap ticker */
+    body {
+      margin-top: 55px;
+    }
+  </style>
 </head>
 
 <body>
+
+  <!-- ESPN-STYLE TICKER -->
+  <div class="ticker-container">
+    <span class="ticker-text">
+      🏈 OU Football: Spring Preparations Underway • 🥎 OU Softball: Ranked #1 Again • 🏀 OU Basketball: Big 12 Conference Play Begins • 🤸 OU Gymnastics: National Title Defense Season Kicks Off • 🎤 More Channels Coming Soon on XSEN!
+    </span>
+  </div>
 
   <!-- HEADER -->
   <header>
@@ -23,8 +67,7 @@
 
       <!-- BOOMER BOT CARD -->
       <div class="bot-card">
-      <img src="tbsn-site/assets
-/BB all sports.png" alt= />
+        <img src="tbsn-site/assets/BB all sports.png" alt="Boomer Bot" />
         <h3>Boomer Bot</h3>
         <p>
           Oklahoma Sooners all-sports AI companion.<br>
@@ -34,7 +77,7 @@
       </div>
 
       <!-- Add more bot cards later -->
-      
+
     </div>
   </div>
 
