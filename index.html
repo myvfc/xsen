@@ -4,6 +4,144 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>eXperience Sports & Entertainment Network</title>
+<style>
+
+/* ===== GLOBAL BLACK THEME ===== */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #000;   /* Full black backdrop */
+  color: #fff;              /* White text globally */
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ===== HEADER ===== */
+header {
+  background: #111; /* Slightly lighter black */
+  color: #fff;
+  text-align: center;
+  padding: 30px 20px;
+  border-bottom: 2px solid #444;
+}
+
+header h1 {
+  font-size: 2rem;
+  margin: 0;
+}
+
+header p {
+  font-size: 1rem;
+  opacity: 0.85;
+}
+
+/* ===== TICKER ===== */
+.ticker-container {
+  background: #d32f2f; /* ESPN red */
+  color: #fff;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  border-top: 2px solid #b71c1c;
+  border-bottom: 2px solid #b71c1c;
+  padding: 6px 0;
+}
+
+.ticker-text {
+  display: inline-block;
+  padding-left: 100%;
+  animation: ticker-scroll 22s linear infinite;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+@keyframes ticker-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+/* ===== MAIN CONTENT WRAPPER ===== */
+.container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+/* ===== BOT GRID ===== */
+.bot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 30px;
+}
+
+/* ===== BOT CARD ===== */
+.bot-card {
+  background: #111;
+  border: 2px solid #333;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  color: #fff;
+  transition: 0.3s;
+}
+
+.bot-card:hover {
+  border-color: #d32f2f;
+  transform: translateY(-5px);
+}
+
+.bot-card img {
+  width: 120px;
+  height: auto;
+  margin-bottom: 15px;
+}
+
+.bot-card h3 {
+  font-size: 1.4rem;
+  margin: 10px 0;
+}
+
+.bot-card p {
+  opacity: 0.85;
+  line-height: 1.4;
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+  display: inline-block;
+  text-decoration: none;
+  background: #d32f2f;
+  padding: 12px 20px;
+  color: #fff;
+  border-radius: 6px;
+  margin-top: 10px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background: #b71c1c;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  background: #111;
+  text-align: center;
+  padding: 25px;
+  color: #bbb;
+  margin-top: 40px;
+  border-top: 1px solid #333;
+}
+
+footer a {
+  color: #ff5252;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+</style>
 
 <script>
 /* ===========================================================
