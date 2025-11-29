@@ -3,8 +3,140 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>eXpereince Sports & Entertainment Network</title>
+  <title>eXperience Sports & Entertainment Network</title>
 
+  <!-- ========================= -->
+  <!-- ESPN TICKER CSS           -->
+  <!-- ========================= -->
+  <style>
+    .ticker-container {
+      background: #841617; /* OU Crimson */
+      color: #FDF9E1;      /* Cream */
+      font-weight: bold;
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 9999;
+      padding: 10px 0;
+      border-bottom: 2px solid #FDF9E1;
+      font-family: Arial, sans-serif;
+    }
+
+    .ticker-text {
+      display: inline-block;
+      padding-left: 100%;
+      animation: ticker-scroll 25s linear infinite; /* slower speed */
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+    }
+
+    @keyframes ticker-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* Push page content down so header doesn't hide under ticker */
+    body {
+      margin-top: 55px;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Basic styling for your page */
+    header, footer {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      text-align: center;
+    }
+
+    .bot-grid {
+      display: flex;
+      justify-content: center;
+    }
+
+    .bot-card {
+      border: 1px solid #ccc;
+      padding: 20px;
+      width: 260px;
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #841617;
+      padding: 10px 20px;
+      border-radius: 8px;
+      color: white;
+      text-decoration: none;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ========================= -->
+  <!-- ESPN LIVE SCORE TICKER   -->
+  <!-- ========================= -->
+  <div class="ticker-container">
+    <span id="tickerText" class="ticker-text">Loading OU scores...</span>
+  </div>
+
+  <!-- ========================= -->
+  <!-- HEADER                    -->
+  <!-- ========================= -->
+  <header>
+    <h1>eXperience Sports & Entertainment Network</h1>
+    <p>Your AI-powered sports channels — powered by The Botosphere</p>
+  </header>
+
+  <!-- ========================= -->
+  <!-- CONTENT                   -->
+  <!-- ========================= -->
+  <div class="container">
+    <h2 style="margin-bottom: 20px;">Available Channels</h2>
+
+    <div class="bot-grid">
+
+      <!-- BOOMER BOT CARD -->
+      <div class="bot-card">
+        <img src="tbsn-site/assets/BB all sports.png" alt="Boomer Bot" width="200" />
+        <h3>Boomer Bot</h3>
+        <p>
+          Oklahoma Sooners all-sports AI companion.<br>
+          Scores • Stats • Highlights • News • Analysis • Videos
+        </p>
+        <a href="https://boomerbot.fun" class="btn">Visit Channel</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================= -->
+  <!-- FOOTER                    -->
+  <!-- ========================= -->
+  <footer>
+    © <span id="year"></span> eXperience Sports & Entertainment Network • Powered by The Botosphere<br>
+    <a href="https://thebotosphere.com" target="_blank">Visit The Botosphere</a>
+  </footer>
+
+  <script>
+    // Auto-update footer year
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+
+  <!-- ========================= -->
+  <!-- ESPN LIVE SCORE SCRIPT    -->
+  <!-- ========================= -->
   <script>
 async function fetchESPN(url) {
   try {
@@ -71,7 +203,7 @@ async function loadScores() {
 
   // ======= FINAL ASSEMBLY =======
   if (tickerItems.length === 0) {
-    tickerItems = ["OU Scores loading..."];
+    tickerItems = ["No current OU games in progress — check back soon!"];
   }
 
   document.getElementById("tickerText").textContent = tickerItems.join(" • ");
@@ -82,47 +214,7 @@ loadScores();
 
 // Refresh every 30 seconds
 setInterval(loadScores, 30000);
-</script>
-
-  <!-- HEADER -->
-  <header>
-    <h1>eXperience Sports & Entertainment Network</h1>
-    <p>Your AI-powered sports channels — powered by The Botosphere</p>
-  </header>
-
-  <!-- CONTENT WRAPPER -->
-  <div class="container">
-    <h2 style="margin-bottom: 20px;">Available Channels</h2>
-
-    <div class="bot-grid">
-
-      <!-- BOOMER BOT CARD -->
-      <div class="bot-card">
-        <img src="tbsn-site/assets/BB all sports.png" alt="Boomer Bot" />
-        <h3>Boomer Bot</h3>
-        <p>
-          Oklahoma Sooners all-sports AI companion.<br>
-          Scores • Stats • Highlights • News • Analysis • Videos
-        </p>
-        <a href="https://boomerbot.fun" class="btn">Visit Channel</a>
-      </div>
-
-      <!-- Add more bot cards later -->
-
-    </div>
-  </div>
-
-  <!-- FOOTER -->
-  <footer>
-    © <span id="year"></span> eXperience Sports & Entertainment Network • Powered by The Botosphere<br>
-    <a href="https://thebotosphere.com" target="_blank">Visit The Botosphere</a>
-  </footer>
-
-  <script>
-    // Auto-update footer year
-    document.getElementById("year").textContent = new Date().getFullYear();
   </script>
- 
 
 </body>
 </html>
