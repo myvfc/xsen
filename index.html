@@ -5,91 +5,112 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>eXperience Sports & Entertainment Network</title>
 
-  <!-- ========================= -->
-  <!-- ESPN TICKER CSS           -->
-  <!-- ========================= -->
-  <style>
-    .ticker-container {
-      background: #841617; /* OU Crimson */
-      color: #FDF9E1;      /* Cream */
-      font-weight: bold;
-      width: 100%;
-      overflow: hidden;
-      white-space: nowrap;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 9999;
-      padding: 10px 0;
-      border-bottom: 2px solid #FDF9E1;
-      font-family: Arial, sans-serif;
+<script>
+/* ===========================================================
+   ESPN MULTI-SPORT OU SCORE TICKER — 72 HOUR HISTORY
+   Supports: FB, MBB, WBB, Softball, Baseball, Soccer, Volleyball, Wrestling
+   =========================================================== */
+
+async function fetchESPN(url) {
+  try {
+    const res = await fetch(url);
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+// Extract team + score safely
+function extractTeamScore(game, teamIndex) {
+  try {
+    return {
+      name: game.competitors[teamIndex].team.shortDisplayName,
+      score: game.competitors[teamIndex].score
+    };
+  } catch {
+    return { name: "?", score: "?" };
+  }
+}
+
+// Convert emoji per sport
+function getSportEmoji(url) {
+  if (url.includes("football")) return "🏈";
+  if (url.includes("mens")) return "🏀";
+  if (url.includes("womens-college-basketball")) return "🏀";
+  if (url.includes("softball")) return "🥎";
+  if (url.includes("baseball")) return "⚾";
+  if (url.includes("soccer")) return "⚽";
+  if (url.includes("volleyball")) return "🏐";
+  if (url.includes("wrestling")) return "🤼‍♂️";
+  return "🎯";
+}
+
+// Pull games for TODAY + last 72 hours
+async function loadSport(sportUrl, searchName) {
+  const results = [];
+
+  // Generate date list (today, yesterday, 2 days ago)
+  const dates = [];
+  for (let i = 0; i < 3; i++) {
+    let d = new Date();
+    d.setDate(d.getDate() - i);
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    dates.push(`${y}${m}${day}`);
+  }
+
+  for (const date of dates) {
+    const data = await fetchESPN(`${sportUrl}?dates=${date}`);
+    if (data?.events) {
+      data.events.forEach(event => {
+        if (event.shortName.includes(searchName)) {
+          const g = event.competitions[0];
+          const t1 = extractTeamScore(g, 0);
+          const t2 = extractTeamScore(g, 1);
+          const emoji = getSportEmoji(sportUrl);
+          results.push(
+            `${emoji} ${t1.name} ${t1.score} — ${t2.score} ${t2.name}`
+          );
+        }
+      });
     }
+  }
+  return results;
+}
 
-    .ticker-text {
-      display: inline-block;
-      padding-left: 100%;
-      animation: ticker-scroll 25s linear infinite; /* slower speed */
-      font-size: 1rem;
-      letter-spacing: 0.5px;
-    }
+// Master loader for all OU sports
+async function loadScores() {
+  let tickerItems = [];
 
-    @keyframes ticker-scroll {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-100%); }
-    }
+  const sports = [
+    "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard",
+    "https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard",
+    "https://site.api.espn.com/apis/site/v2/sports/basketball/womens-college-basketball/scoreboard",
+    "https://site.api.espn.com/apis/site/v2/sports/softball/college-softball/scoreboard",
+    "https://site.api.espn.com/apis/site/v2/sports/baseball/college-baseball/scoreboard",
+    "https://site.api.espn.com/apis/site/v2/sports/soccer/womens-college-soccer/scoreboard",
+    "https://site.api.espn.com/apis/site/v2/sports/volleyball/womens-college-volleyball/scoreboard",
+    "https://site.api.espn.com/apis/site/v2/sports/wrestling/college-wrestling/scoreboard"
+  ];
 
-    /* Push page content down so header doesn't hide under ticker */
-    body {
-      margin-top: 55px;
-      font-family: Arial, sans-serif;
-    }
+  for (const sport of sports) {
+    const scores = await loadSport(sport, "Oklahoma");
+    tickerItems.push(...scores);
+  }
 
-    /* Basic styling for your page */
-    header, footer {
-      text-align: center;
-      padding: 20px;
-    }
+  if (tickerItems.length === 0) {
+    tickerItems = ["OU scores loading..."];
+  }
 
-    .container {
-      max-width: 900px;
-      margin: 30px auto;
-      text-align: center;
-    }
+  document.getElementById("tickerText").textContent =
+    tickerItems.join("  •  ");
+}
 
-    .bot-grid {
-      display: flex;
-      justify-content: center;
-    }
+loadScores();
+setInterval(loadScores, 30000);
+</script>
 
-    .bot-card {
-      border: 1px solid #ccc;
-      padding: 20px;
-      width: 260px;
-      border-radius: 10px;
-      background: #fff;
-    }
-
-    .btn {
-      display: inline-block;
-      background: #841617;
-      padding: 10px 20px;
-      border-radius: 8px;
-      color: white;
-      text-decoration: none;
-      margin-top: 10px;
-      font-weight: bold;
-    }
-  </style>
-</head>
-
-<body>
-
-  <!-- ========================= -->
-  <!-- ESPN LIVE SCORE TICKER   -->
-  <!-- ========================= -->
-  <div class="ticker-container">
-    <span id="tickerText" class="ticker-text">Loading OU scores...</span>
-  </div>
 
   <!-- ========================= -->
   <!-- HEADER                    -->
