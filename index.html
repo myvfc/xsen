@@ -1,933 +1,899 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- ============================================================================ -->
-  <!-- HEAD SECTION: Meta tags, Tailwind CSS, custom styles, and configuration     -->
-  <!-- ============================================================================ -->
   <meta charset="UTF-8" />
+  <title>XSEN – eXperience Sports & Entertainment Network</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Boomer Bot — Your AI-Powered Sooner Sports Companion</title>
-  <meta name="description" content="Boomer Bot connects OU fans to every Sooner sport — football, softball, basketball, gymnastics, and more. Get live scores, trivia, and updates all in one place." />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta
+    name="description"
+    content="XSEN – eXperience Sports & Entertainment Network. Live scores, AI-powered team channels, and interactive fan experiences for every Division I school in Texas and Oklahoma."
+  />
 
-  <!-- ===== CUSTOM CSS ANIMATIONS & TICKER STYLES ===== -->
+  <!-- Optional font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+
   <style>
-    /* ===== BUTTON PULSE ANIMATION ===== */
-    @keyframes pulse { 
-      0%, 100% { transform: scale(1); } 
-      50% { transform: scale(1.05); } 
-    }
-    .btn-pulse:hover { 
-      animation: pulse 0.5s infinite; 
+    /* ========== GLOBAL STYLES ========== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    /* ===== FADE IN UP ANIMATION ===== */
-    @keyframes fadeInUp { 
-      from { opacity: 0; transform: translateY(30px); } 
-      to { opacity: 1; transform: translateY(0); } 
-    }
-    .fade-in-section { 
-      opacity: 0; 
-      animation: fadeInUp 0.8s ease-out forwards; 
+    body {
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at top, #202634 0, #05070b 45%, #020308 100%);
+      color: #f5f5f5;
+      min-height: 100vh;
     }
 
-    /* ===== GRADIENT TEXT EFFECT ===== */
-    .gradient-text { 
-      background: linear-gradient(135deg, #841617, #FDF9E1);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent; 
+    a {
+      color: inherit;
+      text-decoration: none;
     }
 
-    /* ===== SMOOTH SCROLL BEHAVIOR ===== */
-    html {
-      scroll-behavior: smooth;
+    img {
+      max-width: 100%;
+      display: block;
     }
 
-    /* ===== NAVIGATION OFFSET FOR FIXED HEADER ===== */
-    [id] {
-      scroll-margin-top: 100px;
-    }
-
-    /* ===== OU TICKER STYLES ===== */
-    #ouTicker {
-      background: #030712; /* very dark slate */
-      color: #F9FAFB;
-      border-bottom: 1px solid rgba(248, 250, 252, 0.15);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    #tickerTrack {
-      display: inline-block;
+    /* ========== XSEN TICKER (DARK ESPN STYLE) ========== */
+    #xsenTicker {
+      width: 100%;
+      background: #05070b;
+      border-bottom: 2px solid #ff0033;
+      color: #ffffff;
+      font-family: "Inter", system-ui, sans-serif;
+      overflow: hidden;
       white-space: nowrap;
-      animation: ou-ticker-scroll 45s linear infinite;
+      font-size: 0.95rem;
+      padding: 6px 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 9999;
     }
 
-    .ticker-item {
+    .xsen-ticker-track {
+      display: inline-block;
+      padding-left: 100%;
+      animation: xsenTickerMove 24s linear infinite;
+    }
+
+    @keyframes xsenTickerMove {
+      0% {
+        transform: translateX(0%);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+
+    #xsenTickerText {
+      display: inline-block;
+      padding-right: 50px;
+    }
+
+    /* ========== LAYOUT WRAPPERS ========== */
+    .page-wrapper {
+      padding-top: 52px; /* make space for ticker */
+    }
+
+    header {
+      background: linear-gradient(to right, #05070b, #111827, #1f2937);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+      position: sticky;
+      top: 52px;
+      z-index: 9000;
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: radial-gradient(circle at 30% 10%, #ff4b6b 0, #8b5cf6 45%, #0ea5e9 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.45);
+    }
+
+    .brand-title {
+      font-weight: 800;
+      font-size: 1.2rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .brand-subtitle {
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.8rem;
+      color: #e5e7eb;
+    }
+
+    .pill {
+      border-radius: 999px;
+      padding: 4px 10px;
+      background: rgba(31, 41, 55, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.5);
       display: inline-flex;
       align-items: center;
-      padding: 0 2rem;
-      font-size: 0.8rem;
+      gap: 6px;
     }
 
-    .ticker-item-strong {
-      font-weight: 700;
-      letter-spacing: 0.03em;
+    .pill span {
+      opacity: 0.85;
     }
 
-    .ticker-label {
-      opacity: 0.7;
+    /* ========== MAIN CONTENT ========== */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 18px 16px 40px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.5fr);
+      gap: 22px;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .hero-title {
+      font-size: 2rem;
+      line-height: 1.1;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    @media (min-width: 768px) {
+      .hero-title {
+        font-size: 2.5rem;
+      }
+    }
+
+    .hero-highlight {
+      background: linear-gradient(to right, #f97316, #facc15);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 0.95rem;
+      color: #e5e7eb;
+      max-width: 520px;
+      margin-bottom: 16px;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .badge {
       font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      margin-right: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
     }
 
-    .ticker-divider {
-      opacity: 0.3;
-      margin: 0 0.75rem;
+    .hero-cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 8px;
     }
 
-    /* LIVE badge in L4 style */
-    .ticker-live-pill {
-      background: linear-gradient(to right, #dc2626, #b91c1c);
-      color: #fef2f2;
-      padding: 0.15rem 0.6rem;
-      border-radius: 9999px;
-      font-size: 0.7rem;
-      font-weight: 800;
-      text-transform: uppercase;
+    .btn-primary {
+      padding: 9px 16px;
+      border-radius: 999px;
+      background: linear-gradient(to right, #ef4444, #f97316);
+      border: none;
+      color: white;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 0.25rem;
-      margin-right: 0.6rem;
+      gap: 6px;
+      box-shadow: 0 12px 25px rgba(248, 113, 113, 0.35);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
     }
 
-    .ticker-live-dot {
-      width: 0.4rem;
-      height: 0.4rem;
-      border-radius: 9999px;
-      background: #fecaca;
-      box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.4);
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 35px rgba(248, 113, 113, 0.4);
+      opacity: 0.96;
     }
 
-    @keyframes ou-ticker-scroll {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
+    .btn-secondary {
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.9);
+      font-weight: 500;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      color: #e5e7eb;
+      transition: background 0.12s ease, border-color 0.12s ease;
     }
 
-    /* On very small screens, slow down a bit */
-    @media (max-width: 640px) {
-      #tickerTrack {
-        animation-duration: 60s;
-      }
-      .ticker-item {
-        padding: 0 1rem;
-        font-size: 0.75rem;
-      }
+    .btn-secondary:hover {
+      background: rgba(30, 64, 175, 0.8);
+      border-color: rgba(191, 219, 254, 0.9);
+    }
+
+    .hero-note {
+      font-size: 0.75rem;
+      color: #9ca3af;
+      margin-top: 8px;
+    }
+
+    .hero-right-card {
+      border-radius: 18px;
+      background: radial-gradient(circle at top left, #1f2937 0, #020617 60%);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      padding: 14px 16px 16px;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.9);
+    }
+
+    .hero-right-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .hero-right-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .hero-right-chip {
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(22, 163, 74, 0.14);
+      border: 1px solid rgba(22, 163, 74, 0.6);
+      color: #bbf7d0;
+    }
+
+    .hero-right-body {
+      font-size: 0.8rem;
+      color: #d1d5db;
+      margin-bottom: 8px;
+    }
+
+    .hero-metrics-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .metric-pill {
+      border-radius: 999px;
+      padding: 4px 9px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      font-size: 0.7rem;
+      color: #e5e7eb;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .hero-right-footer {
+      font-size: 0.7rem;
+      color: #9ca3af;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-top: 1px dashed rgba(75, 85, 99, 0.85);
+      padding-top: 6px;
+      margin-top: 6px;
+    }
+
+    /* ========== CHANNEL GRID ========== */
+    .section-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 12px;
+      margin-top: 6px;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .section-subtitle {
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+
+    .channel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .channel-card {
+      border-radius: 16px;
+      background: radial-gradient(circle at top, #111827 0, #020617 55%);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      padding: 12px 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 18px 32px rgba(15, 23, 42, 0.9);
+    }
+
+    .channel-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .channel-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #f9fafb;
+    }
+
+    /* example color blocks */
+    .badge-ou {
+      background: #841617;
+    }
+
+    .badge-osu {
+      background: #ff7300;
+    }
+
+    .badge-generic {
+      background: linear-gradient(to bottom right, #0ea5e9, #6366f1);
+    }
+
+    .channel-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .channel-meta {
+      font-size: 0.7rem;
+      color: #9ca3af;
+    }
+
+    .channel-body {
+      font-size: 0.8rem;
+      color: #e5e7eb;
+    }
+
+    .channel-footer {
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+
+    .channel-link {
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 5px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(248, 250, 252, 0.7);
+      background: rgba(15, 23, 42, 0.8);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+    }
+
+    .channel-link:hover {
+      background: #f97316;
+      border-color: #fed7aa;
+      color: #111827;
+    }
+
+    /* ========== FOOTER ========== */
+    footer {
+      border-top: 1px solid rgba(55, 65, 81, 0.9);
+      padding: 14px 16px 26px;
+      font-size: 0.75rem;
+      color: #9ca3af;
+      text-align: center;
+      background: #020617;
+    }
+
+    footer a {
+      color: #e5e7eb;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
+    footer a:hover {
+      color: #f97316;
     }
   </style>
 </head>
 
-<body class="bg-[#FDF9E1] text-gray-900 font-sans">
-
-  <!-- ============================================================================ -->
-  <!-- OU SCORE TICKER (REPLACES YELLOW BANNER)                                    -->
-  <!-- ============================================================================ -->
-  <div id="ouTicker" class="w-full overflow-hidden">
-    <div class="max-w-7xl mx-auto flex items-stretch">
-      <!-- Left label block -->
-      <div class="flex items-center bg-gradient-to-r from-[#841617] to-red-700 px-3 md:px-4 text-xs md:text-sm font-semibold tracking-wide">
-        <span class="hidden sm:inline">Sooner Scoreboard</span>
-        <span class="sm:hidden">OU Scores</span>
-      </div>
-
-      <!-- Scrolling track -->
-      <div class="flex-1 overflow-hidden">
-        <div class="relative">
-          <div id="tickerTrack" class="py-1.5 md:py-2">
-            <span class="ticker-item">
-              <span class="ticker-label">Loading</span>
-              <span>Fetching live & recent Sooner scores…</span>
-            </span>
-          </div>
-        </div>
-      </div>
+<body>
+  <!-- ========== XSEN MULTI-TEAM TICKER ========== -->
+  <div id="xsenTicker">
+    <div class="xsen-ticker-track">
+      <span id="xsenTickerText">Loading XSEN Texas–Oklahoma D1 scores…</span>
     </div>
   </div>
 
-  <!-- ============================================================================ -->
-  <!-- NAVIGATION: Fixed header with logo, brand name, and navigation links        -->
-  <!-- ============================================================================ -->
-  <nav class="fixed top-8 md:top-10 w-full bg-[#841617] text-[#FDF9E1] z-50 shadow-lg" data-section="navigation">
-    <div class="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4 flex justify-between items-center">
-      <!-- Logo and Brand Name -->
-      <div class="flex items-center space-x-2 md:space-x-3">
-        <img src="https://raw.githubusercontent.com/myvfc/botosphere-images/main/BB%20all%20sports.png"
-             alt="Boomer Bot Logo" class="w-8 h-8 md:w-10 md:h-10 rounded-full">
+  <div class="page-wrapper">
+    <!-- ========== HEADER / NAV ========== -->
+    <header>
+      <div class="header-inner">
+        <div class="brand-left">
+          <div class="brand-logo">XS</div>
+          <div>
+            <div class="brand-title">XSEN</div>
+            <div class="brand-subtitle">eXperience Sports &amp; Entertainment Network</div>
+          </div>
+        </div>
+        <div class="header-right">
+          <div class="pill">
+            <span>TX–OK D1 Network</span>
+          </div>
+          <div class="pill">
+            <span>Live Scores · AI Channels · Video</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <main>
+      <!-- HERO -->
+      <section class="hero">
         <div>
-          <span class="text-lg md:text-2xl font-bold">Boomer Bot</span><br>
-          <span class="text-xs md:text-sm italic hidden sm:inline">Powered by The Botosphere, Our AI Hosting Companion</span>
-        </div>
-      </div>
+          <h1 class="hero-title">
+            Your&nbsp;<span class="hero-highlight">Texas–Oklahoma</span><br />
+            college sports control room.
+          </h1>
+          <p class="hero-subtitle">
+            XSEN unifies every Division I program in Texas and Oklahoma into one experience:
+            live scores, AI-powered team channels, and fan-first highlights — built for the
+            next generation of sports networks.
+          </p>
 
-      <!-- Mobile Menu Toggle Button -->
-      <button id="mobileMenuToggle" class="md:hidden p-2 rounded-lg hover:bg-red-700 transition" aria-label="Toggle mobile menu">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
-      </button>
-
-      <!-- Desktop Navigation Links -->
-      <div class="hidden md:flex space-x-6 items-center">
-        <a href="#features" class="hover:underline transition">Features</a>
-        <a href="#how-it-works" class="hover:underline transition">How It Works</a>
-        <a href="#pricing" class="hover:underline transition">Pricing</a>
-        <a href="#pricing" class="bg-[#FDF9E1] text-[#841617] px-4 py-2 rounded-lg font-bold hover:bg-white transition">Get Started</a>
-      </div>
-    </div>
-
-    <!-- Mobile Navigation Menu (Hidden by default) -->
-    <div id="mobileMenu" class="hidden md:hidden bg-[#841617] border-t border-red-700 px-4 py-4">
-      <div class="flex flex-col space-y-3">
-        <a href="#features" class="hover:bg-red-700 px-3 py-2 rounded-lg transition">Features</a>
-        <a href="#how-it-works" class="hover:bg-red-700 px-3 py-2 rounded-lg transition">How It Works</a>
-        <a href="#pricing" class="hover:bg-red-700 px-3 py-2 rounded-lg transition">Pricing</a>
-        <a href="#pricing" class="bg-[#FDF9E1] text-[#841617] px-4 py-2 rounded-lg font-bold text-center hover:bg-white transition">Get Started</a>
-      </div>
-    </div>
-  </nav>
-
-  <!-- ============================================================================ -->
-  <!-- HERO SECTION                                                                -->
-  <!-- ============================================================================ -->
-  <section class="bg-gradient-to-r from-[#841617] to-red-800 text-[#FDF9E1] pt-36 md:pt-40 pb-16 md:pb-20 px-4 md:px-6 text-center fade-in-section" data-section="hero">
-    <div class="max-w-6xl mx-auto">
-
-      <!-- Main Headline -->
-      <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 md:mb-6 leading-tight px-2">
-        All OU Sports. One Bot.
-      </h1>
-
-      <!-- Subheadline -->
-      <p class="text-base sm:text-lg md:text-xl italic mb-6 max-w-3xl mx-auto px-2">
-        Boomer Bot is your AI-powered sports companion — connecting Sooner fans to football, softball,
-        basketball, gymnastics, and more with scores, trivia, and highlights 24/7.
-      </p>
-
-      <!-- Featured Video Embed -->
-      <div class="max-w-xl md:max-w-2xl mx-auto mb-6 px-2">
-        <div class="relative w-full" style="padding-bottom: 56.25%;">
-          <iframe 
-            allow="fullscreen" 
-            allowfullscreen 
-            src="https://streamable.com/e/jv1qe2?"
-            class="absolute inset-0 w-full h-full rounded-xl shadow-lg"
-            style="border: none;">
-          </iframe>
-        </div>
-      </div>
-
-      <!-- Supporting Quote -->
-      <p class="italic text-sm sm:text-base md:text-lg mb-6 md:mb-8 max-w-2xl mx-auto px-2">
-        "From the gridiron to the gym, Boomer Bot celebrates all Sooner athletics — football, softball,
-        basketball, gymnastics, and beyond."
-      </p>
-
-      <!-- Subscription CTA Buttons -->
-      <div class="flex flex-col sm:flex-row gap-4 justify-center mt-6 md:mt-8 px-2">
-        <!-- Basic Plan Button -->
-        <a href="https://app.thebotosphere.com/agents/37094353/boomerbotbasic"
-           class="inline-block bg-[#841617] text-[#FDF9E1] border-2 border-[#FDF9E1] font-bold px-6 md:px-10 py-3 md:py-4 rounded-xl shadow-md hover:bg-red-900 transition text-base md:text-xl text-center w-full sm:w-72">
-           🔥 Join Basic — $9.99/Month
-        </a>
-
-        <!-- Premium Plan Button -->
-        <a href="https://app.thebotosphere.com/agents/57704198/boomerbotpremium"
-           class="inline-block bg-[#FDF9E1] text-[#841617] border-2 border-[#FDF9E1] font-bold px-6 md:px-10 py-3 md:py-4 rounded-xl shadow-md hover:bg-white transition text-base md:text-xl text-center w-full sm:w-72">
-           🚀 Premium — $14.99/Month
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================================ -->
-  <!-- BOT EMBED SECTION                                                           -->
-  <!-- ============================================================================ -->
-  <section class="py-8 md:py-12 px-4 md:px-6 bg-[#FDF9E1]" data-section="bot-embed">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-2xl md:text-3xl font-bold text-center mb-6 text-[#841617]">Try Boomer Bot Now</h2>
-      <div class="w-full max-w-3xl mx-auto rounded-xl overflow-hidden shadow-lg border-4 border-[#841617]">
-        <iframe 
-          src="https://app.thebotosphere.com/agents/8499193/embed"
-          data-auto-resize="true"
-          frameborder="0"
-          style="width: 100%; height: 1px; border: none; display: block;">
-        </iframe>
-      </div>
-      <p class="text-center text-sm text-gray-600 mt-4">
-        Chat with Boomer Bot above to see what it can do!
-      </p>
-    </div>
-    <!-- Auto-resize script for embedded iframe -->
-    <script src="https://app.thebotosphere.com/iframe-auto-resize.js"></script>
-  </section>
-
-  <!-- ============================================================================ -->
-  <!-- FEATURES SECTION                                                            -->
-  <!-- ============================================================================ -->
-  <section id="features" class="bg-[#841617] text-[#FDF9E1] py-12 md:py-16 px-4 md:px-6 text-center fade-in-section" data-section="features">
-    <div class="max-w-6xl mx-auto">
-      <h2 class="text-2xl md:text-3xl font-bold mb-6 md:mb-8">Why Fans Love Boomer Bot</h2>
-
-      <div class="grid sm:grid-cols-2 gap-4 md:gap-8 text-left">
-        <div class="bg-red-900 bg-opacity-50 p-4 md:p-6 rounded-lg">
-          <h3 class="font-bold text-lg md:text-xl mb-2">🏈 Football Focused, Multi-Sport Ready</h3>
-          <p class="text-sm md:text-base">Real-time football insights today — expanding to all OU sports this season.</p>
-        </div>
-
-        <div class="bg-red-900 bg-opacity-50 p-4 md:p-6 rounded-lg">
-          <h3 class="font-bold text-lg md:text-xl mb-2">🥎 Softball & Hoops Coverage</h3>
-          <p class="text-sm md:text-base">Follow OU's powerhouse softball and basketball programs as they dominate.</p>
-        </div>
-
-        <div class="bg-red-900 bg-opacity-50 p-4 md:p-6 rounded-lg">
-          <h3 class="font-bold text-lg md:text-xl mb-2">🤸‍♂️ National Championship Gymnastics</h3>
-          <p class="text-sm md:text-base">Celebrate OU's legendary men's and women's gymnastics teams and champions.</p>
-        </div>
-
-        <div class="bg-red-900 bg-opacity-50 p-4 md:p-6 rounded-lg">
-          <h3 class="font-bold text-lg md:text-xl mb-2">🎧 Voice or Text Chat</h3>
-          <p class="text-sm md:text-base">Talk or type — Boomer Bot answers instantly with personality and spirit.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================================ -->
-  <!-- HOW IT WORKS SECTION                                                        -->
-  <!-- ============================================================================ -->
-  <section id="how-it-works" class="py-12 md:py-16 px-4 md:px-6 bg-gray-50 fade-in-section" data-section="how-it-works">
-    <div class="max-w-5xl mx-auto">
-      <h2 class="text-2xl md:text-3xl font-bold text-center mb-8 md:mb-12 text-[#841617]">How It Works</h2>
-
-      <div class="grid sm:grid-cols-3 gap-6 md:gap-8 text-center">
-        <div class="bg-white p-4 md:p-6 rounded-xl shadow-md">
-          <div class="w-12 h-12 md:w-16 md:h-16 bg-[#841617] text-[#FDF9E1] rounded-full flex items-center justify-center mx-auto mb-4 text-xl md:text-2xl font-bold">1</div>
-          <h3 class="font-bold text-lg md:text-xl mb-2">Sign Up</h3>
-          <p class="text-sm md:text-base text-gray-600">Subscribe in seconds and start chatting instantly.</p>
-        </div>
-
-        <div class="bg-white p-4 md:p-6 rounded-xl shadow-md">
-          <div class="w-12 h-12 md:w-16 md:h-16 bg-[#841617] text-[#FDF9E1] rounded-full flex items-center justify-center mx-auto mb-4 text-xl md:text-2xl font-bold">2</div>
-          <h3 class="font-bold text-lg md:text-xl mb-2">Choose Your Sport</h3>
-          <p class="text-sm md:text-base text-gray-600">Ask about football now — basketball, softball, and more are next!</p>
-        </div>
-
-        <div class="bg-white p-4 md:p-6 rounded-xl shadow-md">
-          <div class="w-12 h-12 md:w-16 md:h-16 bg-[#841617] text-[#FDF9E1] rounded-full flex items-center justify-center mx-auto mb-4 text-xl md:text-2xl font-bold">3</div>
-          <h3 class="font-bold text-lg md:text-xl mb-2">Chat Anytime</h3>
-          <p class="text-sm md:text-base text-gray-600">Get scores, schedules, trivia, and Sooner stories on demand.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================================ -->
-  <!-- TESTIMONIALS SECTION                                                        -->
-  <!-- ============================================================================ -->
-  <section class="py-12 md:py-16 px-4 md:px-6 bg-[#FDF9E1]" data-section="testimonials">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-2xl md:text-3xl font-bold text-center mb-8 text-[#841617]">What Fans Are Saying</h2>
-      
-      <div class="grid md:grid-cols-2 gap-6">
-        <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-[#841617]">
-          <p class="text-gray-700 italic mb-4">"Boomer Bot keeps me updated on every Sooner game. It's like having a sports buddy who never sleeps!"</p>
-          <p class="font-bold text-[#841617]">— Jake M., Norman, OK</p>
-        </div>
-        
-        <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-[#841617]">
-          <p class="text-gray-700 italic mb-4">"The trivia feature is addictive. I've learned so much about OU history I never knew!"</p>
-          <p class="font-bold text-[#841617]">— Sarah T., Tulsa, OK</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================================ -->
-  <!-- PRICING SECTION                                                             -->
-  <!-- ============================================================================ -->
-  <section id="pricing" class="py-16 md:py-20 px-4 md:px-6 bg-gray-50" data-section="pricing">
-    <div class="max-w-6xl mx-auto text-center">
-
-      <h2 class="text-3xl md:text-4xl font-extrabold mb-4 text-[#841617]">Choose Your Boomer Bot Plan</h2>
-      <p class="text-base md:text-lg mb-8 md:mb-12 text-gray-700 max-w-2xl mx-auto">
-        All plans include 24/7 access, trivia, scores, and Sooner spirit year-round.
-      </p>
-
-      <div class="grid md:grid-cols-3 gap-6 md:gap-8">
-
-        <div class="bg-white border-4 border-[#841617] rounded-2xl shadow-lg p-6 md:p-8 flex flex-col justify-between">
-          <div>
-            <h3 class="text-xl md:text-2xl font-bold text-[#841617] mb-2">🔥 Basic</h3>
-            <p class="text-gray-600 mb-4 text-sm md:text-base">Perfect for everyday Sooner fans.</p>
-
-            <div class="text-4xl md:text-5xl font-extrabold text-[#841617] mb-2">$9</div>
-            <div class="text-gray-500 mb-6">per month</div>
-
-            <ul class="text-left space-y-2 mb-6 text-gray-700 text-sm md:text-base">
-              <li>✔️ Text & voice chat access</li>
-              <li>✔️ Real-time football updates</li>
-              <li>✔️ Daily OU trivia</li>
-              <li>✔️ Cancel anytime</li>
-            </ul>
+          <div class="hero-badges">
+            <span class="badge">26 D1 Programs</span>
+            <span class="badge">Multi-sport: 🏈🏀🥎⚾</span>
+            <span class="badge">AI Fan Companions</span>
           </div>
 
-          <a href="https://app.thebotosphere.com/agents/37094353/boomerbotbasic"
-             class="inline-block bg-white text-[#841617] border-2 border-[#841617] font-bold px-6 md:px-10 py-3 md:py-4 rounded-xl shadow-md hover:bg-[#FDF9E1] transition text-lg md:text-xl w-full">
-            Join Basic
-          </a>
-        </div>
+          <div class="hero-cta-row">
+            <a href="#channels">
+              <button class="btn-primary">
+                Explore Channels
+                <span>↗</span>
+              </button>
+            </a>
 
-        <div class="bg-[#841617] text-[#FDF9E1] border-4 border-[#841617] rounded-2xl shadow-xl p-6 md:p-8 flex flex-col justify-between md:scale-105 relative">
-          <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-[#841617] px-4 py-1 rounded-full text-sm font-bold">
-            Most Popular
-          </div>
-          <div>
-            <h3 class="text-xl md:text-2xl font-bold mb-2 mt-2">🚀 Premium</h3>
-            <p class="opacity-90 mb-4 text-sm md:text-base">For superfans who want the full Sooner experience.</p>
-
-            <div class="text-4xl md:text-5xl font-extrabold mb-2">$14</div>
-            <div class="opacity-90 mb-6">per month</div>
-
-            <ul class="text-left space-y-2 mb-6 opacity-90 text-sm md:text-base">
-              <li>✔️ Everything in Basic</li>
-              <li>✔️ Multi-sport coverage (softball, basketball +)</li>
-              <li>✔️ Exclusive OU history & stats</li>
-              <li>✔️ Premium fan trivia drops</li>
-            </ul>
+            <a href="#about">
+              <button class="btn-secondary">
+                What is XSEN?
+              </button>
+            </a>
           </div>
 
-          <a href="https://app.thebotosphere.com/agents/57704198/boomerbotpremium"
-             class="inline-block bg-white text-[#841617] font-bold px-6 md:px-10 py-3 md:py-4 rounded-xl shadow-md hover:opacity-90 transition text-lg md:text-xl w-full">
-            Join Premium
-          </a>
+          <p class="hero-note">
+            Live ticker above is powered directly from ESPN scoreboards via XSEN’s data layer.
+          </p>
         </div>
 
-        <div class="bg-white border-4 border-gray-300 rounded-2xl shadow-md p-6 md:p-8 flex flex-col justify-between opacity-90">
-          <div>
-            <h3 class="text-xl md:text-2xl font-bold text-[#841617] mb-2">⭐ Deluxe</h3>
-            <p class="text-gray-700 mb-4 text-sm md:text-base">
-              Coming Soon — featuring Sooner celebrity voices & special fan interactions!
-            </p>
-
-            <div class="text-3xl md:text-4xl font-extrabold text-gray-400 mb-2">Coming Soon</div>
-            <div class="text-gray-500 mb-6">Available soon — stay tuned!</div>
-
-            <ul class="text-left space-y-2 mb-6 text-gray-600 text-sm md:text-base">
-              <li>🎤 OU Legends & Celebrity Voices</li>
-              <li>💬 Personalized Fan Experiences</li>
-              <li>🏆 Behind-the-Scenes Extras</li>
-              <li>🚧 Early Access Waitlist Coming</li>
-            </ul>
+        <!-- Hero right “control panel” card -->
+        <div class="hero-right-card">
+          <div class="hero-right-header">
+            <div class="hero-right-title">XSEN Pulse • TX–OK D1</div>
+            <div class="hero-right-chip">Live Data Feed</div>
           </div>
-
-          <button class="inline-block bg-gray-300 text-gray-600 font-bold px-6 md:px-10 py-3 md:py-4 rounded-xl cursor-not-allowed text-lg md:text-xl w-full" disabled>
-            Coming Soon
-          </button>
+          <p class="hero-right-body">
+            Tracking football, basketball, softball, and baseball across every Division I
+            school in Texas &amp; Oklahoma. When a team goes live, XSEN reacts — the ticker,
+            channels, and AI bots all light up.
+          </p>
+          <div class="hero-metrics-row">
+            <div class="metric-pill">📡 26 Programs</div>
+            <div class="metric-pill">🕒 Last 5 days &amp; next 10</div>
+            <div class="metric-pill">📊 Live · Final · Upcoming</div>
+          </div>
+          <div class="hero-right-footer">
+            <span>Powered by</span>
+            <strong>ESPN Scoreboard APIs + XSEN Orchestration Layer</strong>
+          </div>
         </div>
+      </section>
 
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================================ -->
-  <!-- FAQ SECTION                                                                  -->
-  <!-- ============================================================================ -->
-  <section class="py-12 md:py-16 px-4 md:px-6 bg-[#FDF9E1]" data-section="faq">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-2xl md:text-3xl font-bold text-center mb-8 text-[#841617]">Frequently Asked Questions</h2>
-      
-      <div class="space-y-4">
-        <div class="bg-white rounded-xl shadow-md overflow-hidden">
-          <button class="faq-toggle w-full text-left p-4 md:p-6 font-bold text-[#841617] flex justify-between items-center hover:bg-gray-50 transition">
-            <span>What sports does Boomer Bot cover?</span>
-            <svg class="w-5 h-5 transform transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
-          </button>
-          <div class="faq-content hidden px-4 md:px-6 pb-4 md:pb-6 text-gray-700">
-            <p>Currently, Boomer Bot focuses on OU Football with real-time updates, scores, and trivia. We're actively expanding to include softball, basketball, gymnastics, and all other Sooner sports throughout 2025!</p>
+      <!-- CHANNEL GRID -->
+      <section id="channels">
+        <div class="section-title-row">
+          <div class="section-title">Featured AI Channels</div>
+          <div class="section-subtitle">
+            Each channel is backed by a team-specific AI companion — XSEN is the network that ties them together.
           </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-md overflow-hidden">
-          <button class="faq-toggle w-full text-left p-4 md:p-6 font-bold text-[#841617] flex justify-between items-center hover:bg-gray-50 transition">
-            <span>Can I cancel my subscription anytime?</span>
-            <svg class="w-5 h-5 transform transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
-          </button>
-          <div class="faq-content hidden px-4 md:px-6 pb-4 md:pb-6 text-gray-700">
-            <p>Absolutely! All Boomer Bot plans come with no long-term commitment. You can cancel anytime, and we offer a 30-day money-back guarantee if you're not completely satisfied.</p>
+        <div class="channel-grid">
+          <!-- Boomer Bot card -->
+          <article class="channel-card">
+            <div class="channel-header">
+              <div class="channel-badge badge-ou">OU</div>
+              <div>
+                <div class="channel-name">Boomer Bot</div>
+                <div class="channel-meta">Oklahoma Sooners · All Sports · AI Companion</div>
+              </div>
+            </div>
+            <div class="channel-body">
+              OU-centric AI experience with scores, schedules, history, and highlight curation
+              for football, hoops, softball, gymnastics, and more — all flowing through XSEN.
+            </div>
+            <div class="channel-footer">
+              <span>Norman • Big 12 / SEC</span>
+              <a class="channel-link" href="https://boomerbot.fun" target="_blank" rel="noopener noreferrer">
+                Open Channel
+                <span>↗</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- Pokes Bot card -->
+          <article class="channel-card">
+            <div class="channel-header">
+              <div class="channel-badge badge-osu">OS</div>
+              <div>
+                <div class="channel-name">Pokes Bot</div>
+                <div class="channel-meta">Oklahoma State Cowboys · All Sports</div>
+              </div>
+            </div>
+            <div class="channel-body">
+              OSU-focused AI companion: Cowboy and Cowgirl sports coverage, live data from XSEN’s ticker layer,
+              and fan-friendly insights across every season.
+            </div>
+            <div class="channel-footer">
+              <span>Stillwater • Big 12</span>
+              <a class="channel-link" href="https://app.thebotosphere.com/agents/24469767/pokesbot" target="_blank" rel="noopener noreferrer">
+                Open Channel
+                <span>↗</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- Generic future channels -->
+          <article class="channel-card">
+            <div class="channel-header">
+              <div class="channel-badge badge-generic">TX</div>
+              <div>
+                <div class="channel-name">Longhorns / Aggies Cluster</div>
+                <div class="channel-meta">Texas · Texas A&amp;M · Houston · TCU · Baylor · Tech</div>
+              </div>
+            </div>
+            <div class="channel-body">
+              The XSEN roadmap includes dedicated AI channels for Texas, Texas A&amp;M, Houston,
+              Baylor, TCU, Texas Tech, and more — all reading from the same live ticker backbone.
+            </div>
+            <div class="channel-footer">
+              <span>Statewide • SEC / Big 12 / AAC</span>
+              <span class="channel-link" style="pointer-events:none; opacity:0.55;">
+                Coming Soon
+              </span>
+            </div>
+          </article>
+
+          <article class="channel-card">
+            <div class="channel-header">
+              <div class="channel-badge badge-generic">RT</div>
+              <div>
+                <div class="channel-name">Regional TX–OK Mix</div>
+                <div class="channel-meta">SMU · Rice · UNT · UTSA · SFA · Sam Houston · more</div>
+              </div>
+            </div>
+            <div class="channel-body">
+              A regional “Red River” view of every mid-major and rising program in Texas and Oklahoma.
+              Perfect for scoreboard tracking, schedule scouting, and highlight discovery.
+            </div>
+            <div class="channel-footer">
+              <span>TX–OK • Multi-Conference</span>
+              <span class="channel-link" style="pointer-events:none; opacity:0.55;">
+                In Development
+              </span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ABOUT SECTION -->
+      <section id="about">
+        <div class="section-title-row">
+          <div class="section-title">What XSEN Actually Does</div>
+          <div class="section-subtitle">
+            Under the hood, it’s a network of tools. On the surface, it feels like a TV network that can talk back.
           </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-md overflow-hidden">
-          <button class="faq-toggle w-full text-left p-4 md:p-6 font-bold text-[#841617] flex justify-between items-center hover:bg-gray-50 transition">
-            <span>Does Boomer Bot work on mobile devices?</span>
-            <svg class="w-5 h-5 transform transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
-          </button>
-          <div class="faq-content hidden px-4 md:px-6 pb-4 md:pb-6 text-gray-700">
-            <p>Yes! Boomer Bot works seamlessly on all devices — desktop, tablet, and mobile. Chat via text or use voice commands on any modern browser.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================================ -->
-  <!-- FINAL CTA SECTION                                                            -->
-  <!-- ============================================================================ -->
-  <section class="py-16 md:py-20 px-4 md:px-6 text-center bg-gradient-to-r from-[#841617] to-red-800 text-[#FDF9E1]" data-section="final-cta">
-    <div class="max-w-4xl mx-auto">
-
-      <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 md:mb-6 leading-tight">
-        Be More Than a Fan.<br class="hidden sm:block"> Be a Sooner for All Seasons.
-      </h2>
-
-      <p class="text-base md:text-xl mb-6 md:mb-8 max-w-2xl mx-auto">
-        Football in the fall, softball in the spring, and basketball in between —
-        Boomer Bot keeps you connected year-round.
-      </p>
-
-      <a href="#pricing"
-         class="inline-block bg-[#FDF9E1] text-[#841617] font-bold px-8 md:px-10 py-3 md:py-4 rounded-xl shadow-lg hover:bg-white transition btn-pulse text-lg md:text-xl">
-         🔥 Join Boomer Bot Today
-      </a>
-
-      <p class="mt-6 text-sm opacity-90">
-        30-day money-back guarantee • Cancel anytime • No hidden fees
-      </p>
-
-    </div>
-  </section>
-
-  <!-- ============================================================================ -->
-  <!-- FOOTER                                                                      -->
-  <!-- ============================================================================ -->
-  <footer class="bg-[#841617] text-[#FDF9E1] py-10" data-section="footer">
-    <div class="max-w-6xl mx-auto px-4 md:px-6 grid sm:grid-cols-2 md:grid-cols-4 gap-8">
-      <div>
-        <img src="https://raw.githubusercontent.com/myvfc/botosphere-images/main/BB%20all%20sports.png" 
-             alt="Boomer Bot Logo" class="w-12 h-12 mb-4 rounded-full">
-        <p class="text-sm mb-3">
-          Boomer Bot — Your Sooner Sports Companion for all seasons.
+        <p style="font-size:0.85rem; color:#d1d5db; line-height:1.6; max-width:780px;">
+          XSEN treats every Division I Texas and Oklahoma program as a first-class citizen in a shared
+          data layer. The ticker you see above is not just cosmetic — it feeds the AI channels and
+          bots, drives video and highlight context, and gives fans a “sports control room” feel
+          without leaving the browser.
         </p>
-        <p class="text-sm"><strong>Email:</strong> 
-          <a href="mailto:info@boomerbot.fun" class="underline hover:text-white transition">info@boomerbot.fun</a>
-        </p>
-        <p class="text-sm"><strong>Phone:</strong> 
-          <a href="tel:+14051234567" class="underline hover:text-white transition">(405) 123-4567</a>
-        </p>
-      </div>
+      </section>
+    </main>
 
+    <!-- ========== FOOTER ========== -->
+    <footer>
       <div>
-        <h3 class="font-bold mb-3">Quick Links</h3>
-        <ul class="space-y-2 text-sm">
-          <li><a href="#features" class="hover:underline transition">Features</a></li>
-          <li><a href="#how-it-works" class="hover:underline transition">How It Works</a></li>
-          <li><a href="#pricing" class="hover:underline transition">Pricing</a></li>
-          <li><a href="#pricing" class="hover:underline transition">Sign Up</a></li>
-        </ul>
+        © <span id="xsenYear"></span> XSEN – eXperience Sports &amp; Entertainment Network.
+        All rights reserved.
       </div>
-
-      <div>
-        <h3 class="font-bold mb-3">Connect</h3>
-        <ul class="space-y-2 text-sm">
-          <li><a href="#" class="hover:underline transition">Facebook</a></li>
-          <li><a href="#" class="hover:underline transition">Twitter / X</a></li>
-          <li><a href="#" class="hover:underline transition">Instagram</a></li>
-          <li><a href="#" class="hover:underline transition">YouTube</a></li>
-        </ul>
+      <div style="margin-top:4px;">
+        Built on custom data orchestration and AI companions. Hosted by
+        <a href="https://thebotosphere.com" target="_blank" rel="noopener noreferrer">The Botosphere</a>.
       </div>
+    </footer>
+  </div>
 
-      <div>
-        <h3 class="font-bold mb-3">Legal</h3>
-        <ul class="space-y-2 text-sm">
-          <li><a href="#" class="hover:underline transition">Privacy Policy</a></li>
-          <li><a href="#" class="hover:underline transition">Terms of Service</a></li>
-          <li><a href="#" class="hover:underline transition">Disclaimer</a></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="border-t border-[#FDF9E1]/40 mt-8 pt-6 text-center text-sm px-4">
-      <div class="flex flex-col items-center justify-center gap-2">
-        <p>© 2025 Boomer Bot. All rights reserved. Built by fans, for fans.</p>
-        <p class="text-xs opacity-90 max-w-2xl mx-auto">
-          Boomer Bot is not affiliated with or endorsed by the University of Oklahoma
-          or its athletic department. All trademarks belong to their respective owners.
-        </p>
-        <div class="flex items-center justify-center gap-2 mt-3">
-          <a href="https://thebotosphere.com" target="_blank" rel="noopener noreferrer"
-             class="flex items-center gap-2 hover:opacity-90 transition">
-            <img src="https://raw.githubusercontent.com/myvfc/botosphere-images/main/boto%20logo.png" 
-                 alt="The Botosphere Logo" class="h-6">
-            <span class="text-sm font-semibold">Powered by <span class="underline">The Botosphere</span></span>
-          </a>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <!-- ============================================================================ -->
-  <!-- JAVASCRIPT: Menu, FAQ, Animations                                           -->
-  <!-- ============================================================================ -->
+  <!-- ========== JS: XSEN TICKER + YEAR ========== -->
   <script>
-    // ===== MOBILE MENU TOGGLE =====
-    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-    const mobileMenu = document.getElementById('mobileMenu');
+    // Footer year
+    document.getElementById("xsenYear").textContent = new Date().getFullYear();
 
-    mobileMenuToggle.addEventListener('click', function() {
-      mobileMenu.classList.toggle('hidden');
-    });
+    // ==== XSEN Multi-Team Ticker (TX + OK D1, Option A) ====
 
-    const mobileMenuLinks = mobileMenu.querySelectorAll('a');
-    mobileMenuLinks.forEach(function(link) {
-      link.addEventListener('click', function() {
-        mobileMenu.classList.add('hidden');
-      });
-    });
+    const ENDPOINTS = {
+      football:  "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard",
+      mbb:       "https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard",
+      wbb:       "https://site.api.espn.com/apis/site/v2/sports/basketball/womens-college-basketball/scoreboard",
+      softball:  "https://site.api.espn.com/apis/site/v2/sports/softball/college-softball/scoreboard",
+      baseball:  "https://site.api.espn.com/apis/site/v2/sports/baseball/college-baseball/scoreboard"
+    };
 
-    // ===== FAQ ACCORDION =====
-    const faqToggles = document.querySelectorAll('.faq-toggle');
-    faqToggles.forEach(function(toggle) {
-      toggle.addEventListener('click', function() {
-        const content = this.nextElementSibling;
-        const icon = this.querySelector('.faq-icon');
-        content.classList.toggle('hidden');
-        icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
-      });
-    });
+    // Keywords to detect XSEN teams (all D1 TX + OK)
+    const XSEN_TEAM_KEYWORDS = [
+      // Oklahoma
+      "Oklahoma", "Oklahoma St", "Oklahoma State", "Sooners", "Cowboys",
+      "Tulsa", "Golden Hurricane",
+      "Oral Roberts", "ORU",
 
-    // ===== SCROLL ANIMATION OBSERVER =====
-    const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
-    const observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          entry.target.style.animationPlayState = 'running';
-        }
-      });
-    }, observerOptions);
+      // Texas power / high-major
+      "Texas Longhorns", "Texas ", "Longhorns", "UT ",
+      "Texas A&M", "Aggies",
+      "Baylor", "Bears",
+      "TCU", "Horned Frogs",
+      "Texas Tech", "Red Raiders",
+      "Houston Cougars", "Houston ", "Cougars",
 
-    const fadeInSections = document.querySelectorAll('.fade-in-section');
-    fadeInSections.forEach(function(section) {
-      section.style.animationPlayState = 'paused';
-      observer.observe(section);
-    });
-  </script>
+      // AAC / C-USA / others
+      "SMU", "Mustangs",
+      "Rice", "Owls",
+      "North Texas", "Mean Green",
+      "UTSA", "Roadrunners",
 
-  <!-- ============================================================================ -->
-  <!-- JAVASCRIPT: OU ESPN-STYLE TICKER (LIVE + 72H HISTORY + UPCOMING)           -->
-  <!-- ============================================================================ -->
-  <script>
-    const SPORTS = [
-      {
-        key: "cfb",
-        label: "FB",
-        emoji: "🏈",
-        url: "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard",
-        type: "footballLike"
-      },
-      {
-        key: "mbb",
-        label: "MBB",
-        emoji: "🏀",
-        url: "https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard",
-        type: "basketballLike"
-      },
-      {
-        key: "wbb",
-        label: "WBB",
-        emoji: "🏀",
-        url: "https://site.api.espn.com/apis/site/v2/sports/basketball/womens-college-basketball/scoreboard",
-        type: "basketballLike"
-      },
-      {
-        key: "sb",
-        label: "SB",
-        emoji: "🥎",
-        url: "https://site.api.espn.com/apis/site/v2/sports/softball/college-softball/scoreboard",
-        type: "baseballLike"
-      },
-      {
-        key: "base",
-        label: "BASE",
-        emoji: "⚾",
-        url: "https://site.api.espn.com/apis/site/v2/sports/baseball/college-baseball/scoreboard",
-        type: "baseballLike"
-      },
-      {
-        key: "soc",
-        label: "SOC",
-        emoji: "⚽",
-        url: "https://site.api.espn.com/apis/site/v2/sports/soccer/college-womens-soccer/scoreboard",
-        type: "periodClock"
-      },
-      {
-        key: "vb",
-        label: "VB",
-        emoji: "🏐",
-        url: "https://site.api.espn.com/apis/site/v2/sports/volleyball/womens-college-volleyball/scoreboard",
-        type: "setBased"
-      }
-      // Gymnastics endpoints are less standard; can be added later with a custom API.
+      // Southland / WAC / misc D1
+      "Stephen F. Austin", "SFA", "Lumberjacks",
+      "Sam Houston", "Bearkats",
+      "Lamar", "Cardinals",
+      "Abilene Christian", "ACU", "Wildcats",
+      "Houston Christian", "HCU",
+      "Incarnate Word", "UIW",
+      "Texas A&M-Corpus Christi", "Corpus Christi", "Islanders",
+      "Texas A&M-Commerce", "Commerce",
+      "Texas State", "Bobcats",
+      "UT Arlington", "UT-Arlington", "Mavericks",
+      "UTEP", "Miners",
+      "UT Rio Grande Valley", "UTRGV", "Vaqueros",
+      "Texas Southern",
+      "Prairie View A&M", "Prairie View"
     ];
 
-    const OU_KEYWORDS = ["oklahoma", "sooners"];
-
-    function looksLikeOu(team) {
-      if (!team) return false;
-      const name = ((team.shortDisplayName || "") + " " + (team.displayName || "") + " " + (team.nickname || "")).toLowerCase();
-      return OU_KEYWORDS.some(k => name.includes(k));
-    }
-
-    async function fetchScoreboard(meta) {
+    async function fetchData(url) {
       try {
-        const res = await fetch(meta.url);
+        const res = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(url));
         if (!res.ok) return null;
-        const data = await res.json();
-        return data;
-      } catch (e) {
+        return await res.json();
+      } catch (err) {
+        console.error("Ticker fetch error:", err);
         return null;
       }
     }
 
-    function classifyState(statusType) {
-      if (!statusType) return "unknown";
-      if (statusType.state === "in") return "live";
-      if (statusType.completed || statusType.name === "STATUS_FINAL") return "final";
-      if (statusType.state === "pre") return "upcoming";
-      return "other";
+    function parseDate(esTime) {
+      try {
+        return esTime ? new Date(esTime) : null;
+      } catch {
+        return null;
+      }
     }
 
-    function formatPhase(meta, event, comp) {
-      const status = (event && event.status) || (comp && comp.status) || {};
-      const type = status.type || {};
-      const clock = status.displayClock || "";
-      const period = status.period;
-      const shortDetail = type.shortDetail || status.shortDetail || "";
-
-      if (meta.type === "footballLike") {
-        const map = {1: "Q1", 2: "Q2", 3: "Q3", 4: "Q4"};
-        let base = map[period] || (period > 4 ? "OT" : "");
-        if (clock) base = base ? base + " • " + clock : clock;
-        return base || shortDetail || "In Progress";
-      }
-
-      if (meta.type === "basketballLike") {
-        let base = "";
-        if (period === 1) base = "1H";
-        else if (period === 2) base = "2H";
-        else if (period && period > 2) base = "OT";
-        if (clock) base = base ? base + " • " + clock : clock;
-        return base || shortDetail || "In Progress";
-      }
-
-      if (meta.type === "baseballLike") {
-        if (shortDetail) return shortDetail;
-        if (period) return "Inning " + period;
-        return "In Progress";
-      }
-
-      if (meta.type === "setBased") {
-        if (shortDetail) return shortDetail;
-        if (period) return "Set " + period;
-        return "In Progress";
-      }
-
-      // Default period/clock style
-      let base = "";
-      if (period) base = "P" + period;
-      if (clock) base = base ? base + " • " + clock : clock;
-      return base || shortDetail || "In Progress";
+    function teamLine(comp) {
+      const t = comp.team || {};
+      const label = t.abbreviation || t.shortDisplayName || t.displayName || "Team";
+      const score = comp.score != null ? comp.score : "-";
+      return `${label} ${score}`;
     }
 
-    function niceDateTime(eventDate) {
-      if (!eventDate) return "";
-      const d = new Date(eventDate);
-      if (isNaN(d.getTime())) return "";
+    function sportIcon(key) {
+      if (key === "softball") return "🥎";
+      if (key === "mbb")      return "🏀";
+      if (key === "wbb")      return "🏀";
+      if (key === "baseball") return "⚾";
+      return "🏈"; // default football
+    }
+
+    function isXsenTeam(team) {
+      if (!team) return false;
+      const parts = [
+        team.displayName,
+        team.shortDisplayName,
+        team.location,
+        team.name,
+        team.abbreviation
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      return XSEN_TEAM_KEYWORDS.some(k =>
+        parts.includes(k.toLowerCase())
+      );
+    }
+
+    async function buildTickerItems() {
       const now = new Date();
-      const sameDay = d.toDateString() === now.toDateString();
-      const optsDay = sameDay ? {} : { weekday: "short", month: "short", day: "numeric" };
-      const optsTime = { hour: "numeric", minute: "2-digit" };
-      const datePart = sameDay ? "Today" : d.toLocaleDateString(undefined, optsDay);
-      const timePart = d.toLocaleTimeString(undefined, optsTime);
-      return `${datePart} • ${timePart}`;
-    }
+      const cutoffPast   = new Date(now.getTime() - 5  * 24 * 60 * 60 * 1000); // last 5 days
+      const cutoffFuture = new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000); // next 10 days
 
-    async function buildOuTickerItems() {
-      const now = Date.now();
-      const pastWindowMs = 72 * 60 * 60 * 1000; // 72 hours
-      const futureWindowMs = 14 * 24 * 60 * 60 * 1000; // ~14 days
+      const liveItems     = [];
+      const finalItems    = [];
+      const upcomingItems = [];
 
-      let items = [];
+      for (const sportKey in ENDPOINTS) {
+        const data = await fetchData(ENDPOINTS[sportKey]);
+        if (!data || !data.events) continue;
 
-      for (const meta of SPORTS) {
-        const data = await fetchScoreboard(meta);
-        if (!data || !Array.isArray(data.events)) continue;
+        for (const ev of data.events) {
+          const comp  = ev.competitions?.[0];
+          if (!comp) continue;
+          const home  = comp.competitors?.[0];
+          const away  = comp.competitors?.[1];
+          if (!home || !away) continue;
 
-        for (const event of data.events) {
-          const competitions = event.competitions || [];
-          const comp = competitions[0];
-          if (!comp || !Array.isArray(comp.competitors)) continue;
+          // Filter: keep only games where at least one team is a TX/OK D1 program
+          const homeIsXsen = isXsenTeam(home.team);
+          const awayIsXsen = isXsenTeam(away.team);
+          if (!homeIsXsen && !awayIsXsen) continue;
 
-          const [c1, c2] = comp.competitors;
-          if (!c1 || !c2) continue;
+          const start = parseDate(ev.date);
+          if (!start) continue;
 
-          let ouComp, oppComp;
-          if (looksLikeOu(c1.team)) {
-            ouComp = c1;
-            oppComp = c2;
-          } else if (looksLikeOu(c2.team)) {
-            ouComp = c2;
-            oppComp = c1;
-          } else {
-            continue; // Not an OU game
+          const statusName   = comp.status?.type?.name        || "";
+          const statusDetail = comp.status?.type?.shortDetail || "";
+          const icon         = sportIcon(sportKey);
+
+          // LIVE
+          if (statusName === "STATUS_IN_PROGRESS") {
+            const clock  = comp.status?.displayClock || "";
+            const period = comp.status?.period ? ` P${comp.status.period}` : "";
+            liveItems.push({
+              order: 1,
+              time: start.getTime(),
+              text: `${icon} LIVE • ${ev.shortName} • ${teamLine(home)} — ${teamLine(away)} • ${clock}${period ? " " + period : ""}`
+            });
+            continue;
           }
 
-          const eventTime = new Date(event.date).getTime();
-          if (isNaN(eventTime)) continue;
-
-          const diff = eventTime - now;
-          // Filter to ~72 hours past + 14 days future
-          if (diff < -pastWindowMs || diff > futureWindowMs) continue;
-
-          const statusType = (event.status && event.status.type) || (comp.status && comp.status.type) || null;
-          const state = classifyState(statusType);
-
-          const ouName = (ouComp.team.shortDisplayName || ouComp.team.displayName || "Oklahoma").toUpperCase();
-          const oppName = (oppComp.team.shortDisplayName || oppComp.team.displayName || "Opponent").toUpperCase();
-          const ouScore = ouComp.score || "0";
-          const oppScore = oppComp.score || "0";
-
-          let lineText = "";
-          let priority = 5;
-
-          if (state === "live") {
-            const phase = formatPhase(meta, event, comp);
-            // L4: Full broadcast style
-            lineText = `
-              <span class="ticker-live-pill">
-                <span class="ticker-live-dot"></span>
-                LIVE NOW
-              </span>
-              <span class="ticker-item-strong">${meta.emoji} ${meta.label}</span>
-              <span class="ticker-divider">•</span>
-              <span class="ticker-item-strong">${phase}</span>
-              <span class="ticker-divider">•</span>
-              <span class="ticker-item-strong">${ouName} ${ouScore} — ${oppScore} ${oppName}</span>
-            `;
-            priority = 0;
-          } else if (state === "final") {
-            lineText = `
-              <span class="ticker-label">Final</span>
-              <span class="ticker-item-strong">${meta.emoji} ${meta.label}</span>
-              <span class="ticker-divider">•</span>
-              <span>${ouName} ${ouScore} — ${oppScore} ${oppName}</span>
-            `;
-            // Recent finals higher priority than old ones
-            priority = 2;
-          } else if (state === "upcoming") {
-            const when = niceDateTime(event.date);
-            lineText = `
-              <span class="ticker-label">Upcoming</span>
-              <span class="ticker-item-strong">${meta.emoji} ${meta.label}</span>
-              <span class="ticker-divider">•</span>
-              <span>${ouName} vs ${oppName}</span>
-              <span class="ticker-divider">•</span>
-              <span>${when}</span>
-            `;
-            priority = 3;
-          } else {
-            // fallback / miscellaneous state
-            const when = niceDateTime(event.date);
-            lineText = `
-              <span class="ticker-label">Sooners</span>
-              <span class="ticker-item-strong">${meta.emoji} ${meta.label}</span>
-              <span class="ticker-divider">•</span>
-              <span>${ouName} vs ${oppName}</span>
-              <span class="ticker-divider">•</span>
-              <span>${when}</span>
-            `;
-            priority = 4;
+          // FINAL (last 5 days)
+          if (statusName === "STATUS_FINAL" && start >= cutoffPast && start <= now) {
+            finalItems.push({
+              order: 2,
+              time: start.getTime(),
+              text: `${icon} FINAL • ${ev.shortName} • ${teamLine(home)} — ${teamLine(away)}${statusDetail ? " • " + statusDetail : ""}`
+            });
+            continue;
           }
 
-          items.push({
-            priority,
-            time: eventTime,
-            html: lineText.trim().replace(/\s+/g, " ")
-          });
+          // UPCOMING (next 10 days)
+          if (start >= now && start <= cutoffFuture && statusName !== "STATUS_FINAL") {
+            const dateStr = start.toLocaleString("en-US", {
+              weekday: "short",
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "2-digit"
+            });
+            upcomingItems.push({
+              order: 3,
+              time: start.getTime(),
+              text: `${icon} Upcoming • ${ev.shortName} • ${dateStr}`
+            });
+          }
         }
       }
 
-      if (items.length === 0) {
-        return [
-          {
-            priority: 9,
-            time: now,
-            html: `
-              <span class="ticker-label">Sooners</span>
-              <span>OU scores and schedules will appear here when events are available.</span>
-            `.trim()
-          }
-        ];
-      }
+      liveItems.sort((a, b) => a.time - b.time);
+      finalItems.sort((a, b) => b.time - a.time);
+      upcomingItems.sort((a, b) => a.time - b.time);
 
-      // Sort: live first, then recent finals, then upcoming, then the rest
-      items.sort((a, b) => {
-        if (a.priority !== b.priority) return a.priority - b.priority;
-        // For finals (priority 2) show most recent first; for upcoming (3) show soonest first
-        if (a.priority === 2) return b.time - a.time;
-        if (a.priority === 3) return a.time - b.time;
-        return a.time - b.time;
-      });
+      const merged = [...liveItems, ...finalItems, ...upcomingItems];
+      const el = document.getElementById("xsenTickerText");
+      if (!el) return;
 
-      return items;
-    }
-
-    async function updateOuTicker() {
-      const track = document.getElementById("tickerTrack");
-      if (!track) return;
-      try {
-        const items = await buildOuTickerItems();
-
-        // Build scrolling HTML
-        const row = items.map(item => {
-          return `<span class="ticker-item">${item.html}</span>`;
-        }).join("");
-
-        // Duplicate content once so the scroll loop looks continuous
-        track.innerHTML = row + row;
-      } catch (e) {
-        track.innerHTML = `
-          <span class="ticker-item">
-            <span class="ticker-label">Sooners</span>
-            <span>Unable to load OU scores right now.</span>
-          </span>
-        `;
+      if (merged.length === 0) {
+        el.textContent = "XSEN • No Texas / Oklahoma D1 events found in the last 5 days or next 10 days.";
+      } else {
+        el.textContent = merged.map(i => i.text).join("   •   ");
       }
     }
 
-    // Initial load and refresh every 5 minutes
-    updateOuTicker();
-    setInterval(updateOuTicker, 5 * 60 * 1000);
+    // initial load + refresh every 30 seconds
+    buildTickerItems();
+    setInterval(buildTickerItems, 30000);
   </script>
-
 </body>
 </html>
+
 
 
 
