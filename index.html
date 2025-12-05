@@ -8,15 +8,20 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
+    /* ===== GLOBAL STYLES ===== */
+    /* Modern font stack with Inter for clean readability */
     body { font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
     html { scroll-behavior: smooth; }
 
+    /* ===== ANIMATIONS ===== */
+    /* Fade in with upward motion for hero content */
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(24px); }
       to   { opacity: 1; transform: translateY(0); }
     }
     .animate-fadeInUp { animation: fadeInUp 1s ease-out both; }
 
+    /* Animated gradient background for hero section */
     @keyframes gradientShift {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
@@ -24,7 +29,8 @@
     }
     .gradient-animate { background-size: 200% 200%; animation: gradientShift 18s ease infinite; }
 
-    /* Ticker */
+    /* ===== LIVE TICKER STYLES ===== */
+    /* Horizontal scrolling ticker with infinite loop effect */
     .ticker-wrapper {
       position: relative;
       overflow: hidden;
@@ -41,6 +47,7 @@
       100% { transform: translateX(-50%); }
     }
 
+    /* Individual game score pills in ticker */
     .ticker-pill {
       display: inline-flex;
       align-items: center;
@@ -51,6 +58,7 @@
       background-color: rgba(15,23,42,0.9);
     }
 
+    /* League badge within ticker pill */
     .ticker-badge {
       font-size: 0.68rem;
       padding: 0.1rem 0.45rem;
@@ -60,7 +68,8 @@
       letter-spacing: 0.05em;
     }
 
-    /* Scrollbar */
+    /* ===== CUSTOM SCROLLBAR ===== */
+    /* Dark themed scrollbar for consistency */
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: #020617; }
     ::-webkit-scrollbar-thumb { background: #0f172a; border-radius: 4px; }
@@ -69,10 +78,15 @@
 </head>
 <body class="bg-slate-950 text-slate-100">
 
-<!-- HEADER -->
+<!-- ============================================================================ -->
+<!-- HEADER SECTION: Sticky navigation with XSEN branding and mobile menu        -->
+<!-- Features: Backdrop blur, responsive menu, theme toggle placeholder          -->
+<!-- Mobile Padding: Ensures proper spacing on all screen sizes                  -->
+<!-- ============================================================================ -->
 <header class="bg-slate-950/90 backdrop-blur border-b border-slate-800 sticky top-0 z-40">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="h-16 flex items-center justify-between">
+      <!-- Logo and branding -->
       <a href="#hero" class="flex items-center gap-3 group">
         <div class="h-10 w-10 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-md">
           <span class="text-xs font-black tracking-[0.28em] uppercase">XS</span>
@@ -89,6 +103,7 @@
         </div>
       </a>
 
+      <!-- Desktop navigation -->
       <nav class="hidden md:flex items-center gap-8 text-xs font-medium">
         <a href="#hero" class="text-slate-300 hover:text-cyan-300 transition-colors">Overview</a>
         <a href="#ticker" class="text-slate-300 hover:text-cyan-300 transition-colors">Live Ticker</a>
@@ -100,6 +115,7 @@
         </a>
       </nav>
 
+      <!-- Mobile menu button -->
       <button id="mobile-menu-button" class="md:hidden p-2 rounded-lg border border-slate-700 text-slate-200">
         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
@@ -108,7 +124,10 @@
     </div>
   </div>
 
-  <!-- MOBILE MENU -->
+  <!-- ============================================================================ -->
+  <!-- MOBILE MENU: Collapsible navigation for mobile devices                      -->
+  <!-- Toggle: Controlled by JavaScript hamburger button                           -->
+  <!-- ============================================================================ -->
   <div id="mobile-menu" class="hidden border-t border-slate-800 bg-slate-950 md:hidden">
     <div class="px-4 py-4 space-y-3 text-sm">
       <a href="#hero" class="block text-slate-200 hover:text-cyan-300">Overview</a>
@@ -123,8 +142,12 @@
   </div>
 </header>
 
-<!-- LIVE TICKER BAR -->
-<section id="ticker" class="border-b border-slate-800 bg-slate-900/95">
+<!-- ============================================================================ -->
+<!-- LIVE TICKER BAR: Real-time scores from ESPN APIs                            -->
+<!-- Features: Auto-scrolling game pills, multi-league coverage                  -->
+<!-- Data Source: ESPN public scoreboard endpoints                               -->
+<!-- ============================================================================ -->
+<section id="ticker" class="border-b border-slate-800 bg-slate-900/95" data-section="live-ticker">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center gap-4">
     <div class="flex items-center gap-2">
       <span class="inline-flex items-center justify-center h-7 px-3 rounded-full bg-red-500/20 text-red-400 text-[10px] font-semibold tracking-[0.16em] uppercase">
@@ -138,7 +161,7 @@
     <div class="flex-1 overflow-hidden">
       <div id="xsen-ticker" class="ticker-wrapper text-[11px] text-slate-100">
         <div class="ticker-track" id="xsen-ticker-track">
-          <!-- JS will inject game pills here -->
+          <!-- JavaScript dynamically injects game score pills here -->
           <span class="text-slate-400">Loading scores…</span>
         </div>
       </div>
@@ -146,8 +169,13 @@
   </div>
 </section>
 
-<!-- HERO -->
-<section id="hero" class="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 gradient-animate">
+<!-- ============================================================================ -->
+<!-- HERO SECTION: Main landing area with value proposition and CTA              -->
+<!-- Features: Animated gradient background, two-column layout, stats grid       -->
+<!-- Mobile Padding: px-4 ensures text never touches viewport edges              -->
+<!-- ============================================================================ -->
+<section id="hero" class="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 gradient-animate" data-section="hero">
+  <!-- Decorative background blurs -->
   <div class="absolute inset-0 pointer-events-none">
     <div class="absolute -top-24 -right-24 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl"></div>
     <div class="absolute bottom-0 left-[-10rem] w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl"></div>
@@ -155,7 +183,7 @@
 
   <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
     <div class="grid lg:grid-cols-2 gap-10 items-center">
-      <!-- Text -->
+      <!-- Left column: Headline and CTAs -->
       <div class="animate-fadeInUp">
         <p class="text-[11px] font-semibold tracking-[0.25em] uppercase text-cyan-300/80 mb-3">
           National · Multi-Sport · AI-Powered
@@ -171,6 +199,7 @@
           One network, coast-to-coast coverage — college and pro.
         </p>
 
+        <!-- Primary CTAs -->
         <div class="mt-8 flex flex-col sm:flex-row gap-3">
           <a href="#plans" class="inline-flex items-center justify-center px-7 py-3 rounded-full bg-cyan-400 text-slate-950 text-sm font-semibold hover:bg-cyan-300 transition">
             Get on the Early Access List
@@ -180,6 +209,7 @@
           </a>
         </div>
 
+        <!-- Stats grid -->
         <div class="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4 text-[11px] text-slate-400">
           <div>
             <p class="text-lg font-bold text-slate-50">5+</p>
@@ -200,7 +230,7 @@
         </div>
       </div>
 
-      <!-- Right: Mock XSEN interface -->
+      <!-- Right column: Mock XSEN interface preview -->
       <div class="relative">
         <div class="relative bg-slate-900/80 border border-slate-700 rounded-3xl p-4 sm:p-6 shadow-2xl max-w-md ml-auto">
           <!-- Mini header -->
@@ -229,7 +259,7 @@
             <div class="flex items-center justify-between bg-slate-800/60 rounded-xl px-3 py-2.5">
               <div class="flex flex-col">
                 <span class="text-[10px] text-slate-400 uppercase tracking-[0.14em]">NBA</span>
-                <span class="font-semibold text-slate-50">Tonight’s Slate</span>
+                <span class="font-semibold text-slate-50">Tonight's Slate</span>
               </div>
               <span class="text-[10px] text-slate-300">8 games</span>
             </div>
@@ -243,11 +273,11 @@
             </div>
           </div>
 
-          <!-- Mini chat -->
+          <!-- Mini chat preview -->
           <div class="mt-4 bg-slate-900/80 rounded-2xl p-3 border border-slate-700/80">
             <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-cyan-300 mb-1.5">XSEN Game Chat</p>
             <p class="text-[11px] text-slate-200">
-              “Ask me about tonight’s matchups, odds-style breakdowns, or have me find a highlight from any game this week.”
+              "Ask me about tonight's matchups, odds-style breakdowns, or have me find a highlight from any game this week."
             </p>
           </div>
 
@@ -260,20 +290,24 @@
   </div>
 </section>
 
-<!-- CHANNELS -->
-<section id="channels" class="py-12 sm:py-16 lg:py-20 bg-slate-950">
+<!-- ============================================================================ -->
+<!-- CHANNELS SECTION: Overview of XSEN's multi-league channel structure         -->
+<!-- Features: 4-column grid (responsive), channel cards with descriptions       -->
+<!-- Mobile Padding: px-4 on container ensures safe spacing                      -->
+<!-- ============================================================================ -->
+<section id="channels" class="py-12 sm:py-16 lg:py-20 bg-slate-950" data-section="channels">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-10">
       <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-50">
         National Coverage · Multiple XSEN Channels
       </h2>
       <p class="mt-3 text-sm sm:text-base text-slate-400 max-w-2xl mx-auto">
-        College and pro, coast to coast. XSEN organizes sports into AI-powered “channels” so fans and bettors can drop into the action in seconds.
+        College and pro, coast to coast. XSEN organizes sports into AI-powered "channels" so fans and bettors can drop into the action in seconds.
       </p>
     </div>
 
     <div class="grid gap-6 lg:grid-cols-4 md:grid-cols-2">
-      <!-- Channel: College Football -->
+      <!-- Channel 01: College Football -->
       <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5">
         <p class="text-[11px] text-cyan-300 uppercase tracking-[0.16em] mb-1">Channel 01</p>
         <h3 class="text-sm font-semibold text-slate-50 mb-1.5">College Football Central</h3>
@@ -287,12 +321,12 @@
         </ul>
       </div>
 
-      <!-- Channel: College Basketball -->
+      <!-- Channel 02: College Basketball -->
       <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5">
         <p class="text-[11px] text-cyan-300 uppercase tracking-[0.16em] mb-1">Channel 02</p>
         <h3 class="text-sm font-semibold text-slate-50 mb-1.5">College Hoops Hub</h3>
         <p class="text-xs text-slate-400 mb-3">
-          Men’s and women’s college basketball, all divisions ESPN tracks, with bracket-style AI analysis.
+          Men's and women's college basketball, all divisions ESPN tracks, with bracket-style AI analysis.
         </p>
         <ul class="text-[11px] text-slate-400 space-y-1">
           <li>• Daily scoreboard pulls from ESPN hoops APIs</li>
@@ -301,7 +335,7 @@
         </ul>
       </div>
 
-      <!-- Channel: Pro Leagues -->
+      <!-- Channel 03: Pro Leagues -->
       <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5">
         <p class="text-[11px] text-cyan-300 uppercase tracking-[0.16em] mb-1">Channel 03</p>
         <h3 class="text-sm font-semibold text-slate-50 mb-1.5">Pro Leagues Live</h3>
@@ -315,7 +349,7 @@
         </ul>
       </div>
 
-      <!-- Channel: Highlights & Search -->
+      <!-- Channel 04: Highlights & Search -->
       <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5">
         <p class="text-[11px] text-cyan-300 uppercase tracking-[0.16em] mb-1">Channel 04</p>
         <h3 class="text-sm font-semibold text-slate-50 mb-1.5">Highlights &amp; History</h3>
@@ -324,7 +358,7 @@
         </p>
         <ul class="text-[11px] text-slate-400 space-y-1">
           <li>• AI highlight discovery across seasons</li>
-          <li>• “Show me every TD from…”-style prompts</li>
+          <li>• "Show me every TD from…"-style prompts</li>
           <li>• Long-term archive focus over time</li>
         </ul>
       </div>
@@ -332,20 +366,24 @@
   </div>
 </section>
 
-<!-- TEAM BOTS GRID -->
-<section id="bots" class="py-12 sm:py-16 lg:py-20 bg-slate-950">
+<!-- ============================================================================ -->
+<!-- TEAM BOTS SECTION: Showcase of AI-powered team-specific assistants          -->
+<!-- Features: 3-column grid, example prompt lists, flexible content             -->
+<!-- Mobile Padding: Safe spacing on all breakpoints                             -->
+<!-- ============================================================================ -->
+<section id="bots" class="py-12 sm:py-16 lg:py-20 bg-slate-950" data-section="team-bots">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-10">
       <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-50">
         Team-Specific AI Bots · Rolling Out Nationwide
       </h2>
       <p class="mt-3 text-sm sm:text-base text-slate-400 max-w-2xl mx-auto">
-        XSEN isn’t limited to one region. We’re building a library of team-specific bots for college and pro programs across the country.
+        XSEN isn't limited to one region. We're building a library of team-specific bots for college and pro programs across the country.
       </p>
     </div>
 
     <div class="grid gap-6 md:grid-cols-3">
-      <!-- Example Bot -->
+      <!-- College Football Program Bot -->
       <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 flex flex-col">
         <div class="flex items-center gap-3 mb-3">
           <div class="h-10 w-10 rounded-xl bg-slate-800 flex items-center justify-center text-[11px] font-bold">
@@ -363,9 +401,9 @@
           Example prompts:
         </p>
         <ul class="text-[11px] text-slate-300 space-y-1">
-          <li>• “How did we do this week?”</li>
-          <li>• “What’s our path in the conference race?”</li>
-          <li>• “Give me 3 highlights to watch from last game.”</li>
+          <li>• "How did we do this week?"</li>
+          <li>• "What's our path in the conference race?"</li>
+          <li>• "Give me 3 highlights to watch from last game."</li>
         </ul>
       </div>
 
@@ -387,9 +425,9 @@
           Example prompts:
         </p>
         <ul class="text-[11px] text-slate-300 space-y-1">
-          <li>• “Summarize last night in 60 seconds.”</li>
-          <li>• “What’s our record in one-score games?”</li>
-          <li>• “Give me 5 stats that matter before kickoff.”</li>
+          <li>• "Summarize last night in 60 seconds."</li>
+          <li>• "What's our record in one-score games?"</li>
+          <li>• "Give me 5 stats that matter before kickoff."</li>
         </ul>
       </div>
 
@@ -411,17 +449,21 @@
           Example prompts:
         </p>
         <ul class="text-[11px] text-slate-300 space-y-1">
-          <li>• “What are the 5 biggest games this week?”</li>
-          <li>• “Who’s trending up over the last 10 games?”</li>
-          <li>• “Explain the playoff picture if these teams win.”</li>
+          <li>• "What are the 5 biggest games this week?"</li>
+          <li>• "Who's trending up over the last 10 games?"</li>
+          <li>• "Explain the playoff picture if these teams win."</li>
         </ul>
       </div>
     </div>
   </div>
 </section>
 
-<!-- PLANS -->
-<section id="plans" class="py-12 sm:py-16 lg:py-20 bg-slate-950 border-t border-slate-800">
+<!-- ============================================================================ -->
+<!-- PRICING PLANS SECTION: Three-tier access model for different user types     -->
+<!-- Features: Fan, Creator, Partner tiers with feature lists                    -->
+<!-- Mobile Padding: Responsive grid with safe spacing                           -->
+<!-- ============================================================================ -->
+<section id="plans" class="py-12 sm:py-16 lg:py-20 bg-slate-950 border-t border-slate-800" data-section="pricing">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-10">
       <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-50">
@@ -433,7 +475,7 @@
     </div>
 
     <div class="grid gap-6 md:grid-cols-3">
-      <!-- Fan -->
+      <!-- Fan Tier -->
       <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 flex flex-col">
         <p class="text-[11px] font-semibold text-cyan-300 uppercase tracking-[0.18em] mb-1">Fan Access</p>
         <h3 class="text-sm font-semibold text-slate-50 mb-1.5">XSEN Fan</h3>
@@ -451,7 +493,7 @@
         </button>
       </div>
 
-      <!-- Creator -->
+      <!-- Creator Tier (Featured) -->
       <div class="bg-slate-900 border border-cyan-500/60 rounded-2xl p-5 flex flex-col shadow-[0_0_0_1px_rgba(34,211,238,0.2)]">
         <p class="text-[11px] font-semibold text-cyan-300 uppercase tracking-[0.18em] mb-1">Creator / Streamer</p>
         <h3 class="text-sm font-semibold text-slate-50 mb-1.5">XSEN Creator</h3>
@@ -462,14 +504,14 @@
         <ul class="text-[11px] text-slate-300 space-y-1.5 mb-4">
           <li>• Fan tier + creator overlays</li>
           <li>• API-style access via MCP / tools</li>
-          <li>• Dedicated “Show Bot” persona</li>
+          <li>• Dedicated "Show Bot" persona</li>
         </ul>
         <button class="mt-auto w-full py-2.5 rounded-full bg-cyan-400 text-slate-950 text-xs font-semibold hover:bg-cyan-300 transition">
           Apply as Creator
         </button>
       </div>
 
-      <!-- Partner -->
+      <!-- Partner Tier -->
       <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 flex flex-col">
         <p class="text-[11px] font-semibold text-cyan-300 uppercase tracking-[0.18em] mb-1">Partner / White-Label</p>
         <h3 class="text-sm font-semibold text-slate-50 mb-1.5">XSEN Partner</h3>
@@ -490,15 +532,19 @@
   </div>
 </section>
 
-<!-- CTA -->
-<section id="cta" class="py-10 bg-slate-950 border-t border-slate-800">
+<!-- ============================================================================ -->
+<!-- CALL TO ACTION SECTION: Final conversion area with dual CTAs                -->
+<!-- Features: Centered content, primary and secondary buttons                   -->
+<!-- Mobile Padding: px-4 ensures proper spacing on mobile                       -->
+<!-- ============================================================================ -->
+<section id="cta" class="py-10 bg-slate-950 border-t border-slate-800" data-section="cta">
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
     <h2 class="text-2xl sm:text-3xl font-bold text-slate-50">
       XSEN is being built live, with real fans and creators.
     </h2>
     <p class="mt-3 text-sm sm:text-base text-slate-400">
       If you want to help shape a national AI sports network from the ground up, join the early access list.
-      We’ll share updates as more channels and bots come online.
+      We'll share updates as more channels and bots come online.
     </p>
     <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
       <a href="#plans" class="inline-flex items-center justify-center px-7 py-3 rounded-full bg-cyan-400 text-slate-950 text-sm font-semibold hover:bg-cyan-300 transition">
@@ -511,7 +557,11 @@
   </div>
 </section>
 
-<!-- FOOTER -->
+<!-- ============================================================================ -->
+<!-- FOOTER SECTION: Legal information and attribution                           -->
+<!-- Features: Copyright notice, ESPN attribution disclaimer                     -->
+<!-- Mobile Padding: Responsive flex layout with proper spacing                  -->
+<!-- ============================================================================ -->
 <footer class="bg-slate-950 border-t border-slate-800 py-6 text-xs text-slate-500">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
     <p>© 2025 XSEN – Experience Sports &amp; Entertainment Network. An initiative of The Botosphere.</p>
@@ -521,9 +571,14 @@
   </div>
 </footer>
 
-<!-- SCRIPTS -->
+<!-- ============================================================================ -->
+<!-- JAVASCRIPT: Interactive functionality and ESPN API integration              -->
+<!-- Features: Mobile menu toggle, smooth scroll, live ticker with ESPN data     -->
+<!-- ============================================================================ -->
 <script>
-  // Mobile menu toggle
+  // ===== MOBILE MENU TOGGLE =====
+  // Function: Toggle visibility of mobile navigation menu
+  // Triggers: Click on hamburger button in header
   const mobileMenuButton = document.getElementById('mobile-menu-button');
   const mobileMenu = document.getElementById('mobile-menu');
   if (mobileMenuButton && mobileMenu) {
@@ -532,7 +587,9 @@
     });
   }
 
-  // Smooth scroll with offset
+  // ===== SMOOTH SCROLL WITH HEADER OFFSET =====
+  // Function: Smooth scroll to anchor links with fixed header compensation
+  // Purpose: Better UX when navigating between sections
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
       const href = this.getAttribute('href');
@@ -540,17 +597,22 @@
       const target = document.querySelector(href);
       if (!target) return;
       e.preventDefault();
-      const headerOffset = 72;
+      const headerOffset = 72; // Height of sticky header
       const elementPosition = target.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
       window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+      // Close mobile menu if open
       if (!mobileMenu.classList.contains('hidden')) {
         mobileMenu.classList.add('hidden');
       }
     });
   });
 
-  // ===== XSEN ESPN TICKER =====
+  // ===== ESPN SCOREBOARD TICKER INTEGRATION =====
+  // Function: Fetch and display live scores from ESPN APIs
+  // Data Sources: NCAA FB, MBB, WBB, NFL, NBA public scoreboard endpoints
+  // Update Frequency: Every 3 minutes
+  
   const ENDPOINTS = {
     ncaa_fb: "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard",
     mbb:     "https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard",
@@ -561,6 +623,7 @@
 
   const tickerTrack = document.getElementById('xsen-ticker-track');
 
+  // Map internal league keys to display labels
   function mapLeagueKeyToLabel(key) {
     switch (key) {
       case 'ncaa_fb': return 'NCAA FB';
@@ -572,6 +635,7 @@
     }
   }
 
+  // Format game status from ESPN competition data
   function formatGameStatus(competitions) {
     if (!competitions || !competitions[0]) return '';
     const comp = competitions[0];
@@ -580,6 +644,7 @@
     const gameClock = status.displayClock || '';
     const period = status.period;
 
+    // Pre-game: show scheduled time
     if (type.state === 'pre') {
       const dateStr = comp.date || '';
       try {
@@ -589,18 +654,21 @@
         return 'TBD';
       }
     }
+    // In-progress: show live indicator with clock
     if (type.state === 'in') {
       if (gameClock && period) {
-        return `Live · ${gameClock} · ${period}${period === 1 ? 'Q' : 'Q'}`;
+        return `Live · ${gameClock} · ${period}Q`;
       }
       return 'Live';
     }
+    // Post-game: show final
     if (type.state === 'post') {
       return 'Final';
     }
     return type.shortDetail || '';
   }
 
+  // Extract game data from ESPN API response
   function extractGames(leagueKey, data) {
     if (!data || !Array.isArray(data.events)) return [];
     return data.events.map(evt => {
@@ -628,6 +696,7 @@
     });
   }
 
+  // Load ticker data from all ESPN endpoints
   async function loadTicker() {
     if (!tickerTrack) return;
     tickerTrack.innerHTML = '<span class="text-slate-400">Loading scores…</span>';
@@ -649,7 +718,7 @@
         return;
       }
 
-      // Build pills and duplicate once for seamless loop
+      // Build game pills and duplicate for seamless infinite scroll
       const buildMarkup = () => {
         return allGames.map((g, idx) => {
           const statusClass =
@@ -669,16 +738,17 @@
       };
 
       const markup = buildMarkup();
-      tickerTrack.innerHTML = markup + markup; // duplicate for infinite scroll illusion
+      // Duplicate markup for seamless loop animation
+      tickerTrack.innerHTML = markup + markup;
     } catch (err) {
       console.error('XSEN ticker error:', err);
       tickerTrack.innerHTML = '<span class="text-slate-400">Error loading scores.</span>';
     }
   }
 
+  // Initial load and periodic refresh
   loadTicker();
-  // Refresh every few minutes
-  setInterval(loadTicker, 1000 * 60 * 3);
+  setInterval(loadTicker, 1000 * 60 * 3); // Refresh every 3 minutes
 </script>
 </body>
 </html>
