@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Connecting Telegram…</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Auto redirect fallback -->
+  <meta http-equiv="refresh" content="5">
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0b0f19;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+    .card {
+      max-width: 420px;
+      padding: 32px;
+      border-radius: 16px;
+      background: #111827;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+    }
+    h1 {
+      margin-bottom: 12px;
+      font-size: 1.4rem;
+    }
+    p {
+      opacity: 0.85;
+      margin-bottom: 24px;
+    }
+    a {
+      display: inline-block;
+      background: #229ED9;
+      color: white;
+      text-decoration: none;
+      padding: 14px 22px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>Almost there…</h1>
+    <p>
+      Your subscription is active.<br>
+      Tap below to connect Telegram and unlock access.
+    </p>
+
+    <a id="tgLink" href="#">Open Telegram</a>
+
+    <p style="margin-top:18px;font-size:0.85rem;opacity:0.6">
+      If Telegram doesn’t open automatically, tap the button.
+    </p>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const customerId = params.get("cid");
+
+    if (!customerId) {
+      document.querySelector("p").innerText =
+        "Missing subscription data. Please contact support.";
+    } else {
+      const tgUrl = `https://t.me/OUSoonerBot?start=cid_${customerId}`;
+      document.getElementById("tgLink").href = tgUrl;
+
+      // Auto-redirect after short delay
+      setTimeout(() => {
+        window.location.href = tgUrl;
+      }, 1200);
+    }
+  </script>
+
+</body>
+</html>
