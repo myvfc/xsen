@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>XSEN</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>XSEN</title>
 
   <style>
     html, body {
@@ -16,8 +16,6 @@
     }
 
     video {
-      position: fixed;
-      inset: 0;
       width: 100vw;
       height: 100vh;
       object-fit: cover;
@@ -37,17 +35,16 @@
   </video>
 
   <script>
-    const splashVideo = document.getElementById("splashVideo");
+    const video = document.getElementById("splashVideo");
 
-    // Safety fallback (in case "ended" doesn't fire)
-    const FALLBACK_TIME_MS = 9000;
+    // HARD SAFETY FALLBACK (prevents dead-end)
+    const fallback = setTimeout(() => {
+      window.location.href = "./landing.html";
+    }, 9000);
 
-    setTimeout(() => {
-      window.location.href = "/landing.html";
-    }, FALLBACK_TIME_MS);
-
-    splashVideo.addEventListener("ended", () => {
-      window.location.href = "/landing.html";
+    video.addEventListener("ended", () => {
+      clearTimeout(fallback);
+      window.location.href = "./landing.html";
     });
   </script>
 
