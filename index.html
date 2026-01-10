@@ -19,7 +19,14 @@
       width: 100vw;
       height: 100vh;
       object-fit: contain;
+    }
 
+    /* ✅ MOBILE SCALE-DOWN FIX (portrait phones) */
+    @media (max-width: 640px) {
+      video {
+        width: 85vw;
+        height: 85vh;
+      }
     }
   </style>
 </head>
@@ -49,22 +56,19 @@
   <source src="https://storage.googleapis.com/xsenassets/XSEN.mp4" type="video/mp4" />
 </video>
 
+<script>
+  const video = document.getElementById("splashVideo");
 
+  // HARD SAFETY FALLBACK (prevents dead-end)
+  const fallback = setTimeout(() => {
+    window.location.href = "./landing.html";
+  }, 9000);
 
-
-  <script>
-    const video = document.getElementById("splashVideo");
-
-    // HARD SAFETY FALLBACK (prevents dead-end)
-    const fallback = setTimeout(() => {
-      window.location.href = "./landing.html";
-    }, 9000);
-
-    video.addEventListener("ended", () => {
-      clearTimeout(fallback);
-      window.location.href = "./landing.html";
-    });
-  </script>
+  video.addEventListener("ended", () => {
+    clearTimeout(fallback);
+    window.location.href = "./landing.html";
+  });
+</script>
 
 </body>
 </html>
