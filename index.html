@@ -96,14 +96,27 @@
 
     <!-- Background video -->
     <video
-      id="xsenIntroVideo"
-      class="absolute inset-0 h-full w-full object-cover"
-      autoplay
-      muted
-      playsinline
-      preload="auto">
-      <source src="https://storage.googleapis.com/xsenassets/XSEN%20.mp4" type="video/mp4" />
-    </video>
+   <video
+  id="splashVideo"
+  autoplay
+  muted
+  playsinline
+  preload="auto"
+  class="fixed inset-0 w-screen h-screen object-cover"
+>
+  <source
+    src="https://storage.googleapis.com/xsenassets/XSEN%20.mp4"
+    type="video/mp4"
+  />
+</video>
+<script>
+  const splashVideo = document.getElementById("splashVideo");
+
+  splashVideo.addEventListener("ended", () => {
+    window.location.href = "https://xsen.fun";
+  });
+</script>
+
 
     <!-- Dark overlay -->
     <div class="absolute inset-0 bg-black/60"></div>
