@@ -87,6 +87,46 @@
   </style>
 </head>
 <body class="h-full antialiased bg-white text-slate-800 dark:bg-slate-950 dark:text-slate-100">
+  <body class="h-full antialiased bg-white text-slate-800 dark:bg-slate-950 dark:text-slate-100">
+
+  <!-- ================= XSEN SPLASH INTRO ================= -->
+  <div
+    id="xsenSplash"
+    class="fixed inset-0 z-[9999] flex items-center justify-center bg-black transition-opacity duration-700">
+
+    <!-- Background video -->
+    <video
+      id="xsenIntroVideo"
+      class="absolute inset-0 h-full w-full object-cover"
+      autoplay
+      muted
+      playsinline
+      preload="auto">
+      <source src="YOUR_8_SECOND_VIDEO.mp4" type="video/mp4" />
+    </video>
+
+    <!-- Dark overlay -->
+    <div class="absolute inset-0 bg-black/60"></div>
+
+    <!-- Logo + Tagline -->
+    <div class="relative z-10 flex flex-col items-center">
+      <img
+        src="YOUR_LOGO.png"
+        alt="XSEN"
+        class="h-20 sm:h-24 mb-4 drop-shadow-2xl" />
+      <div class="text-white tracking-widest text-sm opacity-80">
+        EXPERIENCE SPORTS ENGAGEMENT
+      </div>
+    </div>
+  </div>
+  <!-- ===================================================== -->
+
+  <div class="min-h-screen flex flex-col">
+
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:z-50 focus:top-3 focus:left-3 focus:rounded-xl focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:shadow-soft dark:focus:bg-slate-900">
+      Skip to content
+    </a>
+
   <div class="min-h-screen flex flex-col">
 
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:z-50 focus:top-3 focus:left-3 focus:rounded-xl focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:shadow-soft dark:focus:bg-slate-900">
