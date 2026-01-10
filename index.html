@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>XSEN</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      overflow: hidden;
+    }
+
+    video {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+
+  <video
+    id="splashVideo"
+    autoplay
+    muted
+    playsinline
+    preload="auto"
+  >
+    <source src="https://storage.googleapis.com/xsenassets/XSEN.mp4" type="video/mp4">
+  </video>
+
+  <script>
+    const splashVideo = document.getElementById("splashVideo");
+
+    // Safety fallback (in case "ended" doesn't fire)
+    const FALLBACK_TIME_MS = 9000;
+
+    setTimeout(() => {
+      window.location.href = "/landing.html";
+    }, FALLBACK_TIME_MS);
+
+    splashVideo.addEventListener("ended", () => {
+      window.location.href = "/landing.html";
+    });
+  </script>
+
+</body>
+</html>
