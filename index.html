@@ -24,15 +24,17 @@
 </head>
 <body>
 
-  <video
-    id="splashVideo"
-    autoplay
-    muted
-    playsinline
-    preload="auto"
-  >
-    <source src="https://storage.googleapis.com/xsenassets/XSEN.mp4" type="video/mp4">
-  </video>
+<video
+  id="splashVideo"
+  autoplay
+  muted
+  playsinline
+  preload="auto"
+  class="fixed inset-0 w-screen h-screen object-contain md:object-cover bg-black"
+>
+  <source src="https://storage.googleapis.com/xsenassets/XSEN.mp4" type="video/mp4" />
+</video>
+
 
   <script>
     const video = document.getElementById("splashVideo");
