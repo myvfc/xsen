@@ -95,7 +95,6 @@
     class="fixed inset-0 z-[9999] flex items-center justify-center bg-black transition-opacity duration-700">
 
     <!-- Background video -->
-    <video
    <video
   id="splashVideo"
   autoplay
@@ -104,18 +103,32 @@
   preload="auto"
   class="fixed inset-0 w-screen h-screen object-cover"
 >
-  <source
-    src="https://storage.googleapis.com/xsenassets/XSEN%20.mp4"
-    type="video/mp4"
-  />
+  <source src="https://storage.googleapis.com/xsenassets/XSEN%20.mp4" type="video/mp4" />
 </video>
 <script>
+<script>
   const splashVideo = document.getElementById("splashVideo");
+  let redirected = false;
 
-  splashVideo.addEventListener("ended", () => {
-    window.location.href = "https://xsen.fun";
-  });
+  function goToLanding() {
+    if (redirected) return;
+    redirected = true;
+
+    // stop playback explicitly (prevents loop glitches)
+    splashVideo.pause();
+    splashVideo.currentTime = splashVideo.duration;
+
+    // hard redirect (prevents back-navigation to splash)
+    window.location.replace("https://xsen.fun");
+  }
+
+  // Normal case: video finishes
+  splashVideo.addEventListener("ended", goToLanding);
+
+  // Fallback: force redirect if "ended" doesn't fire
+  setTimeout(goToLanding, 9000); // adjust if video length differs
 </script>
+
 
 
     <!-- Dark overlay -->
