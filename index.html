@@ -1,74 +1,411 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>XSEN</title>
-
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      background: black;
-      overflow: hidden;
-    }
-
-    video {
-      width: 100vw;
-      height: 100vh;
-      object-fit: contain;
-    }
-
-    /* ✅ MOBILE SCALE-DOWN FIX (portrait phones) */
-    @media (max-width: 640px) {
-      video {
-        width: 85vw;
-        height: 85vh;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XSEN - The eXperience Sports + Entertainment Network</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: #000;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        /* VIDEO SPLASH SECTION */
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* OVERLAY AT BOTTOM - FADES IN AFTER 8 SECONDS */
+        .video-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 1;
+            opacity: 0;
+            animation: fadeIn 1s ease-in forwards;
+            animation-delay: 8s;
+            padding-bottom: 120px;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .tagline {
+            font-size: 20px;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+            margin-bottom: 30px;
+            text-align: center;
+            padding: 0 20px;
+        }
+        
+        .enter-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 18px 50px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .enter-button:hover {
+            background: white;
+            color: #000;
+            transform: scale(1.05);
+        }
+        
+        /* Small scroll indicator - always visible at bottom */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            animation: bounce 2s infinite;
+            cursor: pointer;
+            z-index: 2;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { 
+                transform: translate(-50%, 0); 
+            }
+            50% { 
+                transform: translate(-50%, -10px); 
+            }
+        }
+        
+        /* SCHOOLS SECTION */
+        .schools-section {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            padding: 100px 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .schools-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+        
+        .section-header h2 {
+            font-size: 56px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #fff 0%, #999 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .section-header p {
+            font-size: 22px;
+            color: #999;
+        }
+        
+        .school-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+        
+        .school-card {
+            background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+            border: 2px solid #444;
+            border-radius: 20px;
+            padding: 50px 40px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .school-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .school-card:hover {
+            transform: translateY(-15px);
+            border-color: #666;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        }
+        
+        .school-card:hover::before {
+            opacity: 1;
+        }
+        
+        .school-emoji {
+            font-size: 80px;
+            margin-bottom: 25px;
+            display: block;
+        }
+        
+        .school-name {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .school-color-bar {
+            height: 5px;
+            width: 80px;
+            margin: 20px auto;
+            border-radius: 3px;
+        }
+        
+        .sooners .school-color-bar {
+            background: linear-gradient(90deg, #841617 0%, #FDF9D8 100%);
+        }
+        
+        .sec .school-color-bar {
+            background: linear-gradient(90deg, #003087 0%, #C5C6C8 100%);
+        }
+        
+        .school-features {
+            margin-top: 25px;
+            font-size: 16px;
+            color: #aaa;
+            line-height: 2;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .school-features div {
+            margin: 8px 0;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 25px;
+            letter-spacing: 1px;
+        }
+        
+        .status-live {
+            background: #4CAF50;
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+        
+        .status-soon {
+            background: #FF9800;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4);
+        }
+        
+        /* FOOTER */
+        .footer {
+            background: #000;
+            padding: 60px 20px;
+            text-align: center;
+            border-top: 1px solid #333;
+        }
+        
+        .footer p {
+            color: #666;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        
+        .footer a {
+            color: #999;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer a:hover {
+            color: white;
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .tagline {
+                font-size: 16px;
+            }
+            
+            .video-overlay {
+                padding-bottom: 100px;
+            }
+            
+            .section-header h2 {
+                font-size: 36px;
+            }
+            
+            .section-header p {
+                font-size: 18px;
+            }
+            
+            .school-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .school-emoji {
+                font-size: 64px;
+            }
+            
+            .school-name {
+                font-size: 26px;
+            }
+            
+            .enter-button {
+                padding: 15px 35px;
+                font-size: 16px;
+            }
+        }
+    </style>
 </head>
 <body>
-
-<video
-  id="splashVideo"
-  autoplay
-  muted
-  playsinline
-  preload="auto"
-  class="
-    fixed inset-0
-    h-screen
-    object-contain
-    bg-black
-
-    max-w-[70vw]
-    mx-auto
-
-    sm:max-w-[80vw]
-    md:max-w-none
-    md:w-screen
-    md:object-cover
-  "
->
-  <source src="https://storage.googleapis.com/xsenassets/XSEN.mp4" type="video/mp4" />
-</video>
-
-<script>
-  const video = document.getElementById("splashVideo");
-
-  // HARD SAFETY FALLBACK (prevents dead-end)
-  const fallback = setTimeout(() => {
-    window.location.href = "./landing.html";
-  }, 9000);
-
-  video.addEventListener("ended", () => {
-    clearTimeout(fallback);
-    window.location.href = "./landing.html";
-  });
-</script>
-
+    <!-- VIDEO SPLASH SECTION -->
+    <div class="video-container">
+        <video autoplay loop muted playsinline>
+            <source src="https://storage.googleapis.com/xsenassets/XSEN.mp4" type="video/mp4">
+        </video>
+        
+        <!-- Tagline + Button at bottom - fades in after 8 seconds -->
+        <div class="video-overlay">
+            <div class="tagline">The eXperience Sports + Entertainment Network</div>
+            <a href="#schools" class="enter-button">
+                Choose Your Channel
+            </a>
+        </div>
+   
+    <!-- NEW: Learn More Link -->
+    <a href="/landing.html" style="
+        color: white;
+        text-decoration: none;
+        margin-top: 20px;
+        font-size: 14px;
+        opacity: 0.8;
+        transition: opacity 0.3s;
+    " onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">
+        Learn More About XSEN →
+    </a>
+</div>    
+        
+    </div>
+    
+    <!-- SCHOOLS SECTION -->
+    <div id="schools" class="schools-section">
+        <div class="schools-container">
+            <div class="section-header">
+                <h2>Your School. Your Network.</h2>
+                <p>AI-powered sports entertainment for superfans</p>
+            </div>
+            
+            <div class="school-grid">
+                <!-- Oklahoma Sooners - LIVE -->
+                <a href="https://sooners.xsen.fun" class="school-card sooners">
+                    <span class="school-emoji">🏈</span>
+                    <div class="school-name">Oklahoma Sooners</div>
+                    <div class="school-color-bar"></div>
+                    <div class="school-features">
+                        <div>🔴 XSEN Radio - Sooners Channel</div>
+                        <div>🤖 Boomer AI Companion</div>
+                        <div>🎥 4,700+ Video Highlights</div>
+                        <div>⚡ Live Stats & Analysis</div>
+                    </div>
+                    <div class="status-badge status-live">● LIVE NOW</div>
+                </a>
+                
+                <!-- SEC Channel - Coming Soon -->
+                <a href="#" onclick="alert('SEC Channel launching soon! Stay tuned...'); return false;" class="school-card sec">
+                    <span class="school-emoji">🏈</span>
+                    <div class="school-name">SEC Channel</div>
+                    <div class="school-color-bar"></div>
+                    <div class="school-features">
+                        <div>📺 All 16 SEC Schools</div>
+                        <div>🎙️ Live FanCaster Shows</div>
+                        <div>🏆 Conference-Wide Coverage</div>
+                        <div>⚔️ Rivalry Content</div>
+                    </div>
+                    <div class="status-badge status-soon">⏳ COMING SOON</div>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>© 2025 XSEN - The eXperience Sports+ Entertainment Network</p>
+        <p>
+            <a href="mailto:support@xsen.fun">Support</a> • 
+            <a href="https://sooners.xsen.fun">Oklahoma Sooners</a>
+        </p>
+    </div>
+    
+    <script>
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
