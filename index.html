@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XSEN - The eXperience Sports + Entertainment Network</title>
+    <title>XSEN - The eXperience Sports Entertainment Network</title>
     <style>
         * {
             margin: 0;
@@ -48,6 +48,7 @@
             letter-spacing: 10px;
         }
         
+        /* DESKTOP VIDEO - Fills screen beautifully */
         video {
             position: absolute;
             top: 0;
@@ -58,7 +59,7 @@
             z-index: 1;
         }
         
-        /* OVERLAY AT BOTTOM - FADES IN AFTER 7 SECONDS */
+        /* OVERLAY AT BOTTOM - FADES IN AFTER 8 SECONDS */
         .video-overlay {
             position: absolute;
             bottom: 0;
@@ -113,7 +114,7 @@
             color: white;
             text-decoration: none;
             margin-top: 20px;
-            font-size: 16px;
+            font-size: 14px;
             opacity: 0.8;
             transition: opacity 0.3s;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
@@ -310,18 +311,20 @@
             color: white;
         }
         
-        /* RESPONSIVE */
+        /* RESPONSIVE - MOBILE ONLY */
         @media (max-width: 768px) {
             .video-container {
                 height: 100vh;
-                height: 100dvh; /* Dynamic viewport height */
+                height: 100dvh;
+                background: #000; /* Black background for any letterbox bars */
             }
             
+            /* MOBILE VIDEO - Shows full XSEN text, no cropping */
             video {
-                object-fit: cover;
+                object-fit: contain; /* Show entire video */
                 object-position: center;
-                max-width: 100vw;
-                max-height: 100vh;
+                width: 100%;
+                height: 100%;
             }
             
             .video-placeholder::after {
@@ -329,9 +332,9 @@
             }
             
             .video-overlay {
-                padding-bottom: 80px;
-                padding-left: 5px;
-                padding-right: 5px;
+                padding-bottom: 50px;
+                padding-left: 20px;
+                padding-right: 20px;
             }
             
             .tagline {
@@ -382,16 +385,19 @@
         
         <!-- Tagline + Button at bottom - fades in after video plays for 8 seconds -->
         <div class="video-overlay" id="videoOverlay">
-            <div class="tagline">The eXperience Sports + Entertainment Network</div>
+            <div class="tagline">The eXperience Sports Entertainment Network</div>
             <a href="#schools" class="enter-button">
-                Choose Your Channel
+                Choose Your School
             </a>
             <a href="/landing.html" class="learn-more-link">
                 Learn More About XSEN →
             </a>
         </div>
         
-       
+        <!-- Small scroll indicator always visible -->
+        <div class="scroll-indicator" onclick="document.getElementById('schools').scrollIntoView({behavior: 'smooth'})">
+            ↓
+        </div>
     </div>
     
     <!-- SCHOOLS SECTION -->
@@ -436,7 +442,7 @@
     
     <!-- FOOTER -->
     <div class="footer">
-        <p>© 2025 XSEN - The eXperience Sports + Entertainment Network</p>
+        <p>© 2025 XSEN - The eXperience Sports Entertainment Network</p>
         <p>
             <a href="mailto:support@xsen.fun">Support</a> • 
             <a href="https://sooners.xsen.fun">Oklahoma Sooners</a>
@@ -473,8 +479,9 @@
         // Start overlay fade-in timer only after video starts playing
         video.addEventListener('playing', function() {
             overlay.style.animation = 'fadeIn 1s ease-in forwards';
-            overlay.style.animationDelay = '7s';
-        }, { once: true }); // Only run this once
+            overlay.style.animationDelay = '8s';
+        }, { once: true });
     </script>
 </body>
 </html>
+
