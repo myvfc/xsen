@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XSEN - The eXperience Sports + Entertainment Network</title>
+    <title>XSEN - The eXperience Sports Entertainment Network</title>
     <style>
         * {
             margin: 0;
@@ -316,13 +316,13 @@
             .video-container {
                 height: 100vh;
                 height: 100dvh;
-                background: #000; /* Black background for any letterbox bars */
+                background: #000;
             }
             
-            /* MOBILE VIDEO - Shows full XSEN text, no cropping */
+            /* MOBILE VIDEO - Shows full XSEN text, positioned higher */
             video {
-                object-fit: contain; /* Show entire video */
-                object-position: center 20%;
+                object-fit: contain;
+                object-position: center 15%;
                 width: 100%;
                 height: 100%;
             }
@@ -331,14 +331,15 @@
                 font-size: 48px;
             }
             
+            /* OVERLAY CONTENT - Moved higher up on mobile */
             .video-overlay {
-                padding-bottom: 70px;
+                padding-bottom: 120px;
                 padding-left: 20px;
                 padding-right: 20px;
             }
             
             .tagline {
-                font-size: 20px;
+                font-size: 16px;
             }
             
             .enter-button {
@@ -379,15 +380,16 @@
         <!-- Placeholder while video loads -->
         <div class="video-placeholder" id="videoPlaceholder"></div>
         
-        <video id="mainVideo" autoplay loop muted playsinline>
+        <!-- Video plays ONCE and freezes on last frame (no loop) -->
+        <video id="mainVideo" autoplay muted playsinline>
             <source src="https://storage.googleapis.com/xsenassets/XSEN.mp4" type="video/mp4">
         </video>
         
         <!-- Tagline + Button at bottom - fades in after video plays for 8 seconds -->
         <div class="video-overlay" id="videoOverlay">
-            <div class="tagline">The eXperience Sports + Entertainment Network</div>
+            <div class="tagline">The eXperience Sports Entertainment Network</div>
             <a href="#schools" class="enter-button">
-                Choose Your Channel
+                Choose Your School
             </a>
             <a href="/landing.html" class="learn-more-link">
                 Learn More About XSEN →
@@ -442,7 +444,7 @@
     
     <!-- FOOTER -->
     <div class="footer">
-        <p>© 2025 XSEN - The eXperience Sports + Entertainment Network</p>
+        <p>© 2025 XSEN - The eXperience Sports Entertainment Network</p>
         <p>
             <a href="mailto:support@xsen.fun">Support</a> • 
             <a href="https://sooners.xsen.fun">Oklahoma Sooners</a>
@@ -479,9 +481,13 @@
         // Start overlay fade-in timer only after video starts playing
         video.addEventListener('playing', function() {
             overlay.style.animation = 'fadeIn 1s ease-in forwards';
-            overlay.style.animationDelay = '6s';
+            overlay.style.animationDelay = '8s';
         }, { once: true });
+        
+        // Video will automatically freeze on last frame when it ends (no loop)
+        video.addEventListener('ended', function() {
+            console.log('Video finished - frozen on last frame');
+        });
     </script>
 </body>
 </html>
-
