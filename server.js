@@ -15,8 +15,11 @@ app.get('/health', (req, res) => {
 app.get('/', (req, res) => {
     const hostname = req.hostname;
     
+    console.log('Hostname:', hostname); // DEBUG
+    
     // sooners.xsen.fun
     if (hostname === 'sooners.xsen.fun') {
+        console.log('Serving sooners.html'); // DEBUG
         res.sendFile(path.join(__dirname, 'sooners.html'));
     }
     // xsen.fun/landing.html
@@ -36,6 +39,15 @@ app.get('/', (req, res) => {
     }
 });
 
+// sooners.xsen.fun/app route
+app.get('/app', (req, res) => {
+    if (req.hostname === 'sooners.xsen.fun') {
+        res.sendFile(path.join(__dirname, 'sooners-app.html'));
+    } else {
+        res.status(404).send('Not found');
+    }
+});
+
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`); // FIXED
 });
