@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XSEN - The eXperience Sports & Entertainment Network</title>
+    <title>XSEN - The eXperience Sports Entertainment Network</title>
     <style>
         * {
             margin: 0;
@@ -109,25 +109,26 @@
             transform: scale(1.05);
         }
         
-       .learn-more-link {
-    color: white;
-    text-decoration: none;
-    margin-top: 20px;
-    font-size: 16px;
-    padding: 12px 30px;
-    border: 2px solid rgba(255, 255, 255, 0.6);
-    border-radius: 50px;
-    display: inline-block;
-    transition: all 0.3s;
-    background: transparent;
-    backdrop-filter: blur(10px);
-}
-
-.learn-more-link:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: white;
-    transform: scale(1.05);
-}
+        /* UPDATED: Learn More as Secondary Button */
+        .learn-more-link {
+            color: white;
+            text-decoration: none;
+            margin-top: 20px;
+            font-size: 16px;
+            padding: 12px 30px;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            border-radius: 50px;
+            display: inline-block;
+            transition: all 0.3s;
+            background: transparent;
+            backdrop-filter: blur(10px);
+        }
+        
+        .learn-more-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: white;
+            transform: scale(1.05);
+        }
         
         /* Small scroll indicator */
         .scroll-indicator {
@@ -376,6 +377,7 @@
             
             .learn-more-link {
                 font-size: 14px;
+                padding: 10px 25px;
             }
             
             .section-header h2 {
@@ -411,12 +413,12 @@
         </video>
         
         <div class="video-overlay" id="videoOverlay">
-            <div class="tagline">The eXperience Sports & Entertainment Network</div>
+            <div class="tagline">The eXperience Sports Entertainment Network</div>
             <a href="#schools" class="enter-button">
-                Choose Your Channel
+                Choose Your School
             </a>
             <a href="/landing.html" class="learn-more-link">
-                Learn More About XSEN →
+                Learn More About XSEN
             </a>
         </div>
         
@@ -474,7 +476,7 @@
     
     <!-- FOOTER -->
     <div class="footer">
-        <p>© 2025 XSEN - The eXperience Sports & Entertainment Network</p>
+        <p>© 2025 XSEN - The eXperience Sports Entertainment Network</p>
         <p>
             <a href="mailto:support@xsen.fun">Support</a> • 
             <a href="https://sooners.xsen.fun">Oklahoma Sooners</a>
@@ -511,8 +513,7 @@
         const hasSeenVideo = localStorage.getItem('xsen_video_seen');
         
         if (hasSeenVideo) {
-            // RETURNING VISITOR
-            // Jump video to last frame for freeze frame branding
+            // RETURNING VISITOR - Show XSEN freeze frame at TOP
             video.addEventListener('loadedmetadata', function() {
                 video.currentTime = video.duration - 0.1; // Jump to last frame
                 video.pause();
@@ -521,17 +522,14 @@
             // Show overlay immediately
             overlay.style.opacity = 1;
             
-            // Auto-scroll to schools section after brief delay
-            setTimeout(() => {
-                document.getElementById('schools').scrollIntoView({ behavior: 'instant' });
-            }, 100);
+            // NO AUTO-SCROLL - User sees XSEN branding every time
             
         } else {
             // FIRST-TIME VISITOR
             // Play video normally
             video.addEventListener('playing', function() {
                 overlay.style.animation = 'fadeIn 1s ease-in forwards';
-                overlay.style.animationDelay = '6s';
+                overlay.style.animationDelay = '8s';
             }, { once: true });
             
             // Mark as seen when video ends
@@ -550,3 +548,38 @@
     </script>
 </body>
 </html>
+```
+
+---
+
+## **What Changed:**
+
+### **1. Learn More is Now a Button** ✅
+- Outline/secondary button style
+- Matches hierarchy (primary + secondary buttons)
+- Better visual balance
+
+### **2. Returning Visitors See XSEN Every Time** ✅
+- **Removed auto-scroll** for returning visitors
+- Video jumps to XSEN freeze frame at TOP
+- User always sees branding first
+- They can scroll down manually
+
+---
+
+## **User Experience:**
+
+**First Visit:**
+```
+1. Video plays
+2. Overlay fades in after 8s
+3. Video ends on XSEN freeze frame
+4. Marked as "seen"
+```
+
+**Return Visits:**
+```
+1. Page loads at TOP
+2. XSEN freeze frame visible
+3. Overlay already visible with both buttons
+4. User scrolls down when ready
