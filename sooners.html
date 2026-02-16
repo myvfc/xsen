@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XSEN Sooners - Your 24/7 OU Superfan Companion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #841617 0%, #6a1112 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: rgba(132, 22, 23, 0.95);
+            color: #FDF9D8;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .header a {
+            color: #FDF9D8;
+            text-decoration: none;
+            opacity: 0.8;
+            font-size: 14px;
+        }
+        
+        .header a:hover {
+            opacity: 1;
+        }
+        
+        .header h1 {
+            font-size: 48px;
+            margin: 10px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .tagline {
+            font-size: 20px;
+            color: #FDF9D8;
+            opacity: 0.9;
+            margin-top: 10px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Radio Section */
+        .radio-section {
+            background: white;
+            padding: 50px 40px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 30px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        
+        .radio-section h2 {
+            color: #841617;
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        
+        .status {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            margin: 10px 0 30px 0;
+        }
+        
+        #play-btn {
+            background: #841617;
+            color: #FDF9D8;
+            border: none;
+            padding: 20px 60px;
+            font-size: 28px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(132, 22, 23, 0.3);
+        }
+        
+        #play-btn:hover {
+            background: #6a1112;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(132, 22, 23, 0.4);
+        }
+        
+        .free-badge {
+            background: #4CAF50;
+            color: white;
+            display: inline-block;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        
+        .note {
+            color: #666;
+            margin-top: 15px;
+            font-size: 15px;
+        }
+        
+        /* Upgrade Section */
+        .upgrade-section {
+            background: white;
+            padding: 50px 40px;
+            border-radius: 12px;
+            margin: 30px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        
+        .upgrade-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .upgrade-header h2 {
+            color: #841617;
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+        
+        .upgrade-header p {
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .tier-box {
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            padding: 30px;
+        }
+        
+        .tier-box.premium {
+            border-color: #841617;
+            background: linear-gradient(135deg, #fff 0%, #fff5f5 100%);
+        }
+        
+        .tier-label {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #841617;
+        }
+        
+        .price-display {
+            font-size: 48px;
+            font-weight: bold;
+            color: #841617;
+            margin: 20px 0;
+        }
+        
+        .price-display .period {
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+        
+        .feature-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-list li::before {
+            content: "✓";
+            color: #4CAF50;
+            font-weight: bold;
+            font-size: 20px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .feature-list.disabled li::before {
+            content: "✗";
+            color: #ccc;
+        }
+        
+        .cta-button {
+            display: block;
+            background: #841617;
+            color: #FDF9D8;
+            padding: 18px 40px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 25px;
+            transition: all 0.3s;
+        }
+        
+        .cta-button:hover {
+            background: #6a1112;
+            transform: scale(1.05);
+        }
+        
+        .examples-section {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        
+        .examples-section h3 {
+            color: #841617;
+            margin-bottom: 20px;
+        }
+        
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .example-box {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+        }
+        
+        .footer {
+            text-align: center;
+            color: white;
+            padding: 40px 20px;
+        }
+        
+        .footer a {
+            color: #FDF9D8;
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 32px;
+            }
+            
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+            
+            #play-btn {
+                padding: 15px 40px;
+                font-size: 22px;
+            }
+            
+            .price-display {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <a href="https://xsen.fun">← Back to XSEN</a>
+        <h1>🏈 XSEN SOONERS</h1>
+        <div class="tagline">Your 24/7 OU Superfan Companion</div>
+    </div>
+    
+    <div class="container">
+        <!-- Free Radio Section -->
+        <div class="radio-section">
+            <h2>🔴 XSEN Radio - Sooners Channel</h2>
+            <div class="status">● LIVE NOW</div>
+            
+            <div style="margin: 30px 0;">
+                <button id="play-btn" onclick="togglePlay()">
+                    ▶️ LISTEN LIVE
+                </button>
+            </div>
+            
+            <audio id="radio-player" preload="none">
+                <!-- Replace with your actual AzuraCast stream URL -->
+                <source src="YOUR_AZURACAST_STREAM_URL" type="audio/mpeg">
+            </audio>
+            
+            <div class="free-badge">100% FREE • No Signup Required</div>
+            <p class="note">24/7 OU Sports Radio • AutoDJ + Live Shows</p>
+        </div>
+        
+        <!-- Upgrade Section -->
+        <div class="upgrade-section">
+            <div class="upgrade-header">
+                <h2>Want More Than Just Radio?</h2>
+                <p>Upgrade to unlock AI-powered OU insights & video highlights</p>
+            </div>
+            
+            <div class="comparison">
+                <!-- Free Tier -->
+                <div class="tier-box">
+                    <div class="tier-label">FREE</div>
+                    <div class="price-display">
+                        $0<span class="period">/mo</span>
+                    </div>
+                    
+                    <ul class="feature-list">
+                        <li>XSEN Radio (24/7)</li>
+                        <li>Live OU sports coverage</li>
+                        <li>No signup required</li>
+                    </ul>
+                    
+                    <ul class="feature-list disabled">
+                        <li>Boomer AI chat</li>
+                        <li>Video highlights</li>
+                        <li>Advanced stats</li>
+                    </ul>
+                </div>
+                
+                <!-- Basic Tier -->
+                <div class="tier-box premium">
+                    <div class="tier-label">BASIC</div>
+                    <div class="price-display">
+                        $9.99<span class="period">/mo</span>
+                    </div>
+                    
+                    <ul class="feature-list">
+                        <li>Everything in Free</li>
+                        <li><strong>Chat with Boomer AI</strong><br>
+                            <small style="color: #666;">100 messages/month (~3 per day)</small>
+                        </li>
+                        <li><strong>4,700+ Video Highlights</strong><br>
+                            <small style="color: #666;">Every big play, instantly searchable</small>
+                        </li>
+                        <li><strong>Live Stats & Rosters</strong><br>
+                            <small style="color: #666;">Up-to-date team information</small>
+                        </li>
+                        <li>Cancel anytime</li>
+                    </ul>
+                    
+                    <!-- Replace with your actual Stripe Payment Link -->
+                    <a href="https://buy.stripe.com/eVq7sLegK1gRaL4a1hbjW01" class="cta-button">
+                        Start 3-Day Free Trial
+                    </a>
+                    
+                    <p class="note" style="text-align: center; margin-top: 15px;">
+                        <small>Then $9.99/month • Cancel anytime</small>
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Examples -->
+            <div class="examples-section">
+                <h3>What You Can Ask Boomer:</h3>
+                <div class="examples-grid">
+                    <div class="example-box">💬 "Who's starting QB this week?"</div>
+                    <div class="example-box">🎥 "Show me Baker Mayfield highlights"</div>
+                    <div class="example-box">📊 "What's our record vs Texas?"</div>
+                    <div class="example-box">🏆 "Who won the Heisman in 1978?"</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p style="font-size: 18px; margin-bottom: 10px;">
+                Already a member? <a href="https://boomerbot.fun/app.html">Login here</a>
+            </p>
+            <p style="font-size: 14px; opacity: 0.8; margin-top: 20px;">
+                Boomer Sooner! 🏈 Part of the <a href="https://xsen.fun">XSEN Network</a>
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        let isPlaying = false;
+        const player = document.getElementById('radio-player');
+        const playBtn = document.getElementById('play-btn');
+        
+        function togglePlay() {
+            if (isPlaying) {
+                player.pause();
+                playBtn.innerHTML = '▶️ LISTEN LIVE';
+                playBtn.style.background = '#841617';
+                isPlaying = false;
+            } else {
+                player.play().catch(function(error) {
+                    console.error('Playback failed:', error);
+                    playBtn.innerHTML = '⚠️ Stream Unavailable';
+                    playBtn.style.background = '#999';
+                });
+                playBtn.innerHTML = '⏸️ PAUSE';
+                playBtn.style.background = '#4CAF50';
+                isPlaying = true;
+            }
+        }
+        
+        player.addEventListener('error', function() {
+            playBtn.innerHTML = '⚠️ Stream Unavailable';
+            playBtn.style.background = '#999';
+        });
+    </script>
+</body>
+</html>
