@@ -1,65 +1,101 @@
 const express = require('express');
 const path = require('path');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// CRITICAL: Health check MUST be first and fast
-app.get('/health', (req, res) => {
-    res.status(200).send('OK');
-});
+/* ===============================
+   HEALTH CHECKS (Railway needs fast response)
+================================ */
+app.get('/health', (req, res) => res.status(200).send('OK'));
+app.get('/healthz', (req, res) => res.status(200).send('OK'));
 
-app.get('/healthz', (req, res) => {
-    res.status(200).send('OK');
-});
 
-// Serve static files AFTER health check
-app.use(express.static(__dirname));
+/* ===============================
+   HELPER: Extract subdomain
+================================ */
+function getSubdomain(hostname) {
+    const parts = hostname.split('.');
+    
+    // localhost support
+    if (hostname.includes('localhost')) return null;
 
-// Main routing
+    // xsen.fun → no subdomain
+    if (parts.length <= 2) return null;
+
+    return parts[0];
+}
+
+
+/* ===============================
+   ROOT ROUTING (Subdomain Aware)
+================================ */
 app.get('/', (req, res) => {
     const hostname = req.hostname;
-    
-    console.log('Serving:', hostname, req.path);
-    
-    // sooners.xsen.fun → sooners.html
-    if (hostname === 'sooners.xsen.fun') {
-        console.log('Serving sooners.html');
-        return res.sendFile(path.join(__dirname, 'sooners.html'));
+    const subdomain = getSubdomain(hostname);
+
+    console.log('Host:', hostname, 'Subdomain:', subdomain);
+
+    // If channel subdomain exists
+    if (subdomain) {
+        const channelFile = path.join(__dirname, 'public', 'channels', `${subdomain}.html`);
+
+        return res.sendFile(channelFile, (err) => {
+            if (err) {
+                console.log('Channel not found. Serving main site.');
+                return res.sendFile(path.join(__dirname, 'public', 'index.html'));
+            }
+        });
     }
-    
-    // xsen.fun (main site)
-    console.log('Serving index.html');
-    return res.sendFile(path.join(__dirname, 'index.html'));
+
+    // Main domain
+    return res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// /landing.html route
-app.get('/landing.html', (req, res) => {
-    return res.sendFile(path.join(__dirname, 'landing.html'));
-});
 
-// /channels.html route
-app.get('/channels.html', (req, res) => {
-    return res.sendFile(path.join(__dirname, 'channels.html'));
-});
-
-// sooners.xsen.fun/app → chat
+/* ===============================
+   CHANNEL APP ROUTE
+   sooners.xsen.fun/app
+================================ */
 app.get('/app', (req, res) => {
-    if (req.hostname === 'sooners.xsen.fun') {
-        return res.sendFile(path.join(__dirname, 'sooners-app.html'));
+    const subdomain = getSubdomain(req.hostname);
+
+    if (!subdomain) {
+        return res.status(404).send('Not found');
     }
-    return res.status(404).send('Not found');
+
+    const appFile = path.join(__dirname, 'public', 'apps', `${subdomain}-app.html`);
+
+    return res.sendFile(appFile, (err) => {
+        if (err) {
+            return res.status(404).send('Channel app not found');
+        }
+    });
 });
 
-// Start server
+
+/* ===============================
+   STATIC FILES (AFTER routing)
+================================ */
+app.use(express.static(path.join(__dirname, 'public')));
+
+
+/* ===============================
+   START SERVER
+================================ */
 const server = app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`XSEN Server running on port ${PORT}`);
 });
 
-// Handle shutdown gracefully
+
+/* ===============================
+   GRACEFUL SHUTDOWN
+================================ */
 process.on('SIGTERM', () => {
-    console.log('SIGTERM received, shutting down gracefully');
+    console.log('SIGTERM received, shutting down...');
     server.close(() => {
         console.log('Server closed');
         process.exit(0);
     });
 });
+
