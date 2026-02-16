@@ -1,53 +1,26 @@
 const express = require('express');
-const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Serve static files
-app.use(express.static(__dirname));
-
-// Health check
-app.get('/health', (req, res) => {
-    res.status(200).send('OK');
-});
-
-// Subdomain routing
-app.get('/', (req, res) => {
-    const hostname = req.hostname;
+app.get('*', (req, res) => {
+    console.log('========== REQUEST RECEIVED ==========');
+    console.log('URL:', req.url);
+    console.log('Hostname:', req.hostname);
+    console.log('Method:', req.method);
+    console.log('======================================');
     
-    console.log('Hostname:', hostname); // DEBUG
-    
-    // sooners.xsen.fun
-    if (hostname === 'sooners.xsen.fun') {
-        console.log('Serving sooners.html'); // DEBUG
-        res.sendFile(path.join(__dirname, 'sooners.html'));
-    }
-    // xsen.fun/landing.html
-    else if (req.path === '/landing.html') {
-        res.sendFile(path.join(__dirname, 'landing.html'));
-    }
-    // xsen.fun/channels.html
-    else if (req.path === '/channels.html') {
-        res.sendFile(path.join(__dirname, 'channels.html'));
-    }
-    // xsen.fun (main site)
-    else if (hostname === 'xsen.fun' || hostname.includes('railway.app')) {
-        res.sendFile(path.join(__dirname, 'index.html'));
-    }
-    else {
-        res.status(404).send('Not found');
-    }
-});
-
-// sooners.xsen.fun/app route
-app.get('/app', (req, res) => {
-    if (req.hostname === 'sooners.xsen.fun') {
-        res.sendFile(path.join(__dirname, 'sooners-app.html'));
-    } else {
-        res.status(404).send('Not found');
-    }
+    res.send(`
+        <h1>XSEN SERVER IS WORKING!</h1>
+        <p>URL: ${req.url}</p>
+        <p>Hostname: ${req.hostname}</p>
+        <p>Time: ${new Date().toISOString()}</p>
+    `);
 });
 
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on port ${PORT}`); // FIXED
+    console.log('===========================================');
+    console.log(`SERVER LISTENING ON PORT ${PORT}`);
+    console.log('Server is ready to receive requests');
+    console.log('Binding to: 0.0.0.0');
+    console.log('===========================================');
 });
