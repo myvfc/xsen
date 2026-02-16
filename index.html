@@ -48,7 +48,6 @@
             letter-spacing: 10px;
         }
         
-        /* DESKTOP VIDEO - Fills screen beautifully */
         video {
             position: absolute;
             top: 0;
@@ -287,6 +286,30 @@
             box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4);
         }
         
+        /* VIEW ALL CHANNELS LINK */
+        .view-all-link {
+            text-align: center;
+            margin-top: 50px;
+        }
+        
+        .view-all-link a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 15px 40px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            display: inline-block;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .view-all-link a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: scale(1.05);
+        }
+        
         /* FOOTER */
         .footer {
             background: #000;
@@ -319,7 +342,6 @@
                 background: #000;
             }
             
-            /* MOBILE VIDEO - Shows full XSEN text, positioned higher */
             video {
                 object-fit: contain;
                 object-position: center 15%;
@@ -331,7 +353,6 @@
                 font-size: 48px;
             }
             
-            /* OVERLAY CONTENT - Moved higher up on mobile */
             .video-overlay {
                 padding-bottom: 120px;
                 padding-left: 20px;
@@ -377,15 +398,12 @@
 <body>
     <!-- VIDEO SPLASH SECTION -->
     <div class="video-container">
-        <!-- Placeholder while video loads -->
         <div class="video-placeholder" id="videoPlaceholder"></div>
         
-        <!-- Video plays ONCE and freezes on last frame (no loop) -->
         <video id="mainVideo" autoplay muted playsinline>
             <source src="https://storage.googleapis.com/xsenassets/XSEN.mp4" type="video/mp4">
         </video>
         
-        <!-- Tagline + Button at bottom - fades in after video plays for 8 seconds -->
         <div class="video-overlay" id="videoOverlay">
             <div class="tagline">The eXperience Sports & Entertainment Network</div>
             <a href="#schools" class="enter-button">
@@ -396,7 +414,6 @@
             </a>
         </div>
         
-        <!-- Small scroll indicator always visible -->
         <div class="scroll-indicator" onclick="document.getElementById('schools').scrollIntoView({behavior: 'smooth'})">
             ↓
         </div>
@@ -422,7 +439,7 @@
                         <div>🎥 4,700+ Video Highlights</div>
                         <div>⚡ Live Stats & Analysis</div>
                     </div>
-                    <div class="status-badge status-live">● COMING SOON</div>
+                    <div class="status-badge status-live">● LIVE NOW</div>
                 </a>
                 
                 <!-- SEC Channel - Coming Soon -->
@@ -439,6 +456,13 @@
                     <div class="status-badge status-soon">⏳ COMING SOON</div>
                 </a>
             </div>
+            
+            <!-- NEW: View All Channels Link -->
+            <div class="view-all-link">
+                <a href="/channels.html">
+                    View All Channels →
+                </a>
+            </div>
         </div>
     </div>
     
@@ -452,7 +476,6 @@
     </div>
     
     <script>
-        // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -466,28 +489,25 @@
             });
         });
         
-        // Handle video loading
         const video = document.getElementById('mainVideo');
         const placeholder = document.getElementById('videoPlaceholder');
         const overlay = document.getElementById('videoOverlay');
         
-        // Hide placeholder when video is ready
         video.addEventListener('loadeddata', function() {
             if (placeholder) {
                 placeholder.style.display = 'none';
             }
         });
         
-        // Start overlay fade-in timer only after video starts playing
         video.addEventListener('playing', function() {
             overlay.style.animation = 'fadeIn 1s ease-in forwards';
-            overlay.style.animationDelay = '5s';
+            overlay.style.animationDelay = '6s';
         }, { once: true });
         
-        // Video will automatically freeze on last frame when it ends (no loop)
         video.addEventListener('ended', function() {
             console.log('Video finished - frozen on last frame');
         });
     </script>
 </body>
 </html>
+
