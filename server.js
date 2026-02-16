@@ -10,12 +10,19 @@ app.use(express.static(__dirname));
 app.get('/', (req, res) => {
     const hostname = req.hostname;
     
+    // sooners.xsen.fun
     if (hostname === 'sooners.xsen.fun') {
         res.sendFile(path.join(__dirname, 'sooners.html'));
     }
+    // xsen.fun/landing.html
     else if (req.path === '/landing.html') {
         res.sendFile(path.join(__dirname, 'landing.html'));
     }
+    // xsen.fun/channels.html ← ADD THIS
+    else if (req.path === '/channels.html') {
+        res.sendFile(path.join(__dirname, 'channels.html'));
+    }
+    // xsen.fun (main site)
     else if (hostname === 'xsen.fun' || hostname.includes('railway.app')) {
         res.sendFile(path.join(__dirname, 'index.html'));
     }
