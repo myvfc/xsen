@@ -109,19 +109,25 @@
             transform: scale(1.05);
         }
         
-        .learn-more-link {
-            color: white;
-            text-decoration: none;
-            margin-top: 20px;
-            font-size: 14px;
-            opacity: 0.8;
-            transition: opacity 0.3s;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-        }
-        
-        .learn-more-link:hover {
-            opacity: 1;
-        }
+       .learn-more-link {
+    color: white;
+    text-decoration: none;
+    margin-top: 20px;
+    font-size: 16px;
+    padding: 12px 30px;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    border-radius: 50px;
+    display: inline-block;
+    transition: all 0.3s;
+    background: transparent;
+    backdrop-filter: blur(10px);
+}
+
+.learn-more-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: white;
+    transform: scale(1.05);
+}
         
         /* Small scroll indicator */
         .scroll-indicator {
