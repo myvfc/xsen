@@ -5,7 +5,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 /* ===============================
-   HEALTH CHECKS (Railway needs fast response)
+   HEALTH CHECKS
 ================================ */
 app.get('/health', (req, res) => res.status(200).send('OK'));
 app.get('/healthz', (req, res) => res.status(200).send('OK'));
@@ -16,7 +16,7 @@ app.get('/healthz', (req, res) => res.status(200).send('OK'));
 ================================ */
 function getSubdomain(hostname) {
     const parts = hostname.split('.');
-    
+
     // localhost support
     if (hostname.includes('localhost')) return null;
 
@@ -28,28 +28,25 @@ function getSubdomain(hostname) {
 
 
 /* ===============================
-   ROOT ROUTING (Subdomain Aware)
+   ROOT ROUTING
 ================================ */
 app.get('/', (req, res) => {
-    const hostname = req.hostname;
-    const subdomain = getSubdomain(hostname);
+    const subdomain = getSubdomain(req.hostname);
 
-    console.log('Host:', hostname, 'Subdomain:', subdomain);
+    console.log('Host:', req.hostname, 'Subdomain:', subdomain);
 
-    // If channel subdomain exists
     if (subdomain) {
-        const channelFile = path.join(__dirname, 'public', 'channels', `${subdomain}.html`);
+        const channelFile = path.join(__dirname, `${subdomain}.html`);
 
         return res.sendFile(channelFile, (err) => {
             if (err) {
-                console.log('Channel not found. Serving main site.');
-                return res.sendFile(path.join(__dirname, 'public', 'index.html'));
+                console.log('Channel file not found, serving index.html');
+                return res.sendFile(path.join(__dirname, 'index.html'));
             }
         });
     }
 
-    // Main domain
-    return res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    return res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 
@@ -64,7 +61,7 @@ app.get('/app', (req, res) => {
         return res.status(404).send('Not found');
     }
 
-    const appFile = path.join(__dirname, 'public', 'apps', `${subdomain}-app.html`);
+    const appFile = path.join(__dirname, `${subdomain}-app.html`);
 
     return res.sendFile(appFile, (err) => {
         if (err) {
@@ -77,7 +74,7 @@ app.get('/app', (req, res) => {
 /* ===============================
    STATIC FILES (AFTER routing)
 ================================ */
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(__dirname));
 
 
 /* ===============================
@@ -88,14 +85,9 @@ const server = app.listen(PORT, '0.0.0.0', () => {
 });
 
 
-/* ===============================
-   GRACEFUL SHUTDOWN
-================================ */
 process.on('SIGTERM', () => {
     console.log('SIGTERM received, shutting down...');
     server.close(() => {
-        console.log('Server closed');
         process.exit(0);
     });
 });
-
