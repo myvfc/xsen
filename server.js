@@ -16,7 +16,7 @@ app.get('/', (req, res) => {
     if (hostname === 'sooners.xsen.fun') {
         return res.sendFile(path.join(__dirname, 'sooners.html'));
     }
-    else if (hostname === 'cowboys.xsen.fun') {
+    else if (hostname === 'okstate.xsen.fun') {  // ← FIXED
         return res.sendFile(path.join(__dirname, 'okstate.html'));
     }
     else if (hostname === 'xsen.fun' || hostname.includes('railway.app')) {
@@ -43,7 +43,7 @@ app.get('/app', (req, res) => {
     if (hostname === 'sooners.xsen.fun') {
         return res.sendFile(path.join(__dirname, 'sooners/app.html'));
     }
-    else if (hostname === 'cowboys.xsen.fun') {
+    else if (hostname === 'okstate.xsen.fun') {  // ← FIXED
         return res.sendFile(path.join(__dirname, 'okstate/app.html'));
     }
     else {
@@ -58,7 +58,7 @@ app.get('/login', (req, res) => {
     if (hostname === 'sooners.xsen.fun') {
         return res.sendFile(path.join(__dirname, 'sooners/login.html'));
     }
-    else if (hostname === 'cowboys.xsen.fun') {
+    else if (hostname === 'okstate.xsen.fun') {  // ← FIXED
         return res.sendFile(path.join(__dirname, 'okstate/login.html'));
     }
     else {
@@ -67,7 +67,6 @@ app.get('/login', (req, res) => {
 });
 
 // ─── STATIC FILES LAST ────────────────────────────────
-// Only handles CSS, JS, images etc - NOT index.html for /
 app.use(express.static(__dirname));
 
 // ─── HANDLE SIGTERM GRACEFULLY ────────────────────────
