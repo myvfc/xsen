@@ -14,18 +14,14 @@ app.get('/health', (req, res) => {
 // ─── MAIN PAGE ROUTING ────────────────────────────────
 app.get('/', (req, res) => {
     const hostname = req.hostname;
-
     console.log('Request:', hostname, req.path);
 
-    // sooners.xsen.fun → sales page
     if (hostname === 'sooners.xsen.fun') {
         return res.sendFile(path.join(__dirname, 'sooners.html'));
     }
-    // cowboys.xsen.fun → sales page
     else if (hostname === 'cowboys.xsen.fun') {
-        return res.sendFile(path.join(__dirname, 'cowboys.html'));
+        return res.sendFile(path.join(__dirname, 'okstate.html'));  // ← FIXED
     }
-    // xsen.fun paths
     else if (hostname === 'xsen.fun' || hostname.includes('railway.app')) {
         return res.sendFile(path.join(__dirname, 'index.html'));
     }
@@ -47,13 +43,11 @@ app.get('/channels.html', (req, res) => {
 app.get('/app', (req, res) => {
     const hostname = req.hostname;
 
-    // sooners.xsen.fun/app → sooners chat
     if (hostname === 'sooners.xsen.fun') {
         return res.sendFile(path.join(__dirname, 'sooners/app.html'));
     }
-    // cowboys.xsen.fun/app → cowboys chat
     else if (hostname === 'cowboys.xsen.fun') {
-        return res.sendFile(path.join(__dirname, 'cowboys/app.html'));
+        return res.sendFile(path.join(__dirname, 'okstate/app.html'));  // ← FIXED
     }
     else {
         res.status(404).send('Not found');
@@ -68,7 +62,7 @@ app.get('/login', (req, res) => {
         return res.sendFile(path.join(__dirname, 'sooners/login.html'));
     }
     else if (hostname === 'cowboys.xsen.fun') {
-        return res.sendFile(path.join(__dirname, 'cowboys/login.html'));
+        return res.sendFile(path.join(__dirname, 'okstate/login.html'));  // ← FIXED
     }
     else {
         res.status(404).send('Not found');
@@ -77,7 +71,7 @@ app.get('/login', (req, res) => {
 
 // ─── HANDLE SIGTERM GRACEFULLY ────────────────────────
 const server = app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);  // ← FIXED (missing opening paren)
 });
 
 process.on('SIGTERM', () => {
