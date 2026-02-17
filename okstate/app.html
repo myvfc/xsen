@@ -450,8 +450,10 @@
           const res  = await fetch(CHAT_API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: text,
-            school: 'okstate'})
+          body: JSON.stringify({ 
+          message: text,
+          school: 'okstate'
+          })
           });
 
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
