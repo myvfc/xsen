@@ -500,15 +500,17 @@
         input.value = '';
 
         const thinking = addMsg('🏈 Boomer is thinking…', 'bot');
-
+        
+        let userId = 'anonymous';
         try {
-          let userId = 'anonymous';
-          try {
-            const { data: { session } } = await supabase.auth.getSession();
-            userId = session?.user?.email || session?.user?.id || 'anonymous';
-          } catch (e) {
-            console.warn('Could not get session:', e);
-          }
+        const token = localStorage.getItem('xsen_auth_token');
+        if (token) {
+       const payload = JSON.parse(atob(token.split('.')[1]));
+        userId = payload.email || payload.sub || 'anonymous';
+       }
+       } catch (e) {
+       console.warn('Could not get userId:', e);
+       }
 
           const res = await fetch(CHAT_API_URL, {
             method: 'POST',
