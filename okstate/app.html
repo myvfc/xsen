@@ -70,10 +70,29 @@
     }
 
     /* =========================
+       MANAGE ACCOUNT BUTTON
+    ========================= */
+    #manageSubBtn {
+      margin-left: auto;
+      background: none;
+      border: 1px solid rgba(255,255,255,0.5);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      margin-right: 10px;
+      white-space: nowrap;
+    }
+
+    #manageSubBtn:hover {
+      background: rgba(255,255,255,0.15);
+    }
+
+    /* =========================
        LIVE / OFFLINE BADGE
     ========================= */
     .live-badge {
-      margin-left: auto;
       font-size: 12px;
       font-weight: 800;
       padding: 5px 10px;
@@ -341,7 +360,7 @@
 
     <!-- HEADER -->
     <header class="chat-header">
-      <a href="https://cowboys.xsen.fun" class="header-logo-link" target="_blank" rel="noopener">
+      <a href="https://okstate.xsen.fun" class="header-logo-link" target="_blank" rel="noopener">
         <img
           src="https://raw.githubusercontent.com/myvfc/xsen-images/main/Cowboys%20Logo.png"
           alt="XSEN Cowboys"
@@ -349,6 +368,9 @@
         />
       </a>
       <span class="header-title">🤠 Pistol Pete</span>
+
+      <!-- MANAGE ACCOUNT -->
+      <button id="manageSubBtn" type="button">⚙️ Account</button>
 
       <!-- LIVE/OFFLINE BADGE -->
       <span id="liveBadge" class="live-badge offline">⚪ OFFLINE</span>
@@ -400,9 +422,9 @@
 
     <!-- NAV BAR -->
     <div class="nav-bar">
-      <a href="https://cowboys.xsen.fun">← Channel Home</a>
+      <a href="https://okstate.xsen.fun">← Channel Home</a>
       <a href="https://xsen.fun">XSEN Network</a>
-      <a href="https://cowboys.xsen.fun">Subscribe</a>
+      <a href="https://okstate.xsen.fun">Subscribe</a>
     </div>
 
   </div>
@@ -410,7 +432,6 @@
 
   <script>
     // ─── CONFIG ──────────────────────────────────────────
-    
     const ORCHESTRATOR_URL  = 'https://glorious-appreciation-production.up.railway.app';
     const CHAT_API_URL      = 'https://glorious-appreciation-production.up.railway.app/chat';
     const FAN_MESSAGE_API   = 'https://xsen-fan-messages-production.up.railway.app/fan-message';
@@ -434,8 +455,31 @@
       const fanMsgInput   = document.getElementById('fanMessage');
       const sendFanMsgBtn = document.getElementById('sendFanMessage');
       const fanMsgStatus  = document.getElementById('fanMessageStatus');
+      const manageSubBtn  = document.getElementById('manageSubBtn');
 
       let firstVideoPlayed = false;
+
+      // ─── MANAGE ACCOUNT ───────────────────────────────
+      manageSubBtn?.addEventListener('click', async () => {
+        const token = localStorage.getItem('xsen_auth_token');
+        if (!token) {
+          window.location.href = 'https://okstate.xsen.fun';
+          return;
+        }
+        try {
+          const res  = await fetch(`${ORCHESTRATOR_URL}/api/create-portal-session`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+          const data = await res.json();
+          if (data.url) window.location.href = data.url;
+        } catch (e) {
+          alert('Could not open account management. Please try again.');
+        }
+      });
 
       // ─── CHAT FORM ────────────────────────────────────
       form?.addEventListener('submit', async (e) => {
@@ -452,10 +496,10 @@
           const res  = await fetch(CHAT_API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-          message: text,
-          school: 'okstate'
-          })
+            body: JSON.stringify({ 
+              message: text,
+              school: 'okstate'
+            })
           });
 
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -620,3 +664,4 @@
 
 </body>
 </html>
+
