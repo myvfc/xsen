@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hook AI — Your Texas Longhorns Superfan Assistant</title>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #BF5700 0%, #333333 100%);
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 60px 20px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      margin-bottom: 40px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      color: #BF5700;
+      margin-bottom: 20px;
+    }
+
+    .hero .emoji {
+      font-size: 4rem;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      font-size: 1.3rem;
+      color: #666;
+      margin-bottom: 30px;
+    }
+
+    .cta-button {
+      display: inline-block;
+      padding: 18px 40px;
+      background: #BF5700;
+      color: white;
+      text-decoration: none;
+      border-radius: 50px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(191, 87, 0, 0.4);
+    }
+
+    .cta-button:hover {
+      background: #a04a00;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(191, 87, 0, 0.6);
+    }
+
+    /* Features Section */
+    .section {
+      background: white;
+      padding: 40px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+
+    .section h2 {
+      color: #BF5700;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+      margin-top: 30px;
+    }
+
+    .feature-card {
+      padding: 25px;
+      background: #f9f9f9;
+      border-radius: 12px;
+      border-left: 4px solid #BF5700;
+    }
+
+    .feature-card h3 {
+      color: #BF5700;
+      margin-bottom: 10px;
+      font-size: 1.3rem;
+    }
+
+    .feature-card p {
+      color: #666;
+      font-size: 0.95rem;
+    }
+
+    /* Examples Section */
+    .examples {
+      background: #f5f5f5;
+      padding: 30px;
+      border-radius: 12px;
+      margin: 25px 0;
+    }
+
+    .example-item {
+      background: white;
+      padding: 15px 20px;
+      margin: 12px 0;
+      border-radius: 8px;
+      border-left: 3px solid #BF5700;
+    }
+
+    .example-item strong {
+      color: #BF5700;
+    }
+
+    /* Pricing */
+    .pricing {
+      text-align: center;
+      padding: 40px;
+      background: linear-gradient(135deg, #BF5700, #a04a00);
+      color: white;
+      border-radius: 15px;
+      margin: 30px 0;
+    }
+
+    .pricing .price {
+      font-size: 3.5rem;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+
+    .pricing .trial {
+      font-size: 1.2rem;
+      margin-bottom: 25px;
+    }
+
+    /* FAQ */
+    .faq-item {
+      background: #f9f9f9;
+      padding: 20px;
+      margin: 15px 0;
+      border-radius: 10px;
+      border-left: 4px solid #BF5700;
+    }
+
+    .faq-item h3 {
+      color: #BF5700;
+      margin-bottom: 10px;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 30px;
+      color: white;
+      margin-top: 40px;
+    }
+
+    .footer a {
+      color: white;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2rem;
+      }
+      
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Hero -->
+    <div class="hero">
+      <div class="emoji">🤘</div>
+      <h1>Hook AI</h1>
+      <p>Your All-in-One Texas Longhorns Superfan Hub</p>
+      <a href="https://longhorns.xsen.fun/app" class="cta-button">Start Chatting — Hook 'em! 🤘</a>
+    </div>
+
+    <!-- Problem/Solution -->
+    <div class="section">
+      <h2>Tired of Searching Everywhere for Texas Sports Info?</h2>
+      <p style="text-align: center; font-size: 1.1rem; color: #666; margin-top: 20px;">
+        We get it. You want instant answers about the Longhorns — scores, stats, highlights, history. 
+        But you're bouncing between ESPN, Twitter, YouTube, the athletic site... it's exhausting.
+      </p>
+      <p style="text-align: center; font-size: 1.2rem; color: #BF5700; margin-top: 30px; font-weight: bold;">
+        Hook AI brings everything together in one place. Just ask — and get answers instantly.
+      </p>
+    </div>
+
+    <!-- What Hook Can Do -->
+    <div class="section">
+      <h2>Ask Hook Anything About Texas Sports</h2>
+      
+      <div class="examples">
+        <div class="example-item">
+          <strong>You:</strong> "What's the Texas football score?"<br>
+          <strong>Hook:</strong> Returns live score, stats, and game summary
+        </div>
+        
+        <div class="example-item">
+          <strong>You:</strong> "Show me Vince Young highlights"<br>
+          <strong>Hook:</strong> Instant video highlights from the 2006 Rose Bowl and more
+        </div>
+        
+        <div class="example-item">
+          <strong>You:</strong> "Texas vs Oklahoma all-time record"<br>
+          <strong>Hook:</strong> Complete series history with memorable games
+        </div>
+        
+        <div class="example-item">
+          <strong>You:</strong> "When's the next basketball game?"<br>
+          <strong>Hook:</strong> Full schedule with times and opponents
+        </div>
+        
+        <div class="example-item">
+          <strong>You:</strong> "Texas softball rankings"<br>
+          <strong>Hook:</strong> Current rankings and season stats
+        </div>
+        
+        <div class="example-item">
+          <strong>You:</strong> "Hook 'em trivia!"<br>
+          <strong>Hook:</strong> Fun trivia questions to test your Longhorns knowledge
+        </div>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div class="section">
+      <h2>Everything You Need in One Place</h2>
+      
+      <div class="features-grid">
+        <div class="feature-card">
+          <h3>🤖 AI Chat Assistant</h3>
+          <p>Talk to Hook like a friend. Ask anything about Texas sports and get instant, accurate answers.</p>
+        </div>
+        
+        <div class="feature-card">
+          <h3>🎥 3,500+ Video Highlights</h3>
+          <p>Relive the greatest moments — Vince Young, Colt McCoy, Earl Campbell, and more.</p>
+        </div>
+        
+        <div class="feature-card">
+          <h3>📊 Live Stats & Scores</h3>
+          <p>Real-time scores, schedules, and stats for football, basketball, baseball, and all Texas sports.</p>
+        </div>
+        
+        <div class="feature-card">
+          <h3>📻 Live Fan Cast Radio</h3>
+          <p>Listen to live Longhorns fan commentary and discussions during games.</p>
+        </div>
+        
+        <div class="feature-card">
+          <h3>🏆 Complete History</h3>
+          <p>Explore national championships, Heisman winners, legendary players, and iconic moments.</p>
+        </div>
+        
+        <div class="feature-card">
+          <h3>🧠 Longhorns Trivia</h3>
+          <p>Test your knowledge with hundreds of Texas sports trivia questions.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pricing -->
+    <div class="pricing">
+      <h2>Join the Longhorns Nation</h2>
+      <div class="price">$9.99<span style="font-size: 1.5rem;">/month</span></div>
+      <div class="trial">3-Day Free Trial — Cancel Anytime</div>
+      <a href="https://longhorns.xsen.fun/app" class="cta-button" style="background: white; color: #BF5700;">
+        Start Your Free Trial 🤘
+      </a>
+    </div>
+
+    <!-- FAQ -->
+    <div class="section">
+      <h2>Frequently Asked Questions</h2>
+      
+      <div class="faq-item">
+        <h3>What sports does Hook cover?</h3>
+        <p>All Texas sports — football, basketball, baseball, softball, volleyball, soccer, and more. If it's Longhorns, we've got it.</p>
+      </div>
+      
+      <div class="faq-item">
+        <h3>How does the 3-day trial work?</h3>
+        <p>Sign up now and get full access for 3 days free. If you love it (you will), you'll be charged $9.99/month. Cancel anytime before the trial ends with no charge.</p>
+      </div>
+      
+      <div class="faq-item">
+        <h3>Can I cancel anytime?</h3>
+        <p>Absolutely. No contracts, no commitments. Cancel with one click from your account settings.</p>
+      </div>
+      
+      <div class="faq-item">
+        <h3>What makes Hook different from ESPN or other apps?</h3>
+        <p>Hook is built specifically for Texas fans. It combines live stats, historical data, video highlights, and AI chat into one seamless experience. No ads, no clutter — just pure Longhorns content.</p>
+      </div>
+      
+      <div class="faq-item">
+        <h3>Is this official from UT Athletics?</h3>
+        <p>No, Hook AI is an independent fan platform. We aggregate publicly available data and provide it in an easy-to-use format for Longhorns fans.</p>
+      </div>
+    </div>
+
+    <!-- Final CTA -->
+    <div class="hero">
+      <h2 style="color: #BF5700; margin-bottom: 20px;">Ready to Hook 'em? 🤘</h2>
+      <p>Join thousands of Longhorns fans getting instant access to everything Texas sports.</p>
+      <a href="https://longhorns.xsen.fun/app" class="cta-button">Start Free Trial Now</a>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>&copy; 2026 XSEN — The eXperience Sports Entertainment Network</p>
+      <p><a href="https://xsen.fun">Explore All Schools</a> | <a href="https://xsen.fun/channels.html">Browse Channels</a></p>
+    </div>
+
+  </div>
+
+</body>
+</html>
