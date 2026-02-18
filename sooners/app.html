@@ -500,7 +500,8 @@
         input.value = '';
 
         const thinking = addMsg('🏈 Boomer is thinking…', 'bot');
-        
+
+        try {
         let userId = 'anonymous';
         try {
         const token = localStorage.getItem('xsen_auth_token');
