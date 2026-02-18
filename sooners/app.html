@@ -493,14 +493,18 @@
         const thinking = addMsg('🏈 Boomer is thinking…', 'bot');
 
         try {
-          const res  = await fetch(CHAT_API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-        message: text,
-        school: 'sooners'
-    }) 
-          });
+         const { data: { session } } = await supabase.auth.getSession();
+         const userId = session?.user?.email || session?.user?.id || 'anonymous';
+
+         const res = await fetch(CHAT_API_URL, {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify({ 
+         message: text,
+         school: 'sooners',
+         userId: userId
+         })
+         });
 
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
           const data = await res.json();
