@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hook — XSEN Longhorns Chat</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #BF5700 0%, #333333 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navigation Bar */
+    .top-nav {
+      background: rgba(0, 0, 0, 0.9);
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #BF5700;
+    }
+
+    .top-nav-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .top-nav-left img {
+      height: 40px;
+      width: auto;
+    }
+
+    .top-nav-left h1 {
+      color: white;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: #BF5700;
+    }
+
+    .subscribe-btn {
+      background: #BF5700;
+      color: white;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .subscribe-btn:hover {
+      background: #a04a00;
+      transform: scale(1.05);
+    }
+
+    /* Main Container */
+    .container {
+      flex: 1;
+      max-width: 900px;
+      margin: 20px auto;
+      width: 100%;
+      padding: 0 15px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header Card */
+    .header-card {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .header-left h2 {
+      font-size: 1.8rem;
+      color: #BF5700;
+    }
+
+    .live-badge {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .live-badge.live {
+      background: #ff2d2d;
+      color: white;
+      animation: pulse 2s infinite;
+    }
+
+    .live-badge.offline {
+      background: #e0e0e0;
+      color: #666;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-listen {
+      background: #BF5700;
+      color: white;
+    }
+
+    .btn-listen:hover {
+      background: #a04a00;
+      transform: translateY(-1px);
+    }
+
+    .btn-message {
+      background: white;
+      color: #BF5700;
+      border: 2px solid #BF5700;
+    }
+
+    .btn-message:hover {
+      background: #BF5700;
+      color: white;
+    }
+
+    .btn-donate {
+      background: #000000;
+      color: #BF5700;
+      border: 2px solid #BF5700;
+    }
+
+    .btn-donate:hover {
+      background: #BF5700;
+      color: white;
+    }
+
+    /* Chat Box */
+    .chat-box {
+      flex: 1;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-height: 500px;
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      line-height: 1.5;
+      word-wrap: break-word;
+    }
+
+    .message.user {
+      align-self: flex-end;
+      background: #BF5700;
+      color: white;
+    }
+
+    .message.bot {
+      align-self: flex-start;
+      background: #f0f0f0;
+      color: #333;
+    }
+
+    .message.bot strong {
+      color: #BF5700;
+    }
+
+    .message.bot a {
+      color: #BF5700;
+      text-decoration: underline;
+    }
+
+    .message.bot ul,
+    .message.bot ol {
+      margin-left: 20px;
+      margin-top: 8px;
+    }
+
+    /* Video Embed */
+    .video-container {
+      margin: 10px 0;
+      border-radius: 8px;
+      overflow: hidden;
+      max-width: 100%;
+    }
+
+    .video-container iframe {
+      width: 100%;
+      height: 315px;
+      border: none;
+    }
+
+    /* Chat Input */
+    .chat-input-wrapper {
+      padding: 15px;
+      background: #f9f9f9;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .chat-form {
+      display: flex;
+      gap: 10px;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid #BF5700;
+      border-radius: 25px;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .chat-input:focus {
+      border-color: #a04a00;
+    }
+
+    .chat-submit {
+      background: #BF5700;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 25px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .chat-submit:hover {
+      background: #a04a00;
+      transform: scale(1.05);
+    }
+
+    /* Audio Player Card */
+    .audio-card {
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      margin-top: 15px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      border-left: 4px solid #BF5700;
+    }
+
+    .audio-card h3 {
+      color: #BF5700;
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+    }
+
+    .audio-card audio {
+      width: 100%;
+    }
+
+    /* Fan Message Panel */
+    .fan-message-panel {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 15px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .fan-message-panel h3 {
+      color: #BF5700;
+      margin-bottom: 15px;
+    }
+
+    .fan-message-panel input,
+    .fan-message-panel textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 2px solid #BF5700;
+      border-radius: 8px;
+      font-size: 0.95rem;
+    }
+
+    .fan-message-panel textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .fan-message-panel button {
+      background: #BF5700;
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .fan-message-panel button:hover {
+      background: #a04a00;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .top-nav {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .header-card {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .message {
+        max-width: 90%;
+      }
+
+      .video-container iframe {
+        height: 200px;
+      }
+    }
+
+    /* Scrollbar Styling */
+    .chat-messages::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .chat-messages::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: #BF5700;
+      border-radius: 4px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb:hover {
+      background: #a04a00;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <div class="top-nav-left">
+      <img src="https://raw.githubusercontent.com/myvfc/xsen/main/Longhorns%20Logo.png" alt="Texas Longhorns Logo" onerror="this.style.display='none'">
+      <h1>🤘 Hook</h1>
+    </div>
+    <div class="nav-links">
+      <a href="https://longhorns.xsen.fun">Channel Home</a>
+      <a href="https://xsen.fun">XSEN Network</a>
+      <a href="https://longhorns.xsen.fun" class="subscribe-btn">Subscribe</a>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="container">
+
+    <!-- Header Card -->
+    <div class="header-card">
+      <div class="header-left">
+        <h2>🤘 Hook AI</h2>
+        <span class="live-badge offline" id="liveBadge">⚪ OFFLINE</span>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-listen" id="listenBtn">🎙️ Listen Live</button>
+        <button class="btn btn-message" id="messageBtn">💬 Message Broadcaster</button>
+        <a href="https://thebotosphere.com" target="_blank" class="btn btn-donate">🎁 Donate</a>
+      </div>
+    </div>
+
+    <!-- Chat Box -->
+    <div class="chat-box">
+      <div class="chat-messages" id="chatMessages">
+        <div class="message bot">
+          Hook 'em! 🤘 Ask me anything about Texas Longhorns sports — scores, stats, highlights, history, and more!
+        </div>
+      </div>
+      <div class="chat-input-wrapper">
+        <form class="chat-form" id="chatForm">
+          <input 
+            type="text" 
+            class="chat-input" 
+            id="chatInput" 
+            placeholder="Ask Hook…" 
+            autocomplete="off"
+            required
+          />
+          <button type="submit" class="chat-submit">Send</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Audio Player (Hidden by default) -->
+    <div class="audio-card" id="audioCard" style="display: none;">
+      <h3>🎙️ Hook Live Radio</h3>
+      <audio id="audioPlayer" controls>
+        <source src="https://a12.asurahosting.com/listen/longhorns_radio/radio.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio>
+    </div>
+
+    <!-- Fan Message Panel (Hidden by default) -->
+    <div class="fan-message-panel" id="fanMessagePanel" style="display: none;">
+      <h3>💬 Message the Broadcaster</h3>
+      <input type="text" id="fanName" placeholder="Your Name (optional)" />
+      <textarea id="fanMessage" placeholder="Your message to the broadcaster..." required></textarea>
+      <button id="sendFanMessage">Send Message</button>
+    </div>
+
+  </div>
+
+  <script>
+    // ─── CONFIGURATION ────────────────────────────────────
+    const ORCHESTRATOR_URL  = 'https://glorious-appreciation-production.up.railway.app';
+    const CHAT_API_URL      = 'https://glorious-appreciation-production.up.railway.app/chat';
+    const FAN_MESSAGE_API   = 'https://xsen-fan-messages-production.up.railway.app/fan-message';
+    const LIVE_STATUS_URL   = 'https://xsen-fan-messages-production.up.railway.app/live-status';
+    const LIVE_AUDIO_STREAM = 'https://a12.asurahosting.com/listen/longhorns_radio/radio.mp3';
+
+    // ─── DOM ELEMENTS ─────────────────────────────────────
+    const chatMessages      = document.getElementById('chatMessages');
+    const chatForm          = document.getElementById('chatForm');
+    const chatInput         = document.getElementById('chatInput');
+    const listenBtn         = document.getElementById('listenBtn');
+    const messageBtn        = document.getElementById('messageBtn');
+    const audioCard         = document.getElementById('audioCard');
+    const audioPlayer       = document.getElementById('audioPlayer');
+    const fanMessagePanel   = document.getElementById('fanMessagePanel');
+    const sendFanMessage    = document.getElementById('sendFanMessage');
+    const liveBadge         = document.getElementById('liveBadge');
+
+    // ─── ADD MESSAGE TO CHAT ──────────────────────────────
+    function addMsg(text, sender = 'bot') {
+      const msg = document.createElement('div');
+      msg.className = `message ${sender}`;
+      msg.textContent = text;
+      chatMessages.appendChild(msg);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      return msg;
+    }
+
+    // ─── RENDER BOT RESPONSE WITH MARKDOWN/VIDEOS ─────────
+    function renderResponse(text) {
+      const msg = document.createElement('div');
+      msg.className = 'message bot';
+
+      // Convert **bold** to <strong>
+      text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+      // Convert URLs to links
+      text = text.replace(
+        /(https?:\/\/[^\s]+)/g,
+        '<a href="$1" target="_blank">$1</a>'
+      );
+
+      // Convert newlines to <br>
+      text = text.replace(/\n/g, '<br>');
+
+      msg.innerHTML = text;
+
+      // Check for YouTube embeds
+      const youtubeMatch = text.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+      if (youtubeMatch) {
+        const videoId = youtubeMatch[1];
+        const iframe = document.createElement('div');
+        iframe.className = 'video-container';
+        iframe.innerHTML = `
+          <iframe 
+            src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+          </iframe>
+        `;
+        msg.appendChild(iframe);
+      }
+
+      chatMessages.appendChild(msg);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // ─── CHAT FORM HANDLER ────────────────────────────────
+    chatForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const text = chatInput.value.trim();
+      if (!text) return;
+
+      addMsg(text, 'user');
+      chatInput.value = '';
+
+      const thinking = addMsg('🤘 Hook is thinking…', 'bot');
+
+      try {
+        const res = await fetch(CHAT_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            message: text,
+            school: 'longhorns'
+          })
+        });
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        const data = await res.json();
+        thinking.remove();
+
+        if (!data?.response) {
+          addMsg("Hook 'em! I didn't catch that — try again.", 'bot');
+          return;
+        }
+
+        renderResponse(data.response);
+
+      } catch (err) {
+        console.error('Chat error:', err);
+        thinking.remove();
+        addMsg("Sorry, Longhorn — couldn't reach Hook right now.", 'bot');
+      }
+    });
+
+    // ─── LISTEN LIVE BUTTON ───────────────────────────────
+    listenBtn?.addEventListener('click', () => {
+      if (audioCard.style.display === 'none') {
+        audioCard.style.display = 'block';
+        audioPlayer.src = LIVE_AUDIO_STREAM;
+        audioPlayer.play();
+        listenBtn.textContent = '⏸️ Stop Listening';
+      } else {
+        audioCard.style.display = 'none';
+        audioPlayer.pause();
+        audioPlayer.src = '';
+        listenBtn.textContent = '🎙️ Listen Live';
+      }
+    });
+
+    // ─── MESSAGE BROADCASTER BUTTON ───────────────────────
+    messageBtn?.addEventListener('click', () => {
+      fanMessagePanel.style.display = 
+        fanMessagePanel.style.display === 'none' ? 'block' : 'none';
+    });
+
+    // ─── SEND FAN MESSAGE ─────────────────────────────────
+    sendFanMessage?.addEventListener('click', async () => {
+      const name    = document.getElementById('fanName').value.trim();
+      const message = document.getElementById('fanMessage').value.trim();
+
+      if (!message) {
+        alert('Please enter a message');
+        return;
+      }
+
+      try {
+        const res = await fetch(FAN_MESSAGE_API, {
+          method: 'POST',
+          body: new URLSearchParams({
+            name: name || 'Anonymous Fan',
+            message,
+            source: 'Hook Live'
+          })
+        });
+
+        if (res.ok) {
+          alert('Message sent to broadcaster! 🤘');
+          document.getElementById('fanName').value = '';
+          document.getElementById('fanMessage').value = '';
+          fanMessagePanel.style.display = 'none';
+        } else {
+          alert('Failed to send message. Try again.');
+        }
+      } catch (err) {
+        console.error('Fan message error:', err);
+        alert('Failed to send message. Try again.');
+      }
+    });
+
+    // ─── LIVE STATUS CHECK ────────────────────────────────
+    async function updateLiveStatus() {
+      if (!liveBadge) return;
+
+      try {
+        const res  = await fetch(LIVE_STATUS_URL, { cache: 'no-store' });
+        const data = await res.json();
+
+        if (data.isLive) {
+          liveBadge.textContent = '🔴 LIVE';
+          liveBadge.className   = 'live-badge live';
+        } else {
+          liveBadge.textContent = '⚪ OFFLINE';
+          liveBadge.className   = 'live-badge offline';
+        }
+      } catch (e) {
+        console.warn('Live status check failed:', e);
+      }
+    }
+
+    updateLiveStatus();
+    setInterval(updateLiveStatus, 20000);
+
+  </script>
+
+</body>
+</html>
