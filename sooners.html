@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<l!DOCTYPE htm>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -149,19 +149,38 @@
             transform: translateY(-2px);
         }
 
-        .listen-btn .live-dot {
-            width: 10px;
-            height: 10px;
-            background: #ff4444;
+        .listen-btn .status-dot {
+            width: 11px;
+            height: 11px;
             border-radius: 50%;
-            animation: pulse 1.4s infinite;
             flex-shrink: 0;
+            background: #888;
+            transition: background 0.3s;
+        }
+
+        .listen-btn .status-dot.live {
+            background: #ff2d2d;
+            box-shadow: 0 0 6px rgba(255,45,45,0.9);
+            animation: pulse 1.4s infinite;
         }
 
         @keyframes pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.5; transform: scale(1.3); }
         }
+
+        /* live badge inside sticky player */
+        .player-live-badge {
+            font-size: 11px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.4);
+            transition: all 0.25s;
+            white-space: nowrap;
+        }
+        .player-live-badge.live    { background: #ff2d2d; color: #fff; box-shadow: 0 0 6px rgba(255,45,45,0.8); }
+        .player-live-badge.offline { background: #555;    color: #ddd; }
         
         .trial-note {
             margin-top: 15px;
@@ -206,25 +225,9 @@
             flex-shrink: 0;
         }
 
-        .player-label .live-dot {
-            width: 9px;
-            height: 9px;
-            background: #ff4444;
-            border-radius: 50%;
-            animation: pulse 1.4s infinite;
-        }
-
-        .player-iframe-wrap {
+        .player-audio-wrap {
             flex: 1;
             min-width: 0;
-        }
-
-        .player-iframe-wrap iframe {
-            width: 100%;
-            height: 52px;
-            border: none;
-            border-radius: 8px;
-            background: transparent;
         }
 
         .player-close {
@@ -561,8 +564,8 @@
             <p class="subtitle">Chat with Boomer AI • Watch 4,700+ Highlights • Get Live Stats • Listen to OU Radio</p>
             <div class="hero-buttons">
                 <a href="#pricing" class="hero-cta">Start Your Free Trial</a>
-                <button class="listen-btn" onclick="openPlayer()">
-                    <span class="live-dot"></span>
+                <button class="listen-btn">
+                    <span class="status-dot"></span>
                     Listen Live
                 </button>
             </div>
@@ -745,8 +748,8 @@
             <h2 style="font-size: 38px; margin-bottom: 30px;">Ready to Join the XSEN Sooners Community?</h2>
             <div class="hero-buttons">
                 <a href="https://buy.stripe.com/eVq7sLegK1gRaL4a1hbjW01" class="hero-cta">Start Your Free Trial Now</a>
-                <button class="listen-btn" onclick="openPlayer()">
-                    <span class="live-dot"></span>
+                <button class="listen-btn">
+                    <span class="status-dot"></span>
                     Listen Live
                 </button>
             </div>
@@ -771,35 +774,88 @@
     <div class="sticky-player" id="stickyPlayer">
         <div class="player-bar">
             <div class="player-label">
-                <span class="live-dot"></span>
-                XSEN Radio — Sooners
+                <span id="playerBadge" class="player-live-badge offline">⚪ OFFLINE</span>
+                XSEN Radio
             </div>
-            <div class="player-iframe-wrap">
-                <iframe id="radioFrame" src="" allow="autoplay" scrolling="no"></iframe>
+            <div class="player-audio-wrap">
+                <audio id="xsenAudio" preload="none" playsinline controls style="width:100%; height:36px;">
+                    <source src="" type="audio/mpeg" />
+                </audio>
+                <div id="audioStatus" style="color:rgba(253,249,216,0.7); font-size:12px; margin-top:4px; text-align:center;">Tap ▶ to listen</div>
             </div>
-            <button class="player-close" onclick="closePlayer()" title="Close">✕</button>
+            <button class="player-close" id="playerClose" title="Close">✕</button>
         </div>
     </div>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-        const RADIO_URL = 'https://radio.xsen.fun';
+    <script>
+        const LIVE_STREAM_URL = 'https://a12.asurahosting.com/listen/xsen_radio/radio.mp3';
+        const LIVE_STATUS_URL = 'https://xsen-fan-messages-production.up.railway.app/live-status';
 
-        function openPlayer() {
-            const player = document.getElementById('stickyPlayer');
-            const frame  = document.getElementById('radioFrame');
-            // load the iframe only on first open (avoid autoplay on page load)
-            if (!frame.src || frame.src === window.location.href) {
-                frame.src = RADIO_URL;
+        // ── elements ──
+        const stickyPlayer  = document.getElementById('stickyPlayer');
+        const playerBadge   = document.getElementById('playerBadge');
+        const audioEl       = document.getElementById('xsenAudio');
+        const audioStatus   = document.getElementById('audioStatus');
+        const playerClose   = document.getElementById('playerClose');
+        const listenBtns    = document.querySelectorAll('.listen-btn');
+        const statusDots    = document.querySelectorAll('.listen-btn .status-dot');
+
+        let isLive = false;
+
+        // ── live status polling ──
+        async function updateLiveStatus() {
+            try {
+                const res  = await fetch(LIVE_STATUS_URL, { cache: 'no-store' });
+                const data = await res.json();
+                isLive = !!data.isLive;
+            } catch (e) {
+                isLive = false;
             }
-            player.classList.add('open');
+
+            // update all status dots on Listen buttons
+            statusDots.forEach(dot => {
+                dot.classList.toggle('live', isLive);
+            });
+
+            // update sticky player badge
+            if (isLive) {
+                playerBadge.textContent   = '🔴 LIVE';
+                playerBadge.className     = 'player-live-badge live';
+            } else {
+                playerBadge.textContent   = '⚪ PLAYLIST';
+                playerBadge.className     = 'player-live-badge offline';
+            }
+
+            // update Listen button label text
+            listenBtns.forEach(btn => {
+                const textNode = Array.from(btn.childNodes).find(n => n.nodeType === 3);
+                if (textNode) textNode.textContent = isLive ? ' Listen Live' : ' XSEN Radio';
+            });
         }
 
-    
-        function closePlayer() {
-            document.getElementById('stickyPlayer').classList.remove('open');
-            document.getElementById('radioFrame').src = '';
+        // ── open / close player ──
+        function openPlayer() {
+            stickyPlayer.classList.add('open');
+            if (!audioEl.src || audioEl.src === window.location.href) {
+                audioEl.src = LIVE_STREAM_URL + '?ts=' + Date.now();
+                audioEl.play()
+                    .then(() => { audioStatus.textContent = isLive ? '🔴 Live now' : '🎵 Playing XSEN Radio playlist'; })
+                    .catch(() => { audioStatus.textContent = 'Tap ▶ to listen'; });
+            }
         }
+
+        playerClose.addEventListener('click', () => {
+            stickyPlayer.classList.remove('open');
+            audioEl.pause();
+            audioEl.src = '';
+            audioStatus.textContent = 'Tap ▶ to listen';
+        });
+
+        listenBtns.forEach(btn => btn.addEventListener('click', openPlayer));
+
+        // ── init ──
+        updateLiveStatus();
+        setInterval(updateLiveStatus, 20000);
     </script>
 </body>
 </html>
-
