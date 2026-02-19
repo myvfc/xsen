@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XSEN Longhorns - Your All-in-One Texas Superfan Companion</title>
+    <title>XSEN Longhorns - Your All-in-One UT Superfan Companion</title>
     <style>
         * {
             margin: 0;
@@ -16,17 +16,19 @@
             background: #fff;
             color: #333;
             line-height: 1.6;
+            padding-bottom: 80px; /* room for sticky player */
         }
         
         /* Header */
         .header {
-            background: linear-gradient(135deg, #BF5700 0%, #9a4500 100%);
-            color: white;
+            background: transparent;
+            color: #ffffff;
             padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            position: sticky;
+            position: absolute;
             top: 0;
-            z-index: 100;
+            left: 0;
+            right: 0;
+            z-index: 200;
         }
         
         .header-content {
@@ -43,7 +45,7 @@
         }
         
         .back-link {
-            color: white;
+            color: #ffffff;
             text-decoration: none;
             opacity: 0.9;
             font-size: 14px;
@@ -53,12 +55,42 @@
             opacity: 1;
         }
         
-        /* Hero Section */
+        /* ─── VIDEO HERO ─── */
         .hero {
-            background: linear-gradient(135deg, #BF5700 0%, #9a4500 100%);
-            color: white;
-            padding: 80px 20px;
+            position: relative;
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
+            overflow: hidden;
+            color: #ffffff;
+        }
+
+        .hero-video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+
+        /* dark overlay so text pops */
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: 
+                linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, transparent 25%),
+                linear-gradient(135deg, rgba(191,87,0,0.78) 0%, rgba(139,61,0,0.85) 100%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 80px 20px;
+            max-width: 900px;
         }
         
         .hero h1 {
@@ -68,13 +100,21 @@
         }
         
         .hero .subtitle {
-            font-size: 24px;
+            font-size: 22px;
             margin-bottom: 40px;
             opacity: 0.95;
         }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
         
         .hero-cta {
-            background: white;
+            background: #ffffff;
             color: #BF5700;
             padding: 20px 50px;
             font-size: 20px;
@@ -90,11 +130,127 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(0,0,0,0.4);
         }
+
+        /* Listen Live button */
+        .listen-btn {
+            background: transparent;
+            color: #ffffff;
+            padding: 20px 40px;
+            font-size: 20px;
+            border-radius: 50px;
+            border: 2px solid #ffffff;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .listen-btn:hover {
+            background: rgba(253,249,216,0.15);
+            transform: translateY(-2px);
+        }
+
+        .listen-btn .status-dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background: #888;
+            transition: background 0.3s;
+        }
+
+        .listen-btn .status-dot.live {
+            background: #ff2d2d;
+            box-shadow: 0 0 6px rgba(255,45,45,0.9);
+            animation: pulse 1.4s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.3); }
+        }
+
+        /* live badge inside sticky player */
+        .player-live-badge {
+            font-size: 11px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.4);
+            transition: all 0.25s;
+            white-space: nowrap;
+        }
+        .player-live-badge.live    { background: #ff2d2d; color: #fff; box-shadow: 0 0 6px rgba(255,45,45,0.8); }
+        .player-live-badge.offline { background: #555;    color: #ddd; }
         
         .trial-note {
             margin-top: 15px;
             font-size: 14px;
             opacity: 0.9;
+        }
+
+        /* ─── STICKY AUDIO PLAYER ─── */
+        .sticky-player {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 300;
+            background: linear-gradient(135deg, #BF5700 0%, #8B3D00 100%);
+            color: #ffffff;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .sticky-player.open {
+            transform: translateY(0);
+        }
+
+        .player-bar {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .player-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            font-size: 15px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .player-audio-wrap {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .player-close {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: #ffffff;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+
+        .player-close:hover {
+            background: rgba(255,255,255,0.28);
         }
         
         /* Container */
@@ -165,7 +321,7 @@
             left: 0;
         }
         
-        /* Hook Examples */
+        /* Bot Examples */
         .examples-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -231,6 +387,25 @@
             color: #BF5700;
             margin: 10px 0;
         }
+
+        .feature-stat.live {
+            color: #c0392b;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .feature-stat.live::before {
+            content: '';
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #ff4444;
+            border-radius: 50%;
+            animation: pulse 1.4s infinite;
+        }
         
         /* Pricing */
         .pricing-section {
@@ -283,7 +458,7 @@
         
         .cta-button {
             background: #BF5700;
-            color: white;
+            color: #ffffff;
             padding: 20px 60px;
             font-size: 22px;
             border-radius: 50px;
@@ -295,7 +470,7 @@
         }
         
         .cta-button:hover {
-            background: #9a4500;
+            background: #8B3D00;
             transform: scale(1.05);
         }
         
@@ -334,17 +509,38 @@
         }
         
         .footer a:hover {
-            color: white;
+            color: #ffffff;
         }
         
         /* Responsive */
         @media (max-width: 768px) {
+            .hero {
+                min-height: 100svh; /* full viewport height on mobile */
+            }
+
             .hero h1 {
-                font-size: 36px;
+                font-size: 30px;
             }
             
             .hero .subtitle {
-                font-size: 18px;
+                font-size: 16px;
+                margin-bottom: 28px;
+            }
+
+            .hero-content {
+                padding: 40px 16px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .hero-cta, .listen-btn {
+                padding: 16px 36px;
+                font-size: 17px;
+                width: 100%;
+                justify-content: center;
             }
             
             .two-col {
@@ -353,30 +549,57 @@
             }
             
             .section-title {
-                font-size: 32px;
+                font-size: 28px;
             }
             
             .price {
                 font-size: 48px;
             }
+
+            .player-label {
+                display: none;
+            }
+
+            .player-bar {
+                padding: 10px 14px;
+                gap: 10px;
+            }
+        }
+
+        /* Very small phones */
+        @media (max-width: 390px) {
+            .hero h1 { font-size: 26px; }
+            .hero .subtitle { font-size: 14px; }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <div class="header">
-        <div class="header-content">
-            <div class="logo">🤘 XSEN Longhorns</div>
-            <a href="https://xsen.fun" class="back-link">← Back to XSEN</a>
-        </div>
-    </div>
-    
-    <!-- Hero -->
+    <!-- Hero with Video Background -->
     <div class="hero">
-        <h1>Your All-in-One Texas Superfan Hub</h1>
-        <p class="subtitle">Chat with Hook AI • Watch 3,500+ Highlights • Get Live Stats • Listen to Texas Radio</p>
-        <a href="#pricing" class="hero-cta">Start Your Free Trial</a>
-        <p class="trial-note">3 days free, then $9.99/month • Cancel anytime</p>
+        <!-- Header overlaid on video -->
+        <div class="header">
+            <div class="header-content">
+                <div class="logo">🤘 XSEN Longhorns</div>
+                <a href="https://xsen.fun" class="back-link">← Back to XSEN</a>
+            </div>
+        </div>
+        <video class="hero-video" autoplay muted playsinline preload="auto"
+               poster="https://storage.googleapis.com/xsenassets/XSEN.mp4#t=0.1">
+            <source src="https://storage.googleapis.com/xsenassets/XSEN.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Your All-in-One UT Superfan Hub</h1>
+            <p class="subtitle">Chat with Hook AI • Watch 3,500+ Highlights • Get Live Stats • Listen to UT Radio</p>
+            <div class="hero-buttons">
+                <a href="#pricing" class="hero-cta">Start Your Free Trial</a>
+                <button class="listen-btn">
+                    <span class="status-dot"></span>
+                    Listen Live
+                </button>
+            </div>
+            <p class="trial-note">3 days free, then $9.99/month • Cancel anytime</p>
+        </div>
     </div>
     
     <!-- Problem/Solution -->
@@ -385,55 +608,55 @@
             <div class="col problem">
                 <h3>Tired of This?</h3>
                 <ul>
-                    <li>Searching 10 different sites for Texas info</li>
+                    <li>Searching 10 different sites for UT info</li>
                     <li>Can't find that one highlight you remember</li>
                     <li>Don't know who's starting this week</li>
-                    <li>Missing the deep Texas knowledge from championship eras</li>
+                    <li>Missing the deep UT knowledge from the Mack Brown era and beyond</li>
                     <li>Wish you had a Longhorns superfan on speed dial</li>
                 </ul>
             </div>
             <div class="col solution">
                 <h3>Get This Instead</h3>
                 <ul>
-                    <li>Everything Texas in one place</li>
+                    <li>Everything UT in one place</li>
                     <li>3,500+ searchable video highlights</li>
                     <li>Instant roster, stats, and schedule updates</li>
-                    <li>Chat with Hook - decades of Texas history</li>
+                    <li>Chat with Hook - 40+ years of UT history</li>
                     <li>24/7 access to your AI Longhorns expert</li>
                 </ul>
             </div>
         </div>
     </div>
     
-    <!-- Hook Examples -->
+    <!-- Bot Examples -->
     <div class="container">
         <div class="section">
-            <h2 class="section-title">Ask Hook Anything About Texas Sports</h2>
+            <h2 class="section-title">Ask Hook Anything About UT Sports</h2>
             
             <div class="examples-grid">
                 <div class="example-card">
                     <div class="example-question">"Who's starting QB this week?"</div>
-                    <div class="example-answer">Get instant lineup updates, depth charts, and injury reports before kickoff.</div>
+                    <div class="example-answer">Get instant Longhorns lineup updates, depth charts, and injury reports before kickoff.</div>
                 </div>
                 
                 <div class="example-card">
-                    <div class="example-question">"Show me Vince Young's best moments"</div>
-                    <div class="example-answer">Watch highlights from 3,500+ videos spanning decades of Longhorns football.</div>
+                    <div class="example-question">"Show me Vince Young's greatest plays"</div>
+                    <div class="example-answer">Watch highlights from 3,500+ videos spanning 40+ years of Longhorns football.</div>
                 </div>
                 
                 <div class="example-card">
-                    <div class="example-question">"What's our record against Oklahoma?"</div>
-                    <div class="example-answer">Get historical stats, memorable games, and rivalry insights instantly.</div>
+                    <div class="example-question">"What's our record against OU?"</div>
+                    <div class="example-answer">Get Red River Rivalry stats, memorable games, and series insights instantly.</div>
                 </div>
                 
                 <div class="example-card">
-                    <div class="example-question">"Tell me about the 2005 championship"</div>
-                    <div class="example-answer">Relive legendary moments with someone who knows every play, every player.</div>
+                    <div class="example-question">"Tell me about the 2005 championship season"</div>
+                    <div class="example-answer">Relive the Rose Bowl and every legendary Longhorns moment with someone who knows every play.</div>
                 </div>
                 
                 <div class="example-card">
-                    <div class="example-question">"Who won the Heisman in 1998?"</div>
-                    <div class="example-answer">Ricky Williams! Hook knows Texas history from Earl Campbell to today.</div>
+                    <div class="example-question">"Who won the Heisman in 1977?"</div>
+                    <div class="example-answer">Earl Campbell! Hook knows UT history from the 1970s to today.</div>
                 </div>
                 
                 <div class="example-card">
@@ -451,7 +674,7 @@
                 <div class="feature">
                     <div class="feature-icon">🤖</div>
                     <h3>Hook AI</h3>
-                    <p>Your personal Texas expert with decades of Longhorns knowledge. Ask anything, anytime.</p>
+                    <p>Your personal UT expert with 40+ years of Longhorns knowledge. Ask anything, anytime.</p>
                     <div class="feature-stat">100 msgs/mo</div>
                 </div>
                 
@@ -472,8 +695,8 @@
                 <div class="feature">
                     <div class="feature-icon">📻</div>
                     <h3>XSEN Radio</h3>
-                    <p>24/7 Longhorns-themed radio stream. Music, clips, and Texas sports audio.</p>
-                    <div class="feature-stat">Coming soon</div>
+                    <p>24/7 Longhorns-themed radio stream. Music, UT highlights audio, and fan programming.</p>
+                    <div class="feature-stat live">Live Now</div>
                 </div>
             </div>
         </div>
@@ -496,7 +719,7 @@
                     <li>Cancel anytime, no commitments</li>
                 </ul>
                 
-                <a href="https://buy.stripe.com/YOUR_STRIPE_LINK" class="cta-button">
+                <a href="#pricing" class="cta-button">
                     Start 3-Day Free Trial
                 </a>
                 
@@ -514,7 +737,7 @@
             
             <div class="faq-item">
                 <div class="faq-question">What exactly is Hook AI?</div>
-                <div class="faq-answer">Hook is your personal Texas sports expert powered by AI. It has access to decades of Texas football history, current rosters, stats, and our massive video archive. Think of it as having a Longhorns superfan on speed dial 24/7.</div>
+                <div class="faq-answer">Hook is your personal UT sports expert powered by AI. It has access to 40+ years of Texas Longhorns football history, current rosters, stats, and our massive video archive. Think of it as having a Longhorns superfan on speed dial 24/7.</div>
             </div>
             
             <div class="faq-item">
@@ -534,21 +757,33 @@
             
             <div class="faq-item">
                 <div class="faq-question">Is this officially affiliated with UT?</div>
-                <div class="faq-answer">No, XSEN is an independent fan platform created by Texas superfans, for Texas superfans. We're not affiliated with the University of Texas.</div>
+                <div class="faq-answer">No, XSEN is an independent fan platform created by Longhorns superfans, for Longhorns superfans. We're not affiliated with the University of Texas.</div>
             </div>
-            
+
             <div class="faq-item">
-                <div class="faq-question">When will the radio feature be ready?</div>
-                <div class="faq-answer">XSEN Radio is in final testing and will launch within 30 days. All subscribers get access as soon as it's live - no extra charge!</div>
+                <div class="faq-question">What is XSEN Radio?</div>
+                <div class="faq-answer">XSEN Radio is our 24/7 Longhorns-themed audio stream — UT highlight audio, Hook-curated music, and fan programming. Click "Listen Live" at the top of this page to tune in right now, free.</div>
             </div>
         </div>
     </div>
     
     <!-- Final CTA -->
-    <div class="hero" style="padding: 60px 20px;">
-        <h2 style="font-size: 38px; margin-bottom: 30px;">Ready to Join the XSEN Longhorns Community?</h2>
-        <a href="https://buy.stripe.com/YOUR_STRIPE_LINK" class="hero-cta">Start Your Free Trial Now</a>
-        <p class="trial-note">Join other Texas superfans • 3 days free • Cancel anytime</p>
+    <div class="hero" style="min-height: 300px;">
+        <video class="hero-video" autoplay muted playsinline>
+            <source src="https://storage.googleapis.com/xsenassets/XSEN.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="hero-content" style="padding: 60px 20px;">
+            <h2 style="font-size: 38px; margin-bottom: 30px;">Ready to Join the XSEN Longhorns Community?</h2>
+            <div class="hero-buttons">
+                <a href="#pricing" class="hero-cta">Start Your Free Trial Now</a>
+                <button class="listen-btn">
+                    <span class="status-dot"></span>
+                    Listen Live
+                </button>
+            </div>
+            <p class="trial-note">Join other UT superfans • 3 days free • Cancel anytime</p>
+        </div>
     </div>
     
     <!-- Footer -->
@@ -557,11 +792,99 @@
         <p style="margin-top: 10px;">
             <a href="https://xsen.fun">XSEN Home</a> • 
             <a href="https://longhorns.xsen.fun/app">Member Login</a> • 
-            <a href="mailto:support@xsen.fun">Support</a>
+            <a href="/cdn-cgi/l/email-protection#a5d6d0d5d5cad7d1e5ddd6c0cb8bc3d0cb">Support</a>
         </p>
         <p style="margin-top: 20px; font-size: 12px; opacity: 0.7;">
             Not affiliated with the University of Texas
         </p>
     </div>
+
+    <!-- ─── STICKY AUDIO PLAYER ─── -->
+    <div class="sticky-player" id="stickyPlayer">
+        <div class="player-bar">
+            <div class="player-label">
+                <span id="playerBadge" class="player-live-badge offline">⚪ OFFLINE</span>
+                XSEN Radio
+            </div>
+            <div class="player-audio-wrap">
+                <audio id="xsenAudio" preload="none" playsinline controls style="width:100%; height:36px;">
+                    <source src="" type="audio/mpeg" />
+                </audio>
+                <div id="audioStatus" style="color:rgba(253,249,216,0.7); font-size:12px; margin-top:4px; text-align:center;">Tap ▶ to listen</div>
+            </div>
+            <button class="player-close" id="playerClose" title="Close">✕</button>
+        </div>
+    </div>
+
+    <script>
+        const LIVE_STREAM_URL = 'https://a12.asurahosting.com/listen/xsen_radio/radio.mp3';
+        const LIVE_STATUS_URL = 'https://xsen-fan-messages-production.up.railway.app/live-status';
+
+        // ── elements ──
+        const stickyPlayer  = document.getElementById('stickyPlayer');
+        const playerBadge   = document.getElementById('playerBadge');
+        const audioEl       = document.getElementById('xsenAudio');
+        const audioStatus   = document.getElementById('audioStatus');
+        const playerClose   = document.getElementById('playerClose');
+        const listenBtns    = document.querySelectorAll('.listen-btn');
+        const statusDots    = document.querySelectorAll('.listen-btn .status-dot');
+
+        let isLive = false;
+
+        // ── live status polling ──
+        async function updateLiveStatus() {
+            try {
+                const res  = await fetch(LIVE_STATUS_URL, { cache: 'no-store' });
+                const data = await res.json();
+                isLive = !!data.isLive;
+            } catch (e) {
+                isLive = false;
+            }
+
+            // update all status dots on Listen buttons
+            statusDots.forEach(dot => {
+                dot.classList.toggle('live', isLive);
+            });
+
+            // update sticky player badge
+            if (isLive) {
+                playerBadge.textContent   = '🔴 LIVE';
+                playerBadge.className     = 'player-live-badge live';
+            } else {
+                playerBadge.textContent   = '⚪ PLAYLIST';
+                playerBadge.className     = 'player-live-badge offline';
+            }
+
+            // update Listen button label text
+            listenBtns.forEach(btn => {
+                const textNode = Array.from(btn.childNodes).find(n => n.nodeType === 3);
+                if (textNode) textNode.textContent = isLive ? ' Listen Live' : ' XSEN Radio';
+            });
+        }
+
+        // ── open / close player ──
+        function openPlayer() {
+            stickyPlayer.classList.add('open');
+            if (!audioEl.src || audioEl.src === window.location.href) {
+                audioEl.src = LIVE_STREAM_URL + '?ts=' + Date.now();
+                audioEl.play()
+                    .then(() => { audioStatus.textContent = isLive ? '🔴 Live now' : '🎵 Playing XSEN Radio playlist'; })
+                    .catch(() => { audioStatus.textContent = 'Tap ▶ to listen'; });
+            }
+        }
+
+        playerClose.addEventListener('click', () => {
+            stickyPlayer.classList.remove('open');
+            audioEl.pause();
+            audioEl.src = '';
+            audioStatus.textContent = 'Tap ▶ to listen';
+        });
+
+        listenBtns.forEach(btn => btn.addEventListener('click', openPlayer));
+
+        // ── init ──
+        updateLiveStatus();
+        setInterval(updateLiveStatus, 20000);
+    </script>
 </body>
 </html>
