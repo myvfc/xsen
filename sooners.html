@@ -1,4 +1,4 @@
-<l!DOCTYPE htm>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -511,17 +511,33 @@
         
         /* Responsive */
         @media (max-width: 768px) {
+            .hero {
+                min-height: 100svh; /* full viewport height on mobile */
+            }
+
             .hero h1 {
-                font-size: 36px;
+                font-size: 30px;
             }
             
             .hero .subtitle {
-                font-size: 18px;
+                font-size: 16px;
+                margin-bottom: 28px;
+            }
+
+            .hero-content {
+                padding: 40px 16px;
             }
 
             .hero-buttons {
                 flex-direction: column;
                 align-items: center;
+            }
+
+            .hero-cta, .listen-btn {
+                padding: 16px 36px;
+                font-size: 17px;
+                width: 100%;
+                justify-content: center;
             }
             
             .two-col {
@@ -530,7 +546,7 @@
             }
             
             .section-title {
-                font-size: 32px;
+                font-size: 28px;
             }
             
             .price {
@@ -540,6 +556,17 @@
             .player-label {
                 display: none;
             }
+
+            .player-bar {
+                padding: 10px 14px;
+                gap: 10px;
+            }
+        }
+
+        /* Very small phones */
+        @media (max-width: 390px) {
+            .hero h1 { font-size: 26px; }
+            .hero .subtitle { font-size: 14px; }
         }
     </style>
 </head>
