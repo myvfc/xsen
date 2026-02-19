@@ -21,12 +21,13 @@
         
         /* Header */
         .header {
-            background: linear-gradient(135deg, #841617 0%, #6a1112 100%);
+            background: transparent;
             color: #FDF9D8;
             padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            position: sticky;
+            position: absolute;
             top: 0;
+            left: 0;
+            right: 0;
             z-index: 200;
         }
         
@@ -79,7 +80,9 @@
         .hero-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, rgba(132,22,23,0.82) 0%, rgba(106,17,18,0.88) 100%);
+            background: 
+                linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, transparent 25%),
+                linear-gradient(135deg, rgba(132,22,23,0.78) 0%, rgba(106,17,18,0.85) 100%);
             z-index: 1;
         }
 
@@ -571,16 +574,15 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <div class="header">
-        <div class="header-content">
-            <div class="logo">🏈 XSEN Sooners</div>
-            <a href="https://xsen.fun" class="back-link">← Back to XSEN</a>
-        </div>
-    </div>
-    
     <!-- Hero with Video Background -->
     <div class="hero">
+        <!-- Header overlaid on video -->
+        <div class="header">
+            <div class="header-content">
+                <div class="logo">🏈 XSEN Sooners</div>
+                <a href="https://xsen.fun" class="back-link">← Back to XSEN</a>
+            </div>
+        </div>
         <video class="hero-video" autoplay muted playsinline preload="auto"
                poster="https://storage.googleapis.com/xsenassets/XSEN.mp4#t=0.1">
             <source src="https://storage.googleapis.com/xsenassets/XSEN.mp4" type="video/mp4">
@@ -886,3 +888,4 @@
     </script>
 </body>
 </html>
+
