@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XSEN Oklahoma State - Your All-in-One OSU Superfan Companion</title>
+    <title>XSEN Cowboys - Your All-in-One OSU Superfan Companion</title>
     <style>
         * {
             margin: 0;
@@ -16,17 +16,19 @@
             background: #fff;
             color: #333;
             line-height: 1.6;
+            padding-bottom: 80px; /* room for sticky player */
         }
         
         /* Header */
         .header {
-            background: linear-gradient(135deg, #FF7300 0%, #DC4405 100%);
-            color: #000;
+            background: transparent;
+            color: #ffffff;
             padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            position: sticky;
+            position: absolute;
             top: 0;
-            z-index: 100;
+            left: 0;
+            right: 0;
+            z-index: 200;
         }
         
         .header-content {
@@ -40,11 +42,10 @@
         .logo {
             font-size: 24px;
             font-weight: bold;
-            color: #fff;
         }
         
         .back-link {
-            color: #fff;
+            color: #ffffff;
             text-decoration: none;
             opacity: 0.9;
             font-size: 14px;
@@ -54,12 +55,42 @@
             opacity: 1;
         }
         
-        /* Hero Section */
+        /* ─── VIDEO HERO ─── */
         .hero {
-            background: linear-gradient(135deg, #FF7300 0%, #DC4405 100%);
-            color: #fff;
-            padding: 80px 20px;
+            position: relative;
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
+            overflow: hidden;
+            color: #ffffff;
+        }
+
+        .hero-video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+
+        /* dark overlay so text pops */
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: 
+                linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, transparent 25%),
+                linear-gradient(135deg, rgba(224,78,0,0.78) 0%, rgba(179,61,0,0.85) 100%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 80px 20px;
+            max-width: 900px;
         }
         
         .hero h1 {
@@ -69,14 +100,22 @@
         }
         
         .hero .subtitle {
-            font-size: 24px;
+            font-size: 22px;
             margin-bottom: 40px;
             opacity: 0.95;
         }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
         
         .hero-cta {
-            background: #000;
-            color: #FF7300;
+            background: #ffffff;
+            color: #E04E00;
             padding: 20px 50px;
             font-size: 20px;
             border-radius: 50px;
@@ -91,11 +130,127 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(0,0,0,0.4);
         }
+
+        /* Listen Live button */
+        .listen-btn {
+            background: transparent;
+            color: #ffffff;
+            padding: 20px 40px;
+            font-size: 20px;
+            border-radius: 50px;
+            border: 2px solid #ffffff;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .listen-btn:hover {
+            background: rgba(253,249,216,0.15);
+            transform: translateY(-2px);
+        }
+
+        .listen-btn .status-dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background: #888;
+            transition: background 0.3s;
+        }
+
+        .listen-btn .status-dot.live {
+            background: #ff2d2d;
+            box-shadow: 0 0 6px rgba(255,45,45,0.9);
+            animation: pulse 1.4s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.3); }
+        }
+
+        /* live badge inside sticky player */
+        .player-live-badge {
+            font-size: 11px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.4);
+            transition: all 0.25s;
+            white-space: nowrap;
+        }
+        .player-live-badge.live    { background: #ff2d2d; color: #fff; box-shadow: 0 0 6px rgba(255,45,45,0.8); }
+        .player-live-badge.offline { background: #555;    color: #ddd; }
         
         .trial-note {
             margin-top: 15px;
             font-size: 14px;
             opacity: 0.9;
+        }
+
+        /* ─── STICKY AUDIO PLAYER ─── */
+        .sticky-player {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 300;
+            background: linear-gradient(135deg, #E04E00 0%, #B33D00 100%);
+            color: #ffffff;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .sticky-player.open {
+            transform: translateY(0);
+        }
+
+        .player-bar {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .player-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            font-size: 15px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .player-audio-wrap {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .player-close {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: #ffffff;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+
+        .player-close:hover {
+            background: rgba(255,255,255,0.28);
         }
         
         /* Container */
@@ -113,7 +268,7 @@
             font-size: 42px;
             text-align: center;
             margin-bottom: 50px;
-            color: #FF7300;
+            color: #E04E00;
         }
         
         /* Problem/Solution */
@@ -140,7 +295,7 @@
         }
         
         .solution {
-            color: #FF7300;
+            color: #E04E00;
         }
         
         .problem ul, .solution ul {
@@ -166,7 +321,7 @@
             left: 0;
         }
         
-        /* Pistol Pete Examples */
+        /* Bot Examples */
         .examples-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -175,7 +330,7 @@
         
         .example-card {
             background: white;
-            border: 2px solid #FF7300;
+            border: 2px solid #E04E00;
             border-radius: 12px;
             padding: 30px;
             transition: all 0.3s;
@@ -183,12 +338,12 @@
         
         .example-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(255, 115, 0, 0.2);
+            box-shadow: 0 10px 30px rgba(224, 78, 0, 0.2);
         }
         
         .example-question {
             font-weight: bold;
-            color: #FF7300;
+            color: #E04E00;
             margin-bottom: 15px;
             font-size: 18px;
         }
@@ -218,7 +373,7 @@
         .feature h3 {
             font-size: 24px;
             margin-bottom: 15px;
-            color: #FF7300;
+            color: #E04E00;
         }
         
         .feature p {
@@ -229,8 +384,27 @@
         .feature-stat {
             font-size: 32px;
             font-weight: bold;
-            color: #FF7300;
+            color: #E04E00;
             margin: 10px 0;
+        }
+
+        .feature-stat.live {
+            color: #c0392b;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .feature-stat.live::before {
+            content: '';
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #ff4444;
+            border-radius: 50%;
+            animation: pulse 1.4s infinite;
         }
         
         /* Pricing */
@@ -243,7 +417,7 @@
             max-width: 500px;
             margin: 0 auto;
             background: white;
-            border: 3px solid #FF7300;
+            border: 3px solid #E04E00;
             border-radius: 20px;
             padding: 50px 40px;
             text-align: center;
@@ -253,7 +427,7 @@
         .price {
             font-size: 64px;
             font-weight: bold;
-            color: #FF7300;
+            color: #E04E00;
             margin: 20px 0;
         }
         
@@ -283,8 +457,8 @@
         }
         
         .cta-button {
-            background: #FF7300;
-            color: #fff;
+            background: #E04E00;
+            color: #ffffff;
             padding: 20px 60px;
             font-size: 22px;
             border-radius: 50px;
@@ -296,7 +470,7 @@
         }
         
         .cta-button:hover {
-            background: #DC4405;
+            background: #B33D00;
             transform: scale(1.05);
         }
         
@@ -306,13 +480,13 @@
             background: white;
             padding: 30px;
             border-radius: 8px;
-            border-left: 4px solid #FF7300;
+            border-left: 4px solid #E04E00;
         }
         
         .faq-question {
             font-size: 20px;
             font-weight: bold;
-            color: #FF7300;
+            color: #E04E00;
             margin-bottom: 10px;
         }
         
@@ -335,17 +509,38 @@
         }
         
         .footer a:hover {
-            color: #FF7300;
+            color: #ffffff;
         }
         
         /* Responsive */
         @media (max-width: 768px) {
+            .hero {
+                min-height: 100svh; /* full viewport height on mobile */
+            }
+
             .hero h1 {
-                font-size: 36px;
+                font-size: 30px;
             }
             
             .hero .subtitle {
-                font-size: 18px;
+                font-size: 16px;
+                margin-bottom: 28px;
+            }
+
+            .hero-content {
+                padding: 40px 16px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .hero-cta, .listen-btn {
+                padding: 16px 36px;
+                font-size: 17px;
+                width: 100%;
+                justify-content: center;
             }
             
             .two-col {
@@ -354,30 +549,57 @@
             }
             
             .section-title {
-                font-size: 32px;
+                font-size: 28px;
             }
             
             .price {
                 font-size: 48px;
             }
+
+            .player-label {
+                display: none;
+            }
+
+            .player-bar {
+                padding: 10px 14px;
+                gap: 10px;
+            }
+        }
+
+        /* Very small phones */
+        @media (max-width: 390px) {
+            .hero h1 { font-size: 26px; }
+            .hero .subtitle { font-size: 14px; }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <div class="header">
-        <div class="header-content">
-            <div class="logo">🤠 XSEN Oklahoma State</div>
-            <a href="https://xsen.fun" class="back-link">← Back to XSEN</a>
-        </div>
-    </div>
-    
-    <!-- Hero -->
+    <!-- Hero with Video Background -->
     <div class="hero">
-        <h1>Your All-in-One OSU Superfan Hub</h1>
-        <p class="subtitle">Chat with Pistol Pete AI • Watch 2,800+ Highlights • Get Live Stats • Listen to OSU Radio</p>
-        <a href="#pricing" class="hero-cta">Start Your Free Trial</a>
-        <p class="trial-note">3 days free, then $9.99/month • Cancel anytime</p>
+        <!-- Header overlaid on video -->
+        <div class="header">
+            <div class="header-content">
+                <div class="logo">🤠 XSEN Cowboys</div>
+                <a href="https://xsen.fun" class="back-link">← Back to XSEN</a>
+            </div>
+        </div>
+        <video class="hero-video" autoplay muted playsinline preload="auto"
+               poster="https://storage.googleapis.com/xsenassets/XSEN.mp4#t=0.1">
+            <source src="https://storage.googleapis.com/xsenassets/XSEN.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Your All-in-One OSU Superfan Hub</h1>
+            <p class="subtitle">Chat with Pistol Pete AI • Watch 2,800+ Highlights • Get Live Stats • Listen to OSU Radio</p>
+            <div class="hero-buttons">
+                <a href="#pricing" class="hero-cta">Start Your Free Trial</a>
+                <button class="listen-btn">
+                    <span class="status-dot"></span>
+                    Listen Live
+                </button>
+            </div>
+            <p class="trial-note">3 days free, then $9.99/month • Cancel anytime</p>
+        </div>
     </div>
     
     <!-- Problem/Solution -->
@@ -389,8 +611,8 @@
                     <li>Searching 10 different sites for OSU info</li>
                     <li>Can't find that one highlight you remember</li>
                     <li>Don't know who's starting this week</li>
-                    <li>Missing the deep Cowboys knowledge from the glory years</li>
-                    <li>Wish you had a Cowboy superfan on speed dial</li>
+                    <li>Missing the deep OSU knowledge from the Gundy era and beyond</li>
+                    <li>Wish you had a Cowboys superfan on speed dial</li>
                 </ul>
             </div>
             <div class="col solution">
@@ -399,14 +621,14 @@
                     <li>Everything OSU in one place</li>
                     <li>2,800+ searchable video highlights</li>
                     <li>Instant roster, stats, and schedule updates</li>
-                    <li>Chat with Pistol Pete - decades of OSU history</li>
+                    <li>Chat with Pistol Pete - 30+ years of OSU history</li>
                     <li>24/7 access to your AI Cowboys expert</li>
                 </ul>
             </div>
         </div>
     </div>
     
-    <!-- Pistol Pete Examples -->
+    <!-- Bot Examples -->
     <div class="container">
         <div class="section">
             <h2 class="section-title">Ask Pistol Pete Anything About OSU Sports</h2>
@@ -414,27 +636,27 @@
             <div class="examples-grid">
                 <div class="example-card">
                     <div class="example-question">"Who's starting QB this week?"</div>
-                    <div class="example-answer">Get instant lineup updates, depth charts, and injury reports before kickoff.</div>
+                    <div class="example-answer">Get instant Cowboys lineup updates, depth charts, and injury reports before kickoff.</div>
                 </div>
                 
                 <div class="example-card">
-                    <div class="example-question">"Show me Barry Sanders' greatest runs"</div>
-                    <div class="example-answer">Watch highlights from 2,800+ videos spanning decades of Cowboys football.</div>
+                    <div class="example-question">"Show me Barry Sanders' best runs"</div>
+                    <div class="example-answer">Watch highlights from 2,800+ videos spanning 30+ years of Cowboys football.</div>
                 </div>
                 
                 <div class="example-card">
-                    <div class="example-question">"What's our record in Bedlam?"</div>
-                    <div class="example-answer">Get historical stats, memorable games, and rivalry insights instantly.</div>
+                    <div class="example-question">"What's our record against OU?"</div>
+                    <div class="example-answer">Get Bedlam series stats, memorable games, and rivalry insights instantly.</div>
                 </div>
                 
                 <div class="example-card">
                     <div class="example-question">"Tell me about the 2011 season"</div>
-                    <div class="example-answer">Relive legendary moments with someone who knows every play, every player.</div>
+                    <div class="example-answer">Relive legendary moments from the Big 12 championship run with someone who knows every play.</div>
                 </div>
                 
                 <div class="example-card">
-                    <div class="example-question">"Who's our all-time leading rusher?"</div>
-                    <div class="example-answer">Barry Sanders with 2,628 yards! Pete knows OSU history inside and out.</div>
+                    <div class="example-question">"Who won the Heisman in 1988?"</div>
+                    <div class="example-answer">Barry Sanders! Pistol Pete knows OSU history from the 1980s to today.</div>
                 </div>
                 
                 <div class="example-card">
@@ -450,9 +672,9 @@
             
             <div class="features-grid">
                 <div class="feature">
-                    <div class="feature-icon">🤠</div>
+                    <div class="feature-icon">🤖</div>
                     <h3>Pistol Pete AI</h3>
-                    <p>Your personal OSU expert with decades of Cowboys knowledge. Ask anything, anytime.</p>
+                    <p>Your personal OSU expert with 30+ years of Cowboys knowledge. Ask anything, anytime.</p>
                     <div class="feature-stat">100 msgs/mo</div>
                 </div>
                 
@@ -473,8 +695,8 @@
                 <div class="feature">
                     <div class="feature-icon">📻</div>
                     <h3>XSEN Radio</h3>
-                    <p>24/7 Cowboys-themed radio stream. Music, clips, and OSU sports audio.</p>
-                    <div class="feature-stat">Coming soon</div>
+                    <p>24/7 Cowboys-themed radio stream. Music, OSU highlights audio, and fan programming.</p>
+                    <div class="feature-stat live">Live Now</div>
                 </div>
             </div>
         </div>
@@ -486,7 +708,7 @@
             <h2 class="section-title">Simple, Honest Pricing</h2>
             
             <div class="pricing-card">
-                <h3 style="font-size: 28px; color: #FF7300;">XSEN Cowboys</h3>
+                <h3 style="font-size: 28px; color: #E04E00;">XSEN Cowboys</h3>
                 <div class="price">$9.99<span class="price-period">/mo</span></div>
                 
                 <ul class="features-list">
@@ -497,7 +719,7 @@
                     <li>Cancel anytime, no commitments</li>
                 </ul>
                 
-                <a href="https://buy.stripe.com/YOUR_OSU_STRIPE_LINK" class="cta-button">
+                <a href="#pricing" class="cta-button">
                     Start 3-Day Free Trial
                 </a>
                 
@@ -515,7 +737,7 @@
             
             <div class="faq-item">
                 <div class="faq-question">What exactly is Pistol Pete AI?</div>
-                <div class="faq-answer">Pistol Pete is your personal OSU sports expert powered by AI. It has access to decades of Oklahoma State football history, current rosters, stats, and our massive video archive. Think of it as having a Cowboys superfan on speed dial 24/7.</div>
+                <div class="faq-answer">Pistol Pete is your personal OSU sports expert powered by AI. It has access to 30+ years of Oklahoma State football history, current rosters, stats, and our massive video archive. Think of it as having a Cowboys superfan on speed dial 24/7.</div>
             </div>
             
             <div class="faq-item">
@@ -537,32 +759,132 @@
                 <div class="faq-question">Is this officially affiliated with OSU?</div>
                 <div class="faq-answer">No, XSEN is an independent fan platform created by OSU superfans, for OSU superfans. We're not affiliated with Oklahoma State University.</div>
             </div>
-            
+
             <div class="faq-item">
-                <div class="faq-question">When will the radio feature be ready?</div>
-                <div class="faq-answer">XSEN Radio is in final testing and will launch within 30 days. All subscribers get access as soon as it's live - no extra charge!</div>
+                <div class="faq-question">What is XSEN Radio?</div>
+                <div class="faq-answer">XSEN Radio is our 24/7 Cowboys-themed audio stream — OSU highlight audio, Pistol Pete-curated music, and fan programming. Click "Listen Live" at the top of this page to tune in right now, free.</div>
             </div>
         </div>
     </div>
     
     <!-- Final CTA -->
-    <div class="hero" style="padding: 60px 20px;">
-        <h2 style="font-size: 38px; margin-bottom: 30px;">Ready to Join the XSEN Cowboys Community?</h2>
-        <a href="https://buy.stripe.com/YOUR_OSU_STRIPE_LINK" class="hero-cta">Start Your Free Trial Now</a>
-        <p class="trial-note">Join other OSU superfans • 3 days free • Cancel anytime</p>
+    <div class="hero" style="min-height: 300px;">
+        <video class="hero-video" autoplay muted playsinline>
+            <source src="https://storage.googleapis.com/xsenassets/XSEN.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="hero-content" style="padding: 60px 20px;">
+            <h2 style="font-size: 38px; margin-bottom: 30px;">Ready to Join the XSEN Cowboys Community?</h2>
+            <div class="hero-buttons">
+                <a href="#pricing" class="hero-cta">Start Your Free Trial Now</a>
+                <button class="listen-btn">
+                    <span class="status-dot"></span>
+                    Listen Live
+                </button>
+            </div>
+            <p class="trial-note">Join other OSU superfans • 3 days free • Cancel anytime</p>
+        </div>
     </div>
     
     <!-- Footer -->
     <div class="footer">
-        <p>© 2025 XSEN - The eXperience Sports & Entertainment Network</p>
+        <p>© 2025 XSEN - The eXperience Sports Entertainment Network</p>
         <p style="margin-top: 10px;">
             <a href="https://xsen.fun">XSEN Home</a> • 
-            <a href="https://cowboys.xsen.fun/app">Member Login</a> • 
-            <a href="mailto:support@xsen.fun">Support</a>
+            <a href="https://okstate.xsen.fun/app">Member Login</a> • 
+            <a href="/cdn-cgi/l/email-protection#a5d6d0d5d5cad7d1e5ddd6c0cb8bc3d0cb">Support</a>
         </p>
         <p style="margin-top: 20px; font-size: 12px; opacity: 0.7;">
             Not affiliated with Oklahoma State University
         </p>
     </div>
+
+    <!-- ─── STICKY AUDIO PLAYER ─── -->
+    <div class="sticky-player" id="stickyPlayer">
+        <div class="player-bar">
+            <div class="player-label">
+                <span id="playerBadge" class="player-live-badge offline">⚪ OFFLINE</span>
+                XSEN Radio
+            </div>
+            <div class="player-audio-wrap">
+                <audio id="xsenAudio" preload="none" playsinline controls style="width:100%; height:36px;">
+                    <source src="" type="audio/mpeg" />
+                </audio>
+                <div id="audioStatus" style="color:rgba(253,249,216,0.7); font-size:12px; margin-top:4px; text-align:center;">Tap ▶ to listen</div>
+            </div>
+            <button class="player-close" id="playerClose" title="Close">✕</button>
+        </div>
+    </div>
+
+    <script>
+        const LIVE_STREAM_URL = 'https://a12.asurahosting.com/listen/xsen_radio/radio.mp3';
+        const LIVE_STATUS_URL = 'https://xsen-fan-messages-production.up.railway.app/live-status';
+
+        // ── elements ──
+        const stickyPlayer  = document.getElementById('stickyPlayer');
+        const playerBadge   = document.getElementById('playerBadge');
+        const audioEl       = document.getElementById('xsenAudio');
+        const audioStatus   = document.getElementById('audioStatus');
+        const playerClose   = document.getElementById('playerClose');
+        const listenBtns    = document.querySelectorAll('.listen-btn');
+        const statusDots    = document.querySelectorAll('.listen-btn .status-dot');
+
+        let isLive = false;
+
+        // ── live status polling ──
+        async function updateLiveStatus() {
+            try {
+                const res  = await fetch(LIVE_STATUS_URL, { cache: 'no-store' });
+                const data = await res.json();
+                isLive = !!data.isLive;
+            } catch (e) {
+                isLive = false;
+            }
+
+            // update all status dots on Listen buttons
+            statusDots.forEach(dot => {
+                dot.classList.toggle('live', isLive);
+            });
+
+            // update sticky player badge
+            if (isLive) {
+                playerBadge.textContent   = '🔴 LIVE';
+                playerBadge.className     = 'player-live-badge live';
+            } else {
+                playerBadge.textContent   = '⚪ PLAYLIST';
+                playerBadge.className     = 'player-live-badge offline';
+            }
+
+            // update Listen button label text
+            listenBtns.forEach(btn => {
+                const textNode = Array.from(btn.childNodes).find(n => n.nodeType === 3);
+                if (textNode) textNode.textContent = isLive ? ' Listen Live' : ' XSEN Radio';
+            });
+        }
+
+        // ── open / close player ──
+        function openPlayer() {
+            stickyPlayer.classList.add('open');
+            if (!audioEl.src || audioEl.src === window.location.href) {
+                audioEl.src = LIVE_STREAM_URL + '?ts=' + Date.now();
+                audioEl.play()
+                    .then(() => { audioStatus.textContent = isLive ? '🔴 Live now' : '🎵 Playing XSEN Radio playlist'; })
+                    .catch(() => { audioStatus.textContent = 'Tap ▶ to listen'; });
+            }
+        }
+
+        playerClose.addEventListener('click', () => {
+            stickyPlayer.classList.remove('open');
+            audioEl.pause();
+            audioEl.src = '';
+            audioStatus.textContent = 'Tap ▶ to listen';
+        });
+
+        listenBtns.forEach(btn => btn.addEventListener('click', openPlayer));
+
+        // ── init ──
+        updateLiveStatus();
+        setInterval(updateLiveStatus, 20000);
+    </script>
 </body>
 </html>
