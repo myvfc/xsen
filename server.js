@@ -10,24 +10,19 @@ app.get('/health', (req, res) => {
 
 // ─── MAIN PAGE ROUTING ────────────────────────────────
 app.get('/', (req, res) => {
-    const hostname = req.hostname;
-    console.log('Request:', hostname, req.path);
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
-    if (hostname === 'sooners.xsen.fun') {
-        return res.sendFile(path.join(__dirname, 'sooners.html'));
-    }
-    else if (hostname === 'okstate.xsen.fun') {
-        return res.sendFile(path.join(__dirname, 'okstate.html'));
-    }
-    else if (hostname === 'longhorns.xsen.fun') {
-        return res.sendFile(path.join(__dirname, 'longhorns.html'));
-    }
-    else if (hostname === 'xsen.fun' || hostname.includes('railway.app')) {
-        return res.sendFile(path.join(__dirname, 'index.html'));
-    }
-    else {
-        res.status(404).send('Not found');
-    }
+app.get('/sooners', (req, res) => {
+    res.sendFile(path.join(__dirname, 'sooners.html'));
+});
+
+app.get('/okstate', (req, res) => {
+    res.sendFile(path.join(__dirname, 'okstate.html'));
+});
+
+app.get('/longhorns', (req, res) => {
+    res.sendFile(path.join(__dirname, 'longhorns.html'));
 });
 
 // ─── STATIC PAGE ROUTES ───────────────────────────────
@@ -40,39 +35,44 @@ app.get('/channels.html', (req, res) => {
 });
 
 // ─── CHAT APP ROUTING ─────────────────────────────────
-app.get('/app', (req, res) => {
-    const hostname = req.hostname;
+app.get('/sooners/app', (req, res) => {
+    res.sendFile(path.join(__dirname, 'sooners/app.html'));
+});
 
-    if (hostname === 'sooners.xsen.fun') {
-        return res.sendFile(path.join(__dirname, 'sooners/app.html'));
-    }
-    else if (hostname === 'okstate.xsen.fun') {
-        return res.sendFile(path.join(__dirname, 'okstate/app.html'));
-    }
-    else if (hostname === 'longhorns.xsen.fun') {
-        return res.sendFile(path.join(__dirname, 'longhorns/app.html'));
-    }
-    else {
-        res.status(404).send('Not found');
-    }
+app.get('/okstate/app', (req, res) => {
+    res.sendFile(path.join(__dirname, 'okstate/app.html'));
+});
+
+app.get('/longhorns/app', (req, res) => {
+    res.sendFile(path.join(__dirname, 'longhorns/app.html'));
 });
 
 // ─── LOGIN ROUTING ────────────────────────────────────
-app.get('/login', (req, res) => {
-    const hostname = req.hostname;
+app.get('/sooners/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'sooners/login.html'));
+});
 
+app.get('/okstate/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'okstate/login.html'));
+});
+
+app.get('/longhorns/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'longhorns/login.html'));
+});
+
+// ─── SUBDOMAIN REDIRECTS (keep for 30 days) ───────────
+app.use((req, res, next) => {
+    const hostname = req.hostname;
     if (hostname === 'sooners.xsen.fun') {
-        return res.sendFile(path.join(__dirname, 'sooners/login.html'));
+        return res.redirect(301, `https://xsen.fun/sooners${req.path === '/' ? '' : req.path}`);
     }
-    else if (hostname === 'okstate.xsen.fun') {
-        return res.sendFile(path.join(__dirname, 'okstate/login.html'));
+    if (hostname === 'okstate.xsen.fun') {
+        return res.redirect(301, `https://xsen.fun/okstate${req.path === '/' ? '' : req.path}`);
     }
-    else if (hostname === 'longhorns.xsen.fun') {
-        return res.sendFile(path.join(__dirname, 'longhorns/login.html'));
+    if (hostname === 'longhorns.xsen.fun') {
+        return res.redirect(301, `https://xsen.fun/longhorns${req.path === '/' ? '' : req.path}`);
     }
-    else {
-        res.status(404).send('Not found');
-    }
+    next();
 });
 
 // ─── STATIC FILES LAST ────────────────────────────────
