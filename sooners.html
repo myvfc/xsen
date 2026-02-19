@@ -16,6 +16,7 @@
             background: #fff;
             color: #333;
             line-height: 1.6;
+            padding-bottom: 80px; /* room for sticky player */
         }
         
         /* Header */
@@ -26,7 +27,7 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 200;
         }
         
         .header-content {
@@ -53,12 +54,40 @@
             opacity: 1;
         }
         
-        /* Hero Section */
+        /* ─── VIDEO HERO ─── */
         .hero {
-            background: linear-gradient(135deg, #841617 0%, #6a1112 100%);
-            color: #FDF9D8;
-            padding: 80px 20px;
+            position: relative;
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
+            overflow: hidden;
+            color: #FDF9D8;
+        }
+
+        .hero-video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+
+        /* dark overlay so text pops */
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(132,22,23,0.82) 0%, rgba(106,17,18,0.88) 100%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 80px 20px;
+            max-width: 900px;
         }
         
         .hero h1 {
@@ -68,9 +97,17 @@
         }
         
         .hero .subtitle {
-            font-size: 24px;
+            font-size: 22px;
             margin-bottom: 40px;
             opacity: 0.95;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
         }
         
         .hero-cta {
@@ -90,11 +127,124 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(0,0,0,0.4);
         }
+
+        /* Listen Live button */
+        .listen-btn {
+            background: transparent;
+            color: #FDF9D8;
+            padding: 20px 40px;
+            font-size: 20px;
+            border-radius: 50px;
+            border: 2px solid #FDF9D8;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .listen-btn:hover {
+            background: rgba(253,249,216,0.15);
+            transform: translateY(-2px);
+        }
+
+        .listen-btn .live-dot {
+            width: 10px;
+            height: 10px;
+            background: #ff4444;
+            border-radius: 50%;
+            animation: pulse 1.4s infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.3); }
+        }
         
         .trial-note {
             margin-top: 15px;
             font-size: 14px;
             opacity: 0.9;
+        }
+
+        /* ─── STICKY AUDIO PLAYER ─── */
+        .sticky-player {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 300;
+            background: linear-gradient(135deg, #841617 0%, #6a1112 100%);
+            color: #FDF9D8;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .sticky-player.open {
+            transform: translateY(0);
+        }
+
+        .player-bar {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .player-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            font-size: 15px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .player-label .live-dot {
+            width: 9px;
+            height: 9px;
+            background: #ff4444;
+            border-radius: 50%;
+            animation: pulse 1.4s infinite;
+        }
+
+        .player-iframe-wrap {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .player-iframe-wrap iframe {
+            width: 100%;
+            height: 52px;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+        }
+
+        .player-close {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: #FDF9D8;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+
+        .player-close:hover {
+            background: rgba(255,255,255,0.28);
         }
         
         /* Container */
@@ -231,6 +381,25 @@
             color: #841617;
             margin: 10px 0;
         }
+
+        .feature-stat.live {
+            color: #c0392b;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .feature-stat.live::before {
+            content: '';
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #ff4444;
+            border-radius: 50%;
+            animation: pulse 1.4s infinite;
+        }
         
         /* Pricing */
         .pricing-section {
@@ -346,6 +515,11 @@
             .hero .subtitle {
                 font-size: 18px;
             }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
             
             .two-col {
                 grid-template-columns: 1fr;
@@ -359,6 +533,10 @@
             .price {
                 font-size: 48px;
             }
+
+            .player-label {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -371,12 +549,25 @@
         </div>
     </div>
     
-    <!-- Hero -->
+    <!-- Hero with Video Background -->
     <div class="hero">
-        <h1>Your All-in-One OU Superfan Hub</h1>
-        <p class="subtitle">Chat with Boomer AI • Watch 4,700+ Highlights • Get Live Stats • Listen to OU Radio</p>
-        <a href="#pricing" class="hero-cta">Start Your Free Trial</a>
-        <p class="trial-note">3 days free, then $9.99/month • Cancel anytime</p>
+        <video class="hero-video" autoplay muted playsinline preload="auto"
+               poster="https://storage.googleapis.com/xsenassets/XSEN.mp4#t=0.1">
+            <source src="https://storage.googleapis.com/xsenassets/XSEN.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Your All-in-One OU Superfan Hub</h1>
+            <p class="subtitle">Chat with Boomer AI • Watch 4,700+ Highlights • Get Live Stats • Listen to OU Radio</p>
+            <div class="hero-buttons">
+                <a href="#pricing" class="hero-cta">Start Your Free Trial</a>
+                <button class="listen-btn" onclick="openPlayer()">
+                    <span class="live-dot"></span>
+                    Listen Live
+                </button>
+            </div>
+            <p class="trial-note">3 days free, then $9.99/month • Cancel anytime</p>
+        </div>
     </div>
     
     <!-- Problem/Solution -->
@@ -472,8 +663,8 @@
                 <div class="feature">
                     <div class="feature-icon">📻</div>
                     <h3>XSEN Radio</h3>
-                    <p>24/7 Sooner-themed radio stream. Music, clips, and OU sports audio.</p>
-                    <div class="feature-stat">Coming soon</div>
+                    <p>24/7 Sooner-themed radio stream. Music, OU highlights audio, and fan programming.</p>
+                    <div class="feature-stat live">Live Now</div>
                 </div>
             </div>
         </div>
@@ -536,19 +727,31 @@
                 <div class="faq-question">Is this officially affiliated with OU?</div>
                 <div class="faq-answer">No, XSEN is an independent fan platform created by OU superfans, for OU superfans. We're not affiliated with the University of Oklahoma.</div>
             </div>
-            
+
             <div class="faq-item">
-                <div class="faq-question">When will the radio feature be ready?</div>
-                <div class="faq-answer">XSEN Radio is in final testing and will launch within 30 days. All subscribers get access as soon as it's live - no extra charge!</div>
+                <div class="faq-question">What is XSEN Radio?</div>
+                <div class="faq-answer">XSEN Radio is our 24/7 Sooner-themed audio stream — OU highlight audio, Boomer-curated music, and fan programming. Click "Listen Live" at the top of this page to tune in right now, free.</div>
             </div>
         </div>
     </div>
     
     <!-- Final CTA -->
-    <div class="hero" style="padding: 60px 20px;">
-        <h2 style="font-size: 38px; margin-bottom: 30px;">Ready to Join the XSEN Sooners Community?</h2>
-        <a href="https://buy.stripe.com/eVq7sLegK1gRaL4a1hbjW01" class="hero-cta">Start Your Free Trial Now</a>
-        <p class="trial-note">Join other OU superfans • 3 days free • Cancel anytime</p>
+    <div class="hero" style="min-height: 300px;">
+        <video class="hero-video" autoplay muted playsinline>
+            <source src="https://storage.googleapis.com/xsenassets/XSEN.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="hero-content" style="padding: 60px 20px;">
+            <h2 style="font-size: 38px; margin-bottom: 30px;">Ready to Join the XSEN Sooners Community?</h2>
+            <div class="hero-buttons">
+                <a href="https://buy.stripe.com/eVq7sLegK1gRaL4a1hbjW01" class="hero-cta">Start Your Free Trial Now</a>
+                <button class="listen-btn" onclick="openPlayer()">
+                    <span class="live-dot"></span>
+                    Listen Live
+                </button>
+            </div>
+            <p class="trial-note">Join other OU superfans • 3 days free • Cancel anytime</p>
+        </div>
     </div>
     
     <!-- Footer -->
@@ -557,11 +760,36 @@
         <p style="margin-top: 10px;">
             <a href="https://xsen.fun">XSEN Home</a> • 
             <a href="https://sooners.xsen.fun/app">Member Login</a> • 
-            <a href="mailto:support@xsen.fun">Support</a>
+            <a href="/cdn-cgi/l/email-protection#a5d6d0d5d5cad7d1e5ddd6c0cb8bc3d0cb">Support</a>
         </p>
         <p style="margin-top: 20px; font-size: 12px; opacity: 0.7;">
             Not affiliated with the University of Oklahoma
         </p>
     </div>
-</body>
-</html>
+
+    <!-- ─── STICKY AUDIO PLAYER ─── -->
+    <div class="sticky-player" id="stickyPlayer">
+        <div class="player-bar">
+            <div class="player-label">
+                <span class="live-dot"></span>
+                XSEN Radio — Sooners
+            </div>
+            <div class="player-iframe-wrap">
+                <iframe id="radioFrame" src="" allow="autoplay" scrolling="no"></iframe>
+            </div>
+            <button class="player-close" onclick="closePlayer()" title="Close">✕</button>
+        </div>
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        const RADIO_URL = 'https://radio.xsen.fun';
+
+        function openPlayer() {
+            const player = document.getElementById('stickyPlayer');
+            const frame  = document.getElementById('radioFrame');
+            // load the iframe only on first open (avoid autoplay on page load)
+            if (!frame.src || frame.src === window.location.href) {
+                frame.src = RADIO_URL;
+            }
+            player.classList.add('open');
+        }
