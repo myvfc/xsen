@@ -66,6 +66,216 @@
       .chat-input button { border-radius: 0; }
       .nav-bar { border-radius: 0; }
     }
+
+    /* ── NIL NOTIFICATION CSS ── */
+    #nil-prompt-container {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 999;
+      padding: 0 16px 16px;
+      pointer-events: none;
+    }
+
+    .nil-prompt {
+      pointer-events: all;
+      background: #111111;
+      border: 1px solid rgba(201,168,76,0.6);
+      border-radius: 10px;
+      overflow: hidden;
+      max-width: 480px;
+      margin: 0 auto;
+      box-shadow:
+        0 0 0 1px rgba(201,168,76,0.15),
+        0 30px 80px rgba(0,0,0,0.8),
+        0 0 60px rgba(132,22,23,0.3);
+      animation: nilSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .nil-prompt-exit {
+      animation: nilSlideDown 0.4s ease forwards !important;
+    }
+
+    @keyframes nilSlideUp {
+      from { opacity: 0; transform: translateY(100%); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes nilSlideDown {
+      from { opacity: 1; transform: translateY(0); }
+      to   { opacity: 0; transform: translateY(100%); }
+    }
+
+    .nil-prompt-accent {
+      height: 4px;
+      background: linear-gradient(90deg, #841617, #c9a84c, #841617);
+      background-size: 200% 100%;
+      animation: accentShimmer 2s linear infinite;
+    }
+
+    @keyframes accentShimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .nil-prompt-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 22px 24px;
+      flex-wrap: wrap;
+    }
+
+    .nil-prompt-tag {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: #c9a84c;
+      margin-bottom: 8px;
+    }
+
+    .nil-dot {
+      width: 8px;
+      height: 8px;
+      background: #ff4444;
+      border-radius: 50%;
+      animation: nilPulse 1s infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes nilPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.4; transform: scale(1.4); }
+    }
+
+    .nil-prompt-message {
+      font-size: 22px;
+      font-weight: 700;
+      color: #f5f5f0;
+      margin-bottom: 6px;
+      line-height: 1.2;
+    }
+
+    .nil-prompt-sub {
+      font-size: 11px;
+      color: rgba(245,245,240,0.35);
+      letter-spacing: 0.3px;
+    }
+
+    .nil-prompt-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .nil-prompt-btn {
+      background: #841617;
+      color: #f5f5f0;
+      padding: 14px 28px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 15px;
+      white-space: nowrap;
+      transition: all 0.2s;
+      box-shadow: 0 4px 20px rgba(132,22,23,0.5);
+    }
+
+    .nil-prompt-btn:hover {
+      background: #9a1c1d;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 30px rgba(132,22,23,0.7);
+    }
+
+    .nil-prompt-dismiss {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      color: rgba(245,245,240,0.4);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .nil-prompt-dismiss:hover {
+      background: rgba(255,255,255,0.1);
+      color: #f5f5f0;
+    }
+
+    .nil-prompt-progress {
+      height: 4px;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .nil-prompt-progress-fill {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #841617, #c9a84c);
+      border-radius: 0 2px 2px 0;
+    }
+
+    #push-optin-banner {
+      display: none;
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 998;
+      background: #1a1a1a;
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 8px;
+      padding: 14px 20px;
+      gap: 14px;
+      align-items: center;
+      max-width: 480px;
+      width: calc(100% - 40px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .push-optin-text {
+      font-size: 13px;
+      color: rgba(245,245,240,0.65);
+      flex: 1;
+      line-height: 1.5;
+    }
+
+    .push-optin-text strong { color: #f5f5f0; }
+
+    #push-optin-yes {
+      background: #c9a84c;
+      color: #0a0a0a;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 16px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    #push-optin-no {
+      background: none;
+      border: none;
+      color: rgba(245,245,240,0.3);
+      font-size: 12px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
   </style>
 </head>
 <body>
@@ -357,5 +567,17 @@
       setInterval(updateLiveStatus, 20000);
     });
   </script>
+
+  <!-- NIL Notifications -->
+  <div id="nil-prompt-container"></div>
+  <div id="push-optin-banner">
+    <div class="push-optin-text">
+      <strong>Get notified during big moments.</strong> We'll alert you when something worth supporting happens.
+    </div>
+    <button id="push-optin-yes">Sure</button>
+    <button id="push-optin-no">No thanks</button>
+  </div>
+  <script src="/xsen-nil-notifications.js"></script>
+
 </body>
 </html>
