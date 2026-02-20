@@ -75,7 +75,6 @@
             max-width: 900px;
         }
 
-        /* Used by footer CTA video section */
         .hero-video {
             position: absolute;
             inset: 0;
@@ -130,7 +129,6 @@
             box-shadow: 0 6px 20px rgba(0,0,0,0.4);
         }
 
-        /* Listen Live button */
         .listen-btn {
             background: transparent;
             color: #FDF9D8;
@@ -171,7 +169,6 @@
             50% { opacity: 0.5; transform: scale(1.3); }
         }
 
-        /* live badge inside sticky player */
         .player-live-badge {
             font-size: 11px;
             font-weight: 800;
@@ -289,13 +286,8 @@
             margin-bottom: 20px;
         }
         
-        .problem {
-            color: #666;
-        }
-        
-        .solution {
-            color: #841617;
-        }
+        .problem { color: #666; }
+        .solution { color: #841617; }
         
         .problem ul, .solution ul {
             list-style: none;
@@ -308,17 +300,8 @@
             position: relative;
         }
         
-        .problem li:before {
-            content: "❌";
-            position: absolute;
-            left: 0;
-        }
-        
-        .solution li:before {
-            content: "✅";
-            position: absolute;
-            left: 0;
-        }
+        .problem li:before { content: "❌"; position: absolute; left: 0; }
+        .solution li:before { content: "✅"; position: absolute; left: 0; }
         
         /* Boomer Examples */
         .examples-grid {
@@ -360,14 +343,8 @@
             gap: 40px;
         }
         
-        .feature {
-            text-align: center;
-        }
-        
-        .feature-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
-        }
+        .feature { text-align: center; }
+        .feature-icon { font-size: 64px; margin-bottom: 20px; }
         
         .feature h3 {
             font-size: 24px;
@@ -375,10 +352,7 @@
             color: #841617;
         }
         
-        .feature p {
-            color: #666;
-            line-height: 1.8;
-        }
+        .feature p { color: #666; line-height: 1.8; }
         
         .feature-stat {
             font-size: 32px;
@@ -430,10 +404,7 @@
             margin: 20px 0;
         }
         
-        .price-period {
-            font-size: 24px;
-            color: #666;
-        }
+        .price-period { font-size: 24px; color: #666; }
         
         .features-list {
             list-style: none;
@@ -489,10 +460,7 @@
             margin-bottom: 10px;
         }
         
-        .faq-answer {
-            color: #666;
-            line-height: 1.8;
-        }
+        .faq-answer { color: #666; line-height: 1.8; }
         
         /* Footer */
         .footer {
@@ -502,19 +470,223 @@
             text-align: center;
         }
         
-        .footer a {
-            color: #999;
-            text-decoration: none;
+        .footer a { color: #999; text-decoration: none; }
+        .footer a:hover { color: #FDF9D8; }
+
+        /* ── NIL NOTIFICATION CSS ── */
+        #nil-prompt-container {
+          display: none;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          z-index: 999;
+          padding: 0 16px 16px;
+          pointer-events: none;
         }
-        
-        .footer a:hover {
-            color: #FDF9D8;
+
+        .nil-prompt {
+          pointer-events: all;
+          background: #111111;
+          border: 1px solid rgba(201,168,76,0.6);
+          border-radius: 10px;
+          overflow: hidden;
+          max-width: 720px;
+          margin: 0 auto;
+          box-shadow:
+            0 0 0 1px rgba(201,168,76,0.15),
+            0 30px 80px rgba(0,0,0,0.8),
+            0 0 60px rgba(132,22,23,0.3);
+          animation: nilSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
-        
+
+        .nil-prompt-exit {
+          animation: nilSlideDown 0.4s ease forwards !important;
+        }
+
+        @keyframes nilSlideUp {
+          from { opacity: 0; transform: translateY(100%); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes nilSlideDown {
+          from { opacity: 1; transform: translateY(0); }
+          to   { opacity: 0; transform: translateY(100%); }
+        }
+
+        .nil-prompt-accent {
+          height: 4px;
+          background: linear-gradient(90deg, #841617, #c9a84c, #841617);
+          background-size: 200% 100%;
+          animation: accentShimmer 2s linear infinite;
+        }
+
+        @keyframes accentShimmer {
+          0%   { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
+
+        .nil-prompt-inner {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 20px;
+          padding: 22px 24px;
+          flex-wrap: wrap;
+        }
+
+        .nil-prompt-tag {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 2.5px;
+          text-transform: uppercase;
+          color: #c9a84c;
+          margin-bottom: 8px;
+        }
+
+        .nil-dot {
+          width: 8px;
+          height: 8px;
+          background: #ff4444;
+          border-radius: 50%;
+          animation: nilPulse 1s infinite;
+          flex-shrink: 0;
+        }
+
+        @keyframes nilPulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50%       { opacity: 0.4; transform: scale(1.4); }
+        }
+
+        .nil-prompt-message {
+          font-size: 22px;
+          font-weight: 700;
+          color: #f5f5f0;
+          margin-bottom: 6px;
+          line-height: 1.2;
+        }
+
+        .nil-prompt-sub {
+          font-size: 11px;
+          color: rgba(245,245,240,0.35);
+          letter-spacing: 0.3px;
+        }
+
+        .nil-prompt-right {
+          display: flex;
+          align-items: center;
+          gap: 14px;
+          flex-shrink: 0;
+        }
+
+        .nil-prompt-btn {
+          background: #841617;
+          color: #f5f5f0;
+          padding: 14px 28px;
+          border-radius: 5px;
+          text-decoration: none;
+          font-weight: 700;
+          font-size: 15px;
+          white-space: nowrap;
+          transition: all 0.2s;
+          box-shadow: 0 4px 20px rgba(132,22,23,0.5);
+        }
+
+        .nil-prompt-btn:hover {
+          background: #9a1c1d;
+          transform: translateY(-1px);
+          box-shadow: 0 8px 30px rgba(132,22,23,0.7);
+        }
+
+        .nil-prompt-dismiss {
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 50%;
+          width: 32px;
+          height: 32px;
+          color: rgba(245,245,240,0.4);
+          font-size: 14px;
+          cursor: pointer;
+          transition: all 0.2s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+
+        .nil-prompt-dismiss:hover {
+          background: rgba(255,255,255,0.1);
+          color: #f5f5f0;
+        }
+
+        .nil-prompt-progress {
+          height: 4px;
+          background: rgba(255,255,255,0.04);
+        }
+
+        .nil-prompt-progress-fill {
+          height: 100%;
+          width: 100%;
+          background: linear-gradient(90deg, #841617, #c9a84c);
+          border-radius: 0 2px 2px 0;
+        }
+
+        #push-optin-banner {
+          display: none;
+          position: fixed;
+          top: 80px;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 998;
+          background: #1a1a1a;
+          border: 1px solid rgba(201,168,76,0.3);
+          border-radius: 8px;
+          padding: 14px 20px;
+          gap: 14px;
+          align-items: center;
+          max-width: 480px;
+          width: calc(100% - 40px);
+          box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .push-optin-text {
+          font-size: 13px;
+          color: rgba(245,245,240,0.65);
+          flex: 1;
+          line-height: 1.5;
+        }
+
+        .push-optin-text strong { color: #f5f5f0; }
+
+        #push-optin-yes {
+          background: #c9a84c;
+          color: #0a0a0a;
+          border: none;
+          border-radius: 4px;
+          padding: 8px 16px;
+          font-weight: 700;
+          font-size: 13px;
+          cursor: pointer;
+          white-space: nowrap;
+        }
+
+        #push-optin-no {
+          background: none;
+          border: none;
+          color: rgba(245,245,240,0.3);
+          font-size: 12px;
+          cursor: pointer;
+          white-space: nowrap;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .hero {
-                min-height: 100svh; /* full viewport height on mobile */
+                min-height: 100svh;
             }
 
             .hero h1 {
@@ -573,7 +745,13 @@
             }
         }
 
-        /* Very small phones */
+        @media (max-width: 600px) {
+          .nil-prompt-inner { padding: 18px 16px; gap: 14px; }
+          .nil-prompt-message { font-size: 18px; }
+          .nil-prompt-btn { padding: 12px 20px; font-size: 14px; }
+          .nil-prompt-right { width: 100%; justify-content: space-between; }
+        }
+
         @media (max-width: 390px) {
             .hero h1 { font-size: 26px; }
             .hero .subtitle { font-size: 14px; }
@@ -581,9 +759,8 @@
     </style>
 </head>
 <body>
-    <!-- Hero - solid crimson background -->
+    <!-- Hero -->
     <div class="hero">
-        <!-- Header overlaid on hero -->
         <div class="header">
             <div class="header-content">
                 <div class="logo">🏈 XSEN Sooners</div>
@@ -634,33 +811,27 @@
     <div class="container">
         <div class="section">
             <h2 class="section-title">Ask Boomer Anything About OU Sports</h2>
-            
             <div class="examples-grid">
                 <div class="example-card">
                     <div class="example-question">"Who's starting QB this week?"</div>
                     <div class="example-answer">Get instant lineup updates, depth charts, and injury reports before kickoff.</div>
                 </div>
-                
                 <div class="example-card">
                     <div class="example-question">"Show me Baker Mayfield's best moments"</div>
                     <div class="example-answer">Watch highlights from 4,700+ videos spanning 45 years of Sooner football.</div>
                 </div>
-                
                 <div class="example-card">
                     <div class="example-question">"What's our record against Texas?"</div>
                     <div class="example-answer">Get historical stats, memorable games, and rivalry insights instantly.</div>
                 </div>
-                
                 <div class="example-card">
                     <div class="example-question">"Tell me about the 2000 championship run"</div>
                     <div class="example-answer">Relive legendary moments with someone who knows every play, every player.</div>
                 </div>
-                
                 <div class="example-card">
                     <div class="example-question">"Who won the Heisman in 1978?"</div>
                     <div class="example-answer">Billy Sims! Boomer knows OU history from the 1970s to today.</div>
                 </div>
-                
                 <div class="example-card">
                     <div class="example-question">"When's the next game?"</div>
                     <div class="example-answer">Complete schedule with times, opponents, and where to watch.</div>
@@ -671,7 +842,6 @@
         <!-- Features -->
         <div class="section">
             <h2 class="section-title">Everything You Need in One Place</h2>
-            
             <div class="features-grid">
                 <div class="feature">
                     <div class="feature-icon">🤖</div>
@@ -679,21 +849,18 @@
                     <p>Your personal OU expert with 45+ years of Sooner knowledge. Ask anything, anytime.</p>
                     <div class="feature-stat">100 msgs/mo</div>
                 </div>
-                
                 <div class="feature">
                     <div class="feature-icon">🎥</div>
                     <h3>Video Highlights</h3>
                     <p>Searchable archive of every big play, every memorable moment, instantly accessible.</p>
                     <div class="feature-stat">4,700+ videos</div>
                 </div>
-                
                 <div class="feature">
                     <div class="feature-icon">📊</div>
                     <h3>Live Stats & Data</h3>
                     <p>Real-time rosters, schedules, stats, and analytics. Always up to date.</p>
                     <div class="feature-stat">Updated daily</div>
                 </div>
-                
                 <div class="feature">
                     <div class="feature-icon">📻</div>
                     <h3>XSEN Radio</h3>
@@ -708,11 +875,9 @@
     <div class="pricing-section" id="pricing">
         <div class="container">
             <h2 class="section-title">Simple, Honest Pricing</h2>
-            
             <div class="pricing-card">
                 <h3 style="font-size: 28px; color: #841617;">XSEN Sooners</h3>
                 <div class="price">$9.99<span class="price-period">/mo</span></div>
-                
                 <ul class="features-list">
                     <li>Chat with Boomer AI (100 messages/month)</li>
                     <li>4,700+ searchable video highlights</li>
@@ -720,11 +885,9 @@
                     <li>XSEN Radio (24/7 streaming)</li>
                     <li>Cancel anytime, no commitments</li>
                 </ul>
-                
                 <a href="https://buy.stripe.com/eVq7sLegK1gRaL4a1hbjW01" class="cta-button">
                     Start 3-Day Free Trial
                 </a>
-                
                 <p style="margin-top: 20px; color: #666; font-size: 14px;">
                     Then $9.99/month • Cancel anytime
                 </p>
@@ -736,32 +899,26 @@
     <div class="container">
         <div class="section">
             <h2 class="section-title">Questions? We've Got Answers</h2>
-            
             <div class="faq-item">
                 <div class="faq-question">What exactly is Boomer AI?</div>
                 <div class="faq-answer">Boomer is your personal OU sports expert powered by AI. It has access to 45+ years of Oklahoma football history, current rosters, stats, and our massive video archive. Think of it as having an OU superfan on speed dial 24/7.</div>
             </div>
-            
             <div class="faq-item">
                 <div class="faq-question">How does the free trial work?</div>
                 <div class="faq-answer">Start your 3-day free trial with full access to everything. No credit card charged until day 4. Cancel anytime during the trial and pay nothing.</div>
             </div>
-            
             <div class="faq-item">
                 <div class="faq-question">What if I run out of messages?</div>
                 <div class="faq-answer">You get 100 messages per month (about 3 per day). That's plenty for most fans! If you need more, we'll add message packs soon. Your message count resets every month.</div>
             </div>
-            
             <div class="faq-item">
                 <div class="faq-question">Can I cancel anytime?</div>
                 <div class="faq-answer">Absolutely. Cancel with one click, no questions asked. If you cancel, you keep access until the end of your billing period.</div>
             </div>
-            
             <div class="faq-item">
                 <div class="faq-question">Is this officially affiliated with OU?</div>
                 <div class="faq-answer">No, XSEN is an independent fan platform created by OU superfans, for OU superfans. We're not affiliated with the University of Oklahoma.</div>
             </div>
-
             <div class="faq-item">
                 <div class="faq-question">What is XSEN Radio?</div>
                 <div class="faq-answer">XSEN Radio is our 24/7 Sooner-themed audio stream — OU highlight audio, Boomer-curated music, and fan programming. Click "Listen Live" at the top of this page to tune in right now, free.</div>
@@ -794,7 +951,7 @@
         <p style="margin-top: 10px;">
             <a href="https://xsen.fun">XSEN Home</a> • 
             <a href="https://sooners.xsen.fun/app">Member Login</a> • 
-            <a href="/cdn-cgi/l/email-protection#a5d6d0d5d5cad7d1e5ddd6c0cb8bc3d0cb">Support</a>
+            <a href="mailto:support@xsen.fun">Support</a>
         </p>
         <p style="margin-top: 20px; font-size: 12px; opacity: 0.7;">
             Not affiliated with the University of Oklahoma
@@ -822,7 +979,6 @@
         const LIVE_STREAM_URL = 'https://a12.asurahosting.com/listen/xsen_radio/radio.mp3';
         const LIVE_STATUS_URL = 'https://xsen-fan-messages-production.up.railway.app/live-status';
 
-        // ── elements ──
         const stickyPlayer  = document.getElementById('stickyPlayer');
         const playerBadge   = document.getElementById('playerBadge');
         const audioEl       = document.getElementById('xsenAudio');
@@ -833,7 +989,6 @@
 
         let isLive = false;
 
-        // ── live status polling ──
         async function updateLiveStatus() {
             try {
                 const res  = await fetch(LIVE_STATUS_URL, { cache: 'no-store' });
@@ -843,28 +998,24 @@
                 isLive = false;
             }
 
-            // update all status dots on Listen buttons
             statusDots.forEach(dot => {
                 dot.classList.toggle('live', isLive);
             });
 
-            // update sticky player badge
             if (isLive) {
-                playerBadge.textContent   = '🔴 LIVE';
-                playerBadge.className     = 'player-live-badge live';
+                playerBadge.textContent = '🔴 LIVE';
+                playerBadge.className   = 'player-live-badge live';
             } else {
-                playerBadge.textContent   = '⚪ PLAYLIST';
-                playerBadge.className     = 'player-live-badge offline';
+                playerBadge.textContent = '⚪ PLAYLIST';
+                playerBadge.className   = 'player-live-badge offline';
             }
 
-            // update Listen button label text
             listenBtns.forEach(btn => {
                 const textNode = Array.from(btn.childNodes).find(n => n.nodeType === 3);
                 if (textNode) textNode.textContent = isLive ? ' Listen Live' : ' XSEN Radio';
             });
         }
 
-        // ── open / close player ──
         function openPlayer() {
             stickyPlayer.classList.add('open');
             if (!audioEl.src || audioEl.src === window.location.href) {
@@ -884,12 +1035,11 @@
 
         listenBtns.forEach(btn => btn.addEventListener('click', openPlayer));
 
-        // ── init ──
         updateLiveStatus();
         setInterval(updateLiveStatus, 20000);
     </script>
-    
-   <!-- Supabase -->
+
+    <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
       const { createClient } = supabase;
@@ -912,6 +1062,3 @@
 
 </body>
 </html>
-
-
-
