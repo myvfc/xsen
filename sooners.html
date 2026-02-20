@@ -55,35 +55,17 @@
             opacity: 1;
         }
         
-        /* ─── VIDEO HERO ─── */
+        /* ─── HERO ─── */
         .hero {
             position: relative;
-            min-height: 600px;
+            min-height: 500px;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             overflow: hidden;
             color: #FDF9D8;
-        }
-
-        .hero-video {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: 0;
-        }
-
-        /* dark overlay so text pops */
-        .hero-overlay {
-            position: absolute;
-            inset: 0;
-            background: 
-                linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, transparent 25%),
-                linear-gradient(135deg, rgba(132,22,23,0.78) 0%, rgba(106,17,18,0.85) 100%);
-            z-index: 1;
+            background: linear-gradient(135deg, #841617 0%, #6a1112 100%);
         }
 
         .hero-content {
@@ -574,21 +556,16 @@
     </style>
 </head>
 <body>
-    <!-- Hero with Video Background -->
+    <!-- Hero - solid crimson background -->
     <div class="hero">
-        <!-- Header overlaid on video -->
+        <!-- Header overlaid on hero -->
         <div class="header">
             <div class="header-content">
                 <div class="logo">🏈 XSEN Sooners</div>
                 <a href="https://xsen.fun" class="back-link">← Back to XSEN</a>
             </div>
         </div>
-        <video class="hero-video" autoplay muted playsinline preload="auto"
-               poster="https://storage.googleapis.com/xsenassets/XSEN.mp4#t=0.1">
-            <source src="https://storage.googleapis.com/xsenassets/XSEN.mp4" type="video/mp4">
-        </video>
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
+        <div class="hero-content" style="padding-top: 140px;">
             <h1>Your All-in-One OU Superfan Hub</h1>
             <p class="subtitle">Chat with Boomer AI • Watch 4,700+ Highlights • Get Live Stats • Listen to OU Radio</p>
             <div class="hero-buttons">
@@ -791,7 +768,7 @@
         <p>© 2025 XSEN - The eXperience Sports Entertainment Network</p>
         <p style="margin-top: 10px;">
             <a href="https://xsen.fun">XSEN Home</a> • 
-            <a href="https://xsen.fun/sooners/app">Member Login</a> • 
+            <a href="https://sooners.xsen.fun/app">Member Login</a> • 
             <a href="/cdn-cgi/l/email-protection#a5d6d0d5d5cad7d1e5ddd6c0cb8bc3d0cb">Support</a>
         </p>
         <p style="margin-top: 20px; font-size: 12px; opacity: 0.7;">
@@ -817,7 +794,7 @@
     </div>
 
     <script>
-        const LIVE_STREAM_URL = 'http://157.245.208.49/listen/xsen_fancast_network/radio.mp3';
+        const LIVE_STREAM_URL = 'https://a12.asurahosting.com/listen/xsen_radio/radio.mp3';
         const LIVE_STATUS_URL = 'https://xsen-fan-messages-production.up.railway.app/live-status';
 
         // ── elements ──
@@ -888,4 +865,5 @@
     </script>
 </body>
 </html>
+
 
