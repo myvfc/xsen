@@ -55,7 +55,8 @@ function vibrateDevice() {
 
 // ── IN-CHANNEL PROMPT ────────────────────────────────────────────────────────
 
-var lastSeenPromptId = null;
+var lastSeenPromptId = sessionStorage.getItem('xsen_last_nil_id') || null;
+var nilShowCount = parseInt(sessionStorage.getItem('xsen_nil_count') || '0');
 
 async function pollNilQueue() {
   try {
@@ -74,7 +75,11 @@ async function pollNilQueue() {
 
     var prompt = data[0];
     if (prompt.id === lastSeenPromptId) return;
-    lastSeenPromptId = prompt.id;
+    if (nilShowCount >= 3) return;
+  lastSeenPromptId = prompt.id;
+  nilShowCount++;
+  sessionStorage.setItem('xsen_last_nil_id', prompt.id);
+  sessionStorage.setItem('xsen_nil_count', nilShowCount);
 
     await window.supabase
       .from('nil_prompt_queue')
