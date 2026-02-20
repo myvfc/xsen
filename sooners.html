@@ -888,9 +888,19 @@
         updateLiveStatus();
         setInterval(updateLiveStatus, 20000);
     </script>
+    
+   <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      const { createClient } = supabase;
+      const supabase = createClient(
+        'https://hvqzrdlbtfezwuveincs.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2cXpyZGxidGZlend1dmVpbmNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyOTA1MTgsImV4cCI6MjA3ODg2NjUxOH0.30_fdpT1hu_m3zyf-8IywXWIozjIDnqv5RHs6T9hCTo'
+      );
+    </script>
+
     <!-- NIL Notifications -->
     <div id="nil-prompt-container"></div>
-
     <div id="push-optin-banner">
       <div class="push-optin-text">
         <strong>Get notified during big moments.</strong> We'll alert you when something worth supporting happens.
@@ -898,12 +908,10 @@
       <button class="push-optin-yes" id="push-optin-yes">Sure</button>
       <button class="push-optin-no" id="push-optin-no">No thanks</button>
     </div>
-
     <script src="/xsen-nil-notifications.js"></script>
 
 </body>
 </html>
-</body>
-</html>
+
 
 
