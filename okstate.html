@@ -55,18 +55,20 @@
             opacity: 1;
         }
         
-        /* ─── VIDEO HERO ─── */
+        /* ─── HERO ─── */
         .hero {
             position: relative;
-            min-height: 600px;
+            min-height: 500px;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             overflow: hidden;
             color: #ffffff;
+            background: linear-gradient(135deg, #E04E00 0%, #B33D00 100%);
         }
 
+        /* Used by footer CTA video section */
         .hero-video {
             position: absolute;
             inset: 0;
@@ -76,13 +78,10 @@
             z-index: 0;
         }
 
-        /* dark overlay so text pops */
         .hero-overlay {
             position: absolute;
             inset: 0;
-            background: 
-                linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, transparent 25%),
-                linear-gradient(135deg, rgba(224,78,0,0.78) 0%, rgba(179,61,0,0.85) 100%);
+            background: linear-gradient(135deg, rgba(224,78,0,0.82) 0%, rgba(179,61,0,0.88) 100%);
             z-index: 1;
         }
 
@@ -564,6 +563,14 @@
                 padding: 10px 14px;
                 gap: 10px;
             }
+
+            .logo {
+                font-size: 16px;
+            }
+
+            .back-link {
+                font-size: 12px;
+            }
         }
 
         /* Very small phones */
@@ -574,25 +581,20 @@
     </style>
 </head>
 <body>
-    <!-- Hero with Video Background -->
+    <!-- Hero - solid orange background -->
     <div class="hero">
-        <!-- Header overlaid on video -->
+        <!-- Header overlaid on hero -->
         <div class="header">
             <div class="header-content">
-                <div class="logo">🤠 XSEN Oklahoma State</div>
+                <div class="logo">🤠 XSEN Cowboys</div>
                 <a href="https://xsen.fun" class="back-link">← Back to XSEN</a>
             </div>
         </div>
-        <video class="hero-video" autoplay muted playsinline preload="auto"
-               poster="https://storage.googleapis.com/xsenassets/XSEN.mp4#t=0.1">
-            <source src="https://storage.googleapis.com/xsenassets/XSEN.mp4" type="video/mp4">
-        </video>
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
+        <div class="hero-content" style="padding-top: 140px;">
             <h1>Your All-in-One OSU Superfan Hub</h1>
             <p class="subtitle">Chat with Pistol Pete AI • Watch 2,800+ Highlights • Get Live Stats • Listen to OSU Radio</p>
             <div class="hero-buttons">
-                <a href="https://buy.stripe.com/eVq00jc8Ce3D1aua1hbjW03" class="hero-cta">Start Your Free Trial</a>
+                <a href="#pricing" class="hero-cta">Start Your Free Trial</a>
                 <button class="listen-btn">
                     <span class="status-dot"></span>
                     Listen Live
@@ -708,7 +710,7 @@
             <h2 class="section-title">Simple, Honest Pricing</h2>
             
             <div class="pricing-card">
-                <h3 style="font-size: 28px; color: #E04E00;">XSEN Oklahoma State</h3>
+                <h3 style="font-size: 28px; color: #E04E00;">XSEN Cowboys</h3>
                 <div class="price">$9.99<span class="price-period">/mo</span></div>
                 
                 <ul class="features-list">
@@ -719,7 +721,7 @@
                     <li>Cancel anytime, no commitments</li>
                 </ul>
                 
-                <a href="https://buy.stripe.com/eVq00jc8Ce3D1aua1hbjW03" class="cta-button">
+                <a href="#pricing" class="cta-button">
                     Start 3-Day Free Trial
                 </a>
                 
@@ -776,7 +778,7 @@
         <div class="hero-content" style="padding: 60px 20px;">
             <h2 style="font-size: 38px; margin-bottom: 30px;">Ready to Join the XSEN Cowboys Community?</h2>
             <div class="hero-buttons">
-                <a href="https://buy.stripe.com/eVq00jc8Ce3D1aua1hbjW03" class="hero-cta">Start Your Free Trial Now</a>
+                <a href="#pricing" class="hero-cta">Start Your Free Trial Now</a>
                 <button class="listen-btn">
                     <span class="status-dot"></span>
                     Listen Live
@@ -791,7 +793,7 @@
         <p>© 2025 XSEN - The eXperience Sports Entertainment Network</p>
         <p style="margin-top: 10px;">
             <a href="https://xsen.fun">XSEN Home</a> • 
-            <a href="https://xsen.fun/okstate/app">Member Login</a> • 
+            <a href="https://okstate.xsen.fun/app">Member Login</a> • 
             <a href="/cdn-cgi/l/email-protection#a5d6d0d5d5cad7d1e5ddd6c0cb8bc3d0cb">Support</a>
         </p>
         <p style="margin-top: 20px; font-size: 12px; opacity: 0.7;">
@@ -817,7 +819,7 @@
     </div>
 
     <script>
-        const LIVE_STREAM_URL = 'http://157.245.208.49/listen/xsen_fancast_network/test-broadcaster';
+        const LIVE_STREAM_URL = 'https://a12.asurahosting.com/listen/xsen_radio/radio.mp3';
         const LIVE_STATUS_URL = 'https://xsen-fan-messages-production.up.railway.app/live-status';
 
         // ── elements ──
