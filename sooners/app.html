@@ -344,7 +344,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    const supabase = window.supabase.createClient(
+    window.supabase = window.supabase.createClient(
       'https://hvqzrdlbtfezwuveincs.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2cXpyZGxidGZlend1dmVpbmNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyOTA1MTgsImV4cCI6MjA3ODg2NjUxOH0.30_fdpT1hu_m3zyf-8IywXWIozjIDnqv5RHs6T9hCTo'
     );
@@ -389,7 +389,7 @@
         }
       } catch (e) {}
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session } } = await window.supabase.auth.getSession();
         if (session?.user) return session.user.email || session.user.id;
       } catch (e) {}
       return 'anonymous';
@@ -581,3 +581,4 @@
 
 </body>
 </html>
+
