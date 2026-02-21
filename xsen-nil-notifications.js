@@ -1,6 +1,6 @@
 /**
  * XSEN NIL Notification System — v2
- * In-channel prompt (sound + vibration + bold UI) + browser push
+ * In-page prompt only (sound + vibration + bold UI)
  * Requires: window.supabase already initialized before this script
  */
 
@@ -12,8 +12,6 @@ const XSEN_NIL_CONFIG = {
   poll_interval_ms: 30000,
   prompt_display_ms: 90000,
 };
-
-const VAPID_PUBLIC_KEY = 'YOUR_VAPID_PUBLIC_KEY_HERE';
 
 
 // ── SOUND ────────────────────────────────────────────────────────────────────
@@ -76,10 +74,10 @@ async function pollNilQueue() {
     var prompt = data[0];
     if (prompt.id === lastSeenPromptId) return;
     if (nilShowCount >= 3) return;
-  lastSeenPromptId = prompt.id;
-  nilShowCount++;
-  sessionStorage.setItem('xsen_last_nil_id', prompt.id);
-  sessionStorage.setItem('xsen_nil_count', nilShowCount);
+    lastSeenPromptId = prompt.id;
+    nilShowCount++;
+    sessionStorage.setItem('xsen_last_nil_id', prompt.id);
+    sessionStorage.setItem('xsen_nil_count', nilShowCount);
 
     await window.supabase
       .from('nil_prompt_queue')
@@ -150,72 +148,8 @@ async function trackNilClick(promptId) {
 }
 
 
-// ── BROWSER PUSH ─────────────────────────────────────────────────────────────
-
-async function initPushNotifications() {
-  if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
-
-  try {
-    var registration = await navigator.serviceWorker.register('/sw-xsen.js');
-    var permission   = Notification.permission;
-
-    if (permission === 'granted') {
-      await subscribeToPush(registration);
-    } else if (permission === 'default') {
-      showPushOptIn(registration);
-    }
-  } catch(e) {
-    console.log('Push init error:', e);
-  }
-}
-
-function showPushOptIn(registration) {
-  if (sessionStorage.getItem('xsen_push_asked')) return;
-  sessionStorage.setItem('xsen_push_asked', '1');
-
-  var banner = document.getElementById('push-optin-banner');
-  if (!banner) return;
-  banner.style.display = 'flex';
-
-  document.getElementById('push-optin-yes').addEventListener('click', async function() {
-    banner.style.display = 'none';
-    var result = await Notification.requestPermission();
-    if (result === 'granted') await subscribeToPush(registration);
-  });
-
-  document.getElementById('push-optin-no').addEventListener('click', function() {
-    banner.style.display = 'none';
-  });
-}
-
-async function subscribeToPush(registration) {
-  try {
-    var subscription = await registration.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
-    });
-
-    await window.supabase.from('push_subscriptions').upsert({
-      school: XSEN_NIL_CONFIG.school,
-      subscription: JSON.stringify(subscription),
-      created_at: new Date().toISOString()
-    });
-  } catch(err) {
-    console.error('Push subscription failed:', err);
-  }
-}
-
-function urlBase64ToUint8Array(base64String) {
-  var padding = '='.repeat((4 - base64String.length % 4) % 4);
-  var base64  = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
-  var rawData = atob(base64);
-  return Uint8Array.from(Array.from(rawData).map(function(c) { return c.charCodeAt(0); }));
-}
-
-
 // ── START ─────────────────────────────────────────────────────────────────────
 
 setInterval(pollNilQueue, XSEN_NIL_CONFIG.poll_interval_ms);
 pollNilQueue();
-initPushNotifications();
 
