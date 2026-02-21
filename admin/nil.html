@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>XSEN NIL Command Center</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #09090b;
+      --surface:   #111114;
+      --border:    rgba(255,255,255,0.07);
+      --gold:      #c9a84c;
+      --gold-dim:  rgba(201,168,76,0.15);
+      --red:       #841617;
+      --red-glow:  rgba(132,22,23,0.4);
+      --orange:    #FF6600;
+      --burnt:     #BF5700;
+      --text:      #f0ede8;
+      --muted:     rgba(240,237,232,0.4);
+      --success:   #22c55e;
+      --error:     #ef4444;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px 60px;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-top: 16px;
+    }
+
+    .header-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+
+    .header-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(42px, 10vw, 72px);
+      letter-spacing: 3px;
+      line-height: 1;
+      color: var(--text);
+      text-shadow: 0 0 60px rgba(201,168,76,0.2);
+    }
+
+    .header-title span {
+      color: var(--gold);
+    }
+
+    .header-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 10px;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--success);
+      margin-right: 6px;
+      animation: pulse 2s infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* ── MAIN GRID ── */
+    .grid {
+      max-width: 820px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .card-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+
+    /* ── SCHOOL SELECTOR ── */
+    .school-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .school-btn {
+      position: relative;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 10px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+      color: var(--muted);
+    }
+
+    .school-btn:hover {
+      border-color: rgba(255,255,255,0.2);
+      color: var(--text);
+    }
+
+    .school-btn.active-sooners {
+      border-color: var(--red);
+      background: rgba(132,22,23,0.15);
+      color: var(--text);
+      box-shadow: 0 0 20px var(--red-glow);
+    }
+
+    .school-btn.active-cowboys {
+      border-color: var(--orange);
+      background: rgba(255,102,0,0.12);
+      color: var(--text);
+      box-shadow: 0 0 20px rgba(255,102,0,0.3);
+    }
+
+    .school-btn.active-longhorns {
+      border-color: var(--burnt);
+      background: rgba(191,87,0,0.12);
+      color: var(--text);
+      box-shadow: 0 0 20px rgba(191,87,0,0.3);
+    }
+
+    .school-emoji {
+      font-size: 24px;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .school-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 16px;
+      letter-spacing: 1px;
+      display: block;
+    }
+
+    .school-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 2px;
+      opacity: 0.5;
+      text-transform: uppercase;
+      display: block;
+      margin-top: 2px;
+    }
+
+    /* ── TRIGGER BUTTONS ── */
+    .trigger-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    @media (min-width: 500px) {
+      .trigger-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .trigger-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 10px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+      color: var(--muted);
+    }
+
+    .trigger-btn:hover {
+      border-color: rgba(255,255,255,0.2);
+      color: var(--text);
+    }
+
+    .trigger-btn.active {
+      border-color: var(--gold);
+      background: var(--gold-dim);
+      color: var(--text);
+    }
+
+    .trigger-icon {
+      font-size: 20px;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .trigger-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      display: block;
+    }
+
+    /* ── MESSAGE INPUT ── */
+    .message-wrap {
+      position: relative;
+    }
+
+    .message-input {
+      width: 100%;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: var(--text);
+      resize: none;
+      transition: border-color 0.2s;
+      line-height: 1.5;
+    }
+
+    .message-input::placeholder { color: var(--muted); }
+    .message-input:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+
+    .char-count {
+      position: absolute;
+      bottom: 10px;
+      right: 14px;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    /* ── QUICK MESSAGES ── */
+    .quick-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .quick-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .quick-item {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 9px 13px;
+      cursor: pointer;
+      text-align: left;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--muted);
+      transition: all 0.15s;
+      width: 100%;
+    }
+
+    .quick-item:hover {
+      border-color: var(--gold);
+      color: var(--text);
+      background: var(--gold-dim);
+    }
+
+    /* ── FIRE BUTTON ── */
+    .fire-btn {
+      width: 100%;
+      padding: 18px;
+      background: var(--red);
+      border: none;
+      border-radius: 10px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 3px;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 30px var(--red-glow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fire-btn:hover:not(:disabled) {
+      background: #9a1c1d;
+      box-shadow: 0 8px 40px var(--red-glow);
+      transform: translateY(-1px);
+    }
+
+    .fire-btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .fire-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .fire-btn.cowboys-active { background: var(--orange); box-shadow: 0 4px 30px rgba(255,102,0,0.4); }
+    .fire-btn.cowboys-active:hover:not(:disabled) { background: #e55c00; box-shadow: 0 8px 40px rgba(255,102,0,0.5); }
+    .fire-btn.longhorns-active { background: var(--burnt); box-shadow: 0 4px 30px rgba(191,87,0,0.4); }
+    .fire-btn.longhorns-active:hover:not(:disabled) { background: #a84a00; box-shadow: 0 8px 40px rgba(191,87,0,0.5); }
+
+    /* ── FEEDBACK TOAST ── */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 24px;
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      z-index: 999;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    }
+
+    #toast.show { transform: translateX(-50%) translateY(0); }
+    #toast.success { border-color: var(--success); color: var(--success); }
+    #toast.error   { border-color: var(--error);   color: var(--error); }
+
+    /* ── LOG ── */
+    .log-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    .log-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .log-item:last-child { border-bottom: none; }
+
+    .log-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+      flex-shrink: 0;
+    }
+
+    .log-school {
+      color: var(--gold);
+      min-width: 80px;
+    }
+
+    .log-empty {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+      padding: 16px 0;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 20px 0;
+    }
+
+    /* ── PIN SCREEN ── */
+    #pinScreen {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      padding: 24px;
+    }
+
+    #pinScreen.hidden { display: none; }
+
+    .pin-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      letter-spacing: 3px;
+      color: var(--text);
+      text-align: center;
+    }
+
+    .pin-title span { color: var(--gold); }
+
+    .pin-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: center;
+      margin-top: -16px;
+    }
+
+    .pin-dots {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+    }
+
+    .pin-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.2);
+      background: transparent;
+      transition: all 0.15s;
+    }
+
+    .pin-dot.filled {
+      background: var(--gold);
+      border-color: var(--gold);
+      box-shadow: 0 0 10px rgba(201,168,76,0.5);
+    }
+
+    .pin-dot.error {
+      background: var(--error);
+      border-color: var(--error);
+      animation: shake 0.4s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%       { transform: translateX(-6px); }
+      40%       { transform: translateX(6px); }
+      60%       { transform: translateX(-4px); }
+      80%       { transform: translateX(4px); }
+    }
+
+    .pin-keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 72px);
+      gap: 10px;
+    }
+
+    .pin-key {
+      height: 72px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pin-key:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.15); }
+    .pin-key:active { transform: scale(0.94); background: var(--gold-dim); }
+
+    .pin-key.clear {
+      font-size: 13px;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 1px;
+      color: var(--muted);
+    }
+
+    .pin-key.empty { background: transparent; border-color: transparent; cursor: default; }
+    .pin-key.empty:hover { background: transparent; border-color: transparent; }
+    .pin-key.empty:active { transform: none; }
+
+    .pin-error-msg {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--error);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      min-height: 16px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-eyebrow"><span class="status-dot"></span>NIL Command Center</div>
+    <div class="header-title">XSEN <span>NIL</span> Admin</div>
+    <div class="header-sub">Fire notifications to any school's live app</div>
+  </div>
+
+  <div class="grid">
+
+    <!-- SCHOOL SELECT -->
+    <div class="card">
+      <div class="card-label">01 — Select School</div>
+      <div class="school-grid">
+        <button class="school-btn" data-school="sooners" onclick="selectSchool('sooners', this)">
+          <span class="school-emoji">🏈</span>
+          <span class="school-name">Sooners</span>
+          <span class="school-tag">Oklahoma</span>
+        </button>
+        <button class="school-btn" data-school="cowboys" onclick="selectSchool('cowboys', this)">
+          <span class="school-emoji">🤠</span>
+          <span class="school-name">Cowboys</span>
+          <span class="school-tag">OSU</span>
+        </button>
+        <button class="school-btn" data-school="longhorns" onclick="selectSchool('longhorns', this)">
+          <span class="school-emoji">🤘</span>
+          <span class="school-name">Longhorns</span>
+          <span class="school-tag">Texas</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- TRIGGER TYPE -->
+    <div class="card">
+      <div class="card-label">02 — Trigger Type</div>
+      <div class="trigger-grid">
+        <button class="trigger-btn active" data-trigger="demo" onclick="selectTrigger('demo', this)">
+          <span class="trigger-icon">⚡</span>
+          <span class="trigger-label">Demo</span>
+        </button>
+        <button class="trigger-btn" data-trigger="touchdown" onclick="selectTrigger('touchdown', this)">
+          <span class="trigger-icon">🏆</span>
+          <span class="trigger-label">Touchdown</span>
+        </button>
+        <button class="trigger-btn" data-trigger="comeback" onclick="selectTrigger('comeback', this)">
+          <span class="trigger-icon">🔥</span>
+          <span class="trigger-label">Comeback</span>
+        </button>
+        <button class="trigger-btn" data-trigger="lead_change" onclick="selectTrigger('lead_change', this)">
+          <span class="trigger-icon">📈</span>
+          <span class="trigger-label">Lead Change</span>
+        </button>
+        <button class="trigger-btn" data-trigger="close_game" onclick="selectTrigger('close_game', this)">
+          <span class="trigger-icon">⏱️</span>
+          <span class="trigger-label">Close Game</span>
+        </button>
+        <button class="trigger-btn" data-trigger="win" onclick="selectTrigger('win', this)">
+          <span class="trigger-icon">🎉</span>
+          <span class="trigger-label">Win</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- MESSAGE -->
+    <div class="card">
+      <div class="card-label">03 — Banner Message</div>
+      <div class="message-wrap">
+        <textarea
+          id="msgInput"
+          class="message-input"
+          rows="3"
+          maxlength="160"
+          placeholder="Type your message or pick a quick option below…"
+          oninput="updateCharCount()"
+        ></textarea>
+        <span class="char-count" id="charCount">0 / 160</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="quick-label">Quick Messages</div>
+      <div class="quick-list" id="quickList">
+        <!-- Populated by JS based on selected school/trigger -->
+      </div>
+    </div>
+
+    <!-- FIRE -->
+    <button class="fire-btn" id="fireBtn" onclick="fireNil()" disabled>
+      SELECT A SCHOOL TO FIRE
+    </button>
+
+    <!-- LOG -->
+    <div class="card">
+      <div class="card-label">Fire Log</div>
+      <div class="log-list" id="logList">
+        <div class="log-empty" id="logEmpty">No notifications fired yet this session.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    // ── CONFIG ──────────────────────────────────────────────────────────────
+    const ESPN_MCP_URL = 'https://espn-mcp-server-production.up.railway.app';
+
+    const SCHOOL_NAMES = {
+      sooners:   'Oklahoma Sooners',
+      cowboys:   'Oklahoma State Cowboys',
+      longhorns: 'Texas Longhorns',
+    };
+
+    const QUICK_MESSAGES = {
+      sooners: {
+        demo:        ['⚡ DEMO: See how NIL moments work live — support your athletes!', 'This is what fans see during a live game moment. Tap Support Now!'],
+        touchdown:   ['Dillon Gabriel just scored! Back the Sooners NOW!', 'TOUCHDOWN OU! This is what NIL support looks like in real time.', 'Sooners in the end zone — rally behind our athletes!'],
+        comeback:    ['OU fights back! This team never quits — neither should your support.', 'From behind to ahead — Sooners comeback is real. Back them!'],
+        lead_change: ['Sooners take the lead! Keep the momentum going with NIL support.', 'OU out front! Fuel the fire — support our athletes.'],
+        close_game:  ['One score game — 4th quarter. Our Sooners need you NOW.', 'Heart-pounding finish. Back the Sooners when it counts most.'],
+        win:         ['BOOMER SOONER! OU wins! Celebrate with NIL support for our champions.', 'Victory for the Sooners! Honor the athletes who delivered.'],
+      },
+      cowboys: {
+        demo:        ['⚡ DEMO: NIL moments fire live during games — support your Cowboys!', 'This is what OSU fans see during a big game moment. Tap Support Now!'],
+        touchdown:   ['Cowboys score! Back the Pokes — support OSU athletes NOW!', 'TOUCHDOWN OSU! Go Pokes — support your athletes in real time.'],
+        comeback:    ['Pokes fight back! OSU never quits — support them now.', 'Cowboys comeback underway! Back the orange!'],
+        lead_change: ['OSU takes the lead! Go Pokes — keep the momentum going.', 'Cowboys out front! Support the athletes making it happen.'],
+        close_game:  ['One score game, 4th quarter — Cowboys need your support NOW.', 'Nail-biter in Stillwater. Back your Cowboys when it matters most.'],
+        win:         ['GO POKES! Cowboys win! Celebrate with NIL support for our champions.', 'Victory for OSU! Honor the athletes who delivered.'],
+      },
+      longhorns: {
+        demo:        ["⚡ DEMO: This is how NIL moments work live — Hook 'em!", "This is what Longhorn fans see during a big game moment. Tap Support Now!"],
+        touchdown:   ["Longhorns score! Hook 'em — support Texas athletes NOW!", "TOUCHDOWN TEXAS! Back our athletes in real time."],
+        comeback:    ["Texas fights back! The Longhorns never quit — support them.", "Hook 'em comeback! Back the burnt orange."],
+        lead_change: ["Texas takes the lead! Fuel the fire — support our athletes.", "Longhorns out front! Keep the momentum — back the team."],
+        close_game:  ["One score game — 4th quarter Texas. Back your Longhorns NOW.", "Pressure cooker in Austin. Support your athletes when it counts."],
+        win:         ["HOOK 'EM HORNS! Texas wins! Celebrate with NIL support.", "Victory for the Longhorns! Honor the athletes who delivered."],
+      },
+    };
+
+    // ── STATE ───────────────────────────────────────────────────────────────
+    let selectedSchool  = null;
+    let selectedTrigger = 'demo';
+    let fireLog         = [];
+
+    // ── SCHOOL SELECT ────────────────────────────────────────────────────────
+    function selectSchool(school, el) {
+      document.querySelectorAll('.school-btn').forEach(b => {
+        b.className = 'school-btn';
+      });
+      el.classList.add('active-' + school);
+      selectedSchool = school;
+
+      const btn = document.getElementById('fireBtn');
+      btn.disabled = false;
+      btn.className = 'fire-btn ' + (school !== 'sooners' ? school + '-active' : '');
+      btn.textContent = 'FIRE NIL — ' + school.toUpperCase();
+
+      updateQuickMessages();
+    }
+
+    // ── TRIGGER SELECT ───────────────────────────────────────────────────────
+    function selectTrigger(trigger, el) {
+      document.querySelectorAll('.trigger-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      selectedTrigger = trigger;
+      updateQuickMessages();
+    }
+
+    // ── QUICK MESSAGES ───────────────────────────────────────────────────────
+    function updateQuickMessages() {
+      const school  = selectedSchool || 'sooners';
+      const trigger = selectedTrigger || 'demo';
+      const msgs    = (QUICK_MESSAGES[school] && QUICK_MESSAGES[school][trigger]) || [];
+      const list    = document.getElementById('quickList');
+
+      list.innerHTML = msgs.map(m =>
+        `<button class="quick-item" onclick="useQuickMessage(this)" data-msg="${m.replace(/"/g, '&quot;')}">${m}</button>`
+      ).join('');
+    }
+
+    function useQuickMessage(el) {
+      document.getElementById('msgInput').value = el.dataset.msg;
+      updateCharCount();
+    }
+
+    // ── CHAR COUNT ───────────────────────────────────────────────────────────
+    function updateCharCount() {
+      const len = document.getElementById('msgInput').value.length;
+      document.getElementById('charCount').textContent = `${len} / 160`;
+    }
+
+    // ── FIRE ─────────────────────────────────────────────────────────────────
+    async function fireNil() {
+      if (!selectedSchool) return;
+
+      const rawMsg = document.getElementById('msgInput').value.trim();
+      const btn    = document.getElementById('fireBtn');
+
+      btn.disabled   = true;
+      btn.textContent = 'FIRING…';
+
+      const params = new URLSearchParams({ trigger: selectedTrigger });
+      if (rawMsg) params.set('message', rawMsg);
+
+      const url = `${ESPN_MCP_URL}/nil-demo/${selectedSchool}?${params.toString()}`;
+
+      try {
+        const res  = await fetch(url);
+        const data = await res.json();
+
+        if (data.ok) {
+          showToast('✓ Notification fired — appears in app within 30s', 'success');
+          addLog(selectedSchool, selectedTrigger, data.message);
+        } else {
+          showToast('✗ Error: ' + (data.error || 'Unknown error'), 'error');
+        }
+      } catch (err) {
+        showToast('✗ Could not reach server', 'error');
+      }
+
+      btn.disabled   = false;
+      btn.textContent = 'FIRE NIL — ' + selectedSchool.toUpperCase();
+    }
+
+    // ── TOAST ────────────────────────────────────────────────────────────────
+    function showToast(msg, type) {
+      const t = document.getElementById('toast');
+      t.textContent  = msg;
+      t.className    = `show ${type}`;
+      setTimeout(() => { t.className = type; }, 3500);
+    }
+
+    // ── LOG ──────────────────────────────────────────────────────────────────
+    function addLog(school, trigger, message) {
+      const now = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      fireLog.unshift({ school, trigger, message, time: now });
+
+      const list  = document.getElementById('logList');
+      const empty = document.getElementById('logEmpty');
+      if (empty) empty.remove();
+
+      const item = document.createElement('div');
+      item.className = 'log-item';
+      item.innerHTML =
+        `<span class="log-dot"></span>` +
+        `<span class="log-school">${school}</span>` +
+        `<span style="color:var(--gold);min-width:80px;">${trigger}</span>` +
+        `<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${message}</span>` +
+        `<span style="flex-shrink:0;">${now}</span>`;
+
+      list.insertBefore(item, list.firstChild);
+    }
+
+    // ── INIT ─────────────────────────────────────────────────────────────────
+    updateQuickMessages();
+  </script>
+
+  <!-- PIN SCREEN -->
+  <div id="pinScreen">
+    <div class="pin-title">XSEN <span>NIL</span></div>
+    <div class="pin-sub">Enter Admin PIN to continue</div>
+    <div class="pin-dots">
+      <div class="pin-dot" id="d0"></div>
+      <div class="pin-dot" id="d1"></div>
+      <div class="pin-dot" id="d2"></div>
+      <div class="pin-dot" id="d3"></div>
+    </div>
+    <div class="pin-error-msg" id="pinError"></div>
+    <div class="pin-keypad">
+      <button class="pin-key" onclick="pinKey('1')">1</button>
+      <button class="pin-key" onclick="pinKey('2')">2</button>
+      <button class="pin-key" onclick="pinKey('3')">3</button>
+      <button class="pin-key" onclick="pinKey('4')">4</button>
+      <button class="pin-key" onclick="pinKey('5')">5</button>
+      <button class="pin-key" onclick="pinKey('6')">6</button>
+      <button class="pin-key" onclick="pinKey('7')">7</button>
+      <button class="pin-key" onclick="pinKey('8')">8</button>
+      <button class="pin-key" onclick="pinKey('9')">9</button>
+      <button class="pin-key empty"></button>
+      <button class="pin-key" onclick="pinKey('0')">0</button>
+      <button class="pin-key clear" onclick="pinClear()">⌫</button>
+    </div>
+  </div>
+
+  <script>
+    // ── PIN CONFIG ───────────────────────────────────────────────────────────
+    // Change this to your desired PIN
+    const ADMIN_PIN = '2025';
+    const SESSION_KEY = 'xsen_nil_admin_auth';
+
+    let pinEntry = '';
+
+    // Check if already authenticated this session
+    if (sessionStorage.getItem(SESSION_KEY) === 'true') {
+      document.getElementById('pinScreen').classList.add('hidden');
+    }
+
+    function pinKey(digit) {
+      if (pinEntry.length >= 4) return;
+      pinEntry += digit;
+      updateDots();
+      if (pinEntry.length === 4) checkPin();
+    }
+
+    function pinClear() {
+      pinEntry = pinEntry.slice(0, -1);
+      updateDots();
+      document.getElementById('pinError').textContent = '';
+    }
+
+    function updateDots() {
+      for (let i = 0; i < 4; i++) {
+        document.getElementById('d' + i).className =
+          'pin-dot' + (i < pinEntry.length ? ' filled' : '');
+      }
+    }
+
+    function checkPin() {
+      if (pinEntry === ADMIN_PIN) {
+        sessionStorage.setItem(SESSION_KEY, 'true');
+        document.getElementById('pinScreen').classList.add('hidden');
+      } else {
+        for (let i = 0; i < 4; i++) {
+          document.getElementById('d' + i).className = 'pin-dot error';
+        }
+        document.getElementById('pinError').textContent = 'Incorrect PIN';
+        setTimeout(() => {
+          pinEntry = '';
+          updateDots();
+          document.getElementById('pinError').textContent = '';
+        }, 800);
+      }
+    }
+
+    // Keyboard support
+    document.addEventListener('keydown', (e) => {
+      if (document.getElementById('pinScreen').classList.contains('hidden')) return;
+      if (e.key >= '0' && e.key <= '9') pinKey(e.key);
+      if (e.key === 'Backspace') pinClear();
+    });
+  </script>
+
+</body>
+</html>
