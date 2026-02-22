@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CheerPal — Broadcast Controller</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --pink: #FF2D78;
+    --pink-glow: #ff2d7844;
+    --pink-dim: #c4185a;
+    --navy: #0a0e1a;
+    --panel: #111827;
+    --panel2: #1a2236;
+    --border: #1f2d47;
+    --text: #e8eaf6;
+    --muted: #6b7a99;
+    --green: #00e676;
+    --amber: #ffab00;
+    --blue: #2979ff;
+    --purple: #d500f9;
+    --radius: 12px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── PIN SCREEN ── */
+  #pin-screen {
+    position: fixed; inset: 0;
+    background: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 999;
+    background-image: radial-gradient(ellipse at 30% 20%, #ff2d7818 0%, transparent 60%),
+                      radial-gradient(ellipse at 70% 80%, #2979ff12 0%, transparent 60%);
+  }
+  .pin-box {
+    text-align: center;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 48px 56px;
+    box-shadow: 0 0 60px #ff2d7820;
+    max-width: 380px; width: 100%;
+  }
+  .pin-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    letter-spacing: 3px;
+    color: var(--pink);
+    text-shadow: 0 0 30px var(--pink-glow);
+    margin-bottom: 4px;
+  }
+  .pin-tagline { color: var(--muted); font-size: 0.85rem; margin-bottom: 36px; letter-spacing: 1px; text-transform: uppercase; }
+  .pin-label { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  #pin-input {
+    width: 100%;
+    background: var(--navy);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-size: 2rem;
+    letter-spacing: 12px;
+    text-align: center;
+    padding: 14px;
+    outline: none;
+    transition: border-color .2s;
+    font-family: 'Bebas Neue', sans-serif;
+  }
+  #pin-input:focus { border-color: var(--pink); box-shadow: 0 0 0 3px var(--pink-glow); }
+  #pin-btn {
+    margin-top: 20px;
+    width: 100%;
+    background: var(--pink);
+    border: none; border-radius: 10px;
+    color: #fff; font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem; letter-spacing: 2px;
+    padding: 14px; cursor: pointer;
+    transition: background .2s, box-shadow .2s;
+  }
+  #pin-btn:hover { background: var(--pink-dim); box-shadow: 0 0 20px var(--pink-glow); }
+  #pin-error { color: var(--pink); font-size: 0.85rem; margin-top: 12px; height: 20px; }
+
+  /* ── HEADER ── */
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 24px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 50;
+  }
+  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.9rem; letter-spacing: 3px; color: var(--pink); text-shadow: 0 0 20px var(--pink-glow); }
+  .logo span { color: var(--text); }
+  .header-status { display: flex; align-items: center; gap: 20px; }
+  .live-badge {
+    display: flex; align-items: center; gap: 8px;
+    background: #ff2d7822; border: 1px solid var(--pink);
+    border-radius: 20px; padding: 5px 14px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 2px; color: var(--pink);
+  }
+  .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--pink); animation: pulse 1.2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.3)} }
+  .listener-count { color: var(--muted); font-size: 0.85rem; }
+  .listener-count strong { color: var(--text); }
+
+  /* ── TEAM SELECTOR ── */
+  .team-bar {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 24px;
+    background: var(--panel2);
+    border-bottom: 1px solid var(--border);
+  }
+  .team-bar-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-right: 6px; }
+  .team-btn {
+    background: var(--navy); border: 2px solid var(--border);
+    border-radius: 8px; color: var(--muted);
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 2px;
+    padding: 8px 22px; cursor: pointer; transition: all .2s;
+  }
+  .team-btn:hover { border-color: var(--pink); color: var(--pink); }
+  .team-btn.active { border-color: var(--pink); color: #fff; background: var(--pink); box-shadow: 0 0 14px var(--pink-glow); }
+  .team-btn.all-btn.active { background: var(--panel2); border-color: var(--green); color: var(--green); box-shadow: 0 0 14px #00e67644; }
+
+  /* ── MAIN LAYOUT ── */
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* ── PANELS ── */
+  .panel {
+    padding: 20px;
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 16px;
+    overflow-y: auto;
+    max-height: calc(100vh - 160px);
+  }
+  .panel:last-child { border-right: none; }
+  .panel-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem; letter-spacing: 2px; color: var(--muted);
+    border-bottom: 1px solid var(--border); padding-bottom: 10px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .panel-title .badge {
+    background: var(--pink); color: #fff;
+    border-radius: 20px; padding: 2px 10px;
+    font-size: 0.8rem; letter-spacing: 1px;
+  }
+
+  /* ── FAN MESSAGES ── */
+  #fan-feed { display: flex; flex-direction: column; gap: 10px; }
+  .fan-msg-card {
+    background: var(--navy);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 8px;
+    animation: slideIn .3s ease;
+    transition: border-color .2s;
+  }
+  .fan-msg-card:hover { border-color: var(--pink-dim); }
+  @keyframes slideIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+  .fan-msg-meta { display: flex; align-items: center; justify-content: space-between; }
+  .fan-msg-name { font-weight: 700; font-size: 0.9rem; color: var(--pink); }
+  .fan-msg-team { font-size: 0.72rem; color: var(--muted); background: var(--panel2); padding: 2px 8px; border-radius: 20px; }
+  .fan-msg-time { font-size: 0.72rem; color: var(--muted); }
+  .fan-msg-text { font-size: 0.9rem; line-height: 1.5; }
+  .fan-msg-actions { display: flex; gap: 8px; }
+  .shoutout-btn {
+    background: transparent; border: 1px solid var(--pink);
+    color: var(--pink); border-radius: 6px;
+    font-size: 0.8rem; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px;
+    padding: 5px 14px; cursor: pointer; transition: all .2s;
+  }
+  .shoutout-btn:hover { background: var(--pink); color: #fff; box-shadow: 0 0 10px var(--pink-glow); }
+  .shoutout-btn.done { background: #00e67622; border-color: var(--green); color: var(--green); cursor: default; }
+  .dismiss-btn {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--muted); border-radius: 6px;
+    font-size: 0.8rem; padding: 5px 10px; cursor: pointer; transition: all .2s;
+  }
+  .dismiss-btn:hover { border-color: #ff4444; color: #ff4444; }
+  .empty-feed { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 40px 20px; border: 1px dashed var(--border); border-radius: var(--radius); }
+
+  /* ── RIGHT PANEL — BROADCAST ── */
+  .type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .type-btn {
+    background: var(--navy); border: 2px solid var(--border);
+    border-radius: 10px; padding: 12px 10px;
+    cursor: pointer; transition: all .2s;
+    text-align: center; display: flex; flex-direction: column; gap: 4px;
+  }
+  .type-btn .type-icon { font-size: 1.4rem; }
+  .type-btn .type-label { font-family: 'Bebas Neue', sans-serif; font-size: 0.95rem; letter-spacing: 1px; color: var(--muted); }
+  .type-btn.active { border-color: var(--pink); background: var(--pink-glow); }
+  .type-btn.active .type-label { color: var(--pink); }
+  .type-btn[data-type="Hype"].active { border-color: var(--amber); background: #ffab0022; }
+  .type-btn[data-type="Hype"].active .type-label { color: var(--amber); }
+  .type-btn[data-type="Rotation"].active { border-color: var(--blue); background: #2979ff22; }
+  .type-btn[data-type="Rotation"].active .type-label { color: var(--blue); }
+  .type-btn[data-type="Poll"].active { border-color: var(--purple); background: #d500f922; }
+  .type-btn[data-type="Poll"].active .type-label { color: var(--purple); }
+
+  .field-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px; }
+  textarea.broadcast-input, input.broadcast-input {
+    width: 100%; background: var(--navy); border: 2px solid var(--border);
+    border-radius: 10px; color: var(--text); font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem; padding: 12px 14px; outline: none; resize: vertical;
+    transition: border-color .2s;
+  }
+  textarea.broadcast-input:focus, input.broadcast-input:focus { border-color: var(--pink); }
+  textarea.broadcast-input { min-height: 80px; }
+
+  /* Ticker toggle */
+  .ticker-row { display: flex; align-items: center; gap: 12px; }
+  .ticker-toggle {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--navy); border: 2px solid var(--border);
+    border-radius: 8px; padding: 8px 14px; cursor: pointer;
+    font-size: 0.82rem; color: var(--muted); transition: all .2s; white-space: nowrap;
+  }
+  .ticker-toggle.on { border-color: var(--amber); color: var(--amber); background: #ffab0015; }
+  .ticker-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+
+  /* Quick messages */
+  .quick-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .quick-btn {
+    background: var(--navy); border: 1px solid var(--border);
+    border-radius: 6px; padding: 6px 12px;
+    font-size: 0.78rem; color: var(--muted); cursor: pointer; transition: all .2s;
+  }
+  .quick-btn:hover { border-color: var(--pink); color: var(--pink); }
+
+  /* Fire button */
+  #fire-btn {
+    width: 100%; padding: 18px;
+    background: var(--pink);
+    border: none; border-radius: 12px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem; letter-spacing: 3px;
+    color: #fff; cursor: pointer;
+    transition: all .2s;
+    box-shadow: 0 4px 20px var(--pink-glow);
+    position: relative; overflow: hidden;
+  }
+  #fire-btn:hover { background: var(--pink-dim); box-shadow: 0 4px 30px #ff2d7866; transform: translateY(-1px); }
+  #fire-btn:active { transform: translateY(1px); }
+  #fire-btn::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, #ffffff22 0%, transparent 60%);
+  }
+  #fire-status { text-align: center; font-size: 0.82rem; min-height: 20px; color: var(--green); }
+
+  /* Fire log */
+  #fire-log { display: flex; flex-direction: column; gap: 6px; max-height: 200px; overflow-y: auto; }
+  .log-entry {
+    background: var(--navy); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 12px;
+    font-size: 0.78rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;
+  }
+  .log-entry .log-text { color: var(--text); flex: 1; }
+  .log-entry .log-meta { color: var(--muted); white-space: nowrap; text-align: right; }
+  .log-type-tag { display: inline-block; border-radius: 4px; padding: 1px 6px; font-size: 0.7rem; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px; margin-right: 6px; }
+  .tag-shoutout { background: #ff2d7830; color: var(--pink); }
+  .tag-hype { background: #ffab0030; color: var(--amber); }
+  .tag-rotation { background: #2979ff30; color: var(--blue); }
+  .tag-poll { background: #d500f930; color: var(--purple); }
+  .tag-nowplaying { background: #00e67630; color: var(--green); }
+
+  /* ── BOTTOM BAR ── */
+  .bottom-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 24px;
+    background: var(--panel);
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem; color: var(--muted);
+  }
+  .now-playing { display: flex; align-items: center; gap: 10px; }
+  .np-label { color: var(--pink); font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px; }
+  .np-text { color: var(--text); }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<!-- ═══ PIN SCREEN ═══ -->
+<div id="pin-screen">
+  <div class="pin-box">
+    <div class="pin-logo">CheerPal</div>
+    <div class="pin-tagline">Broadcast Controller</div>
+    <div class="pin-label">Enter Director PIN</div>
+    <input type="password" id="pin-input" maxlength="4" placeholder="••••" inputmode="numeric"/>
+    <button id="pin-btn">ENTER</button>
+    <div id="pin-error"></div>
+  </div>
+</div>
+
+<!-- ═══ APP ═══ -->
+<div id="app" style="display:none; flex-direction:column; height:100vh;">
+
+  <header>
+    <div class="logo">Cheer<span>Pal</span></div>
+    <div class="header-status">
+      <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+      <div class="listener-count">Listeners: <strong id="listener-count">—</strong></div>
+    </div>
+  </header>
+
+  <!-- Team selector -->
+  <div class="team-bar">
+    <span class="team-bar-label">Team:</span>
+    <button class="team-btn all-btn active" data-team="ALL">📣 ALL TEAMS</button>
+    <button class="team-btn" data-team="Elite">Elite</button>
+    <button class="team-btn" data-team="Senior">Senior</button>
+    <button class="team-btn" data-team="Junior">Junior</button>
+  </div>
+
+  <!-- Main layout -->
+  <div class="main" style="flex:1; overflow:hidden;">
+
+    <!-- LEFT: Fan Messages -->
+    <div class="panel">
+      <div class="panel-title">
+        💬 Fan Messages
+        <span class="badge" id="msg-count">0</span>
+      </div>
+      <div id="fan-feed">
+        <div class="empty-feed">No messages yet.<br/>Messages from families will appear here.</div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Broadcast Controls -->
+    <div class="panel">
+      <div class="panel-title">📡 Broadcast Controls</div>
+
+      <!-- Type selector -->
+      <div>
+        <div class="field-label">Alert Type</div>
+        <div class="type-grid">
+          <button class="type-btn active" data-type="Shoutout"><span class="type-icon">📣</span><span class="type-label">Shoutout</span></button>
+          <button class="type-btn" data-type="Hype"><span class="type-icon">🔥</span><span class="type-label">Hype</span></button>
+          <button class="type-btn" data-type="Rotation"><span class="type-icon">📋</span><span class="type-label">Rotation</span></button>
+          <button class="type-btn" data-type="Poll"><span class="type-icon">🗳️</span><span class="type-label">Poll</span></button>
+        </div>
+      </div>
+
+      <!-- Message -->
+      <div>
+        <div class="field-label">Message</div>
+        <textarea class="broadcast-input" id="broadcast-msg" placeholder="Type your message to all families…" rows="3"></textarea>
+      </div>
+
+      <!-- Ticker toggle -->
+      <div class="ticker-row">
+        <div class="field-label" style="margin:0;">Scrolling Ticker</div>
+        <button class="ticker-toggle" id="ticker-toggle">
+          <span class="ticker-dot"></span> OFF
+        </button>
+        <span style="font-size:0.75rem; color:var(--muted);">Scrolls message across family screens</span>
+      </div>
+
+      <!-- Quick messages -->
+      <div>
+        <div class="field-label">Quick Messages</div>
+        <div class="quick-grid">
+          <button class="quick-btn" data-msg="⏰ Elite Team — you're on deck! Head to floor now.">Elite On Deck</button>
+          <button class="quick-btn" data-msg="⏰ Senior Team — you're on deck! Head to floor now.">Senior On Deck</button>
+          <button class="quick-btn" data-msg="⏰ Junior Team — you're on deck! Head to floor now.">Junior On Deck</button>
+          <button class="quick-btn" data-msg="🏆 Scores are posted — check the scoreboard!">Scores Posted</button>
+          <button class="quick-btn" data-msg="📍 All families meet at the main entrance after awards.">Meet at Entrance</button>
+          <button class="quick-btn" data-msg="📸 Photos are live! Check the team app gallery.">Photos Live</button>
+          <button class="quick-btn" data-msg="🎉 Great job out there — we're so proud of every athlete!">Great Job Team</button>
+          <button class="quick-btn" data-msg="⚠️ Schedule change — please check with your team director.">Schedule Change</button>
+        </div>
+      </div>
+
+      <!-- Fire button -->
+      <button id="fire-btn">🚀 FIRE ALERT</button>
+      <div id="fire-status"></div>
+
+      <!-- Log -->
+      <div>
+        <div class="panel-title" style="font-size:1rem;">📋 Fire Log</div>
+        <div id="fire-log"><div style="color:var(--muted); font-size:0.8rem; text-align:center; padding:10px;">Nothing fired yet this session.</div></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="bottom-bar">
+    <div class="now-playing">
+      <span class="np-label">NOW PLAYING</span>
+      <span class="np-text" id="now-playing-text">Connecting to stream…</span>
+    </div>
+    <div id="session-time">Session: 00:00</div>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+  // ── CONFIG ──
+  const SUPABASE_URL   = 'https://hvqzrdlbtfezwuveincs.supabase.co';
+  const SUPABASE_KEY   = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2cXpyZGxidGZlend1dmVpbmNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyOTA1MTgsImV4cCI6MjA3ODg2NjUxOH0.30_fdpT1hu_m3zyf-8IywXWIozjIDnqv5RHs6T9hCTo';
+  const AZURACAST_URL  = 'https://your-azuracast.digitalocean.com';
+  const CORRECT_PIN    = '2025';
+  const POLL_INTERVAL  = 8000; // ms
+
+  // ── STATE ──
+  let selectedTeam  = 'ALL';
+  let selectedType  = 'Shoutout';
+  let tickerOn      = false;
+  let fireLog       = [];
+  let shoutedIds    = new Set();
+  let sessionStart  = Date.now();
+  let lastMsgId     = null;
+
+  // ── PIN ──
+  const pinScreen  = document.getElementById('pin-screen');
+  const appEl      = document.getElementById('app');
+  const pinInput   = document.getElementById('pin-input');
+  const pinBtn     = document.getElementById('pin-btn');
+  const pinError   = document.getElementById('pin-error');
+
+  function attemptPin() {
+    if (pinInput.value === CORRECT_PIN) {
+      pinScreen.style.display = 'none';
+      appEl.style.display = 'flex';
+      startPolling();
+      startSessionTimer();
+      fetchNowPlaying();
+    } else {
+      pinError.textContent = 'Incorrect PIN — try again.';
+      pinInput.value = '';
+      pinInput.focus();
+    }
+  }
+  pinBtn.addEventListener('click', attemptPin);
+  pinInput.addEventListener('keydown', e => { if (e.key === 'Enter') attemptPin(); });
+
+  // ── TEAM BUTTONS ──
+  document.querySelectorAll('.team-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.team-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedTeam = btn.dataset.team;
+    });
+  });
+
+  // ── TYPE BUTTONS ──
+  document.querySelectorAll('.type-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedType = btn.dataset.type;
+    });
+  });
+
+  // ── TICKER TOGGLE ──
+  const tickerToggle = document.getElementById('ticker-toggle');
+  tickerToggle.addEventListener('click', () => {
+    tickerOn = !tickerOn;
+    tickerToggle.classList.toggle('on', tickerOn);
+    tickerToggle.innerHTML = `<span class="ticker-dot"></span> ${tickerOn ? 'ON' : 'OFF'}`;
+  });
+
+  // ── QUICK MESSAGES ──
+  document.querySelectorAll('.quick-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById('broadcast-msg').value = btn.dataset.msg;
+    });
+  });
+
+  // ── FIRE ALERT ──
+  const fireBtn    = document.getElementById('fire-btn');
+  const fireStatus = document.getElementById('fire-status');
+
+  fireBtn.addEventListener('click', async () => {
+    const msg = document.getElementById('broadcast-msg').value.trim();
+    if (!msg) { fireStatus.textContent = '⚠️ Enter a message first.'; fireStatus.style.color = 'var(--amber)'; return; }
+
+    fireBtn.disabled = true;
+    fireStatus.textContent = 'Firing…';
+    fireStatus.style.color = 'var(--muted)';
+
+    const payload = {
+      team: selectedTeam,
+      type: selectedType,
+      message: msg,
+      ticker: tickerOn,
+      fired_at: new Date().toISOString(),
+      status: 'active'
+    };
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/broadcast_queue`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error('Failed');
+
+      fireStatus.textContent = `✅ Alert fired to ${selectedTeam === 'ALL' ? 'all teams' : selectedTeam + ' team'}!`;
+      fireStatus.style.color = 'var(--green)';
+      addToLog(payload);
+      document.getElementById('broadcast-msg').value = '';
+      setTimeout(() => { fireStatus.textContent = ''; }, 4000);
+    } catch (err) {
+      fireStatus.textContent = '❌ Could not fire. Check connection.';
+      fireStatus.style.color = 'var(--pink)';
+    }
+    fireBtn.disabled = false;
+  });
+
+  function addToLog(entry) {
+    fireLog.unshift(entry);
+    const log = document.getElementById('fire-log');
+    const tagClass = 'tag-' + entry.type.toLowerCase().replace(' ', '');
+    const time = new Date(entry.fired_at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    const html = `<div class="log-entry">
+      <div class="log-text"><span class="log-type-tag ${tagClass}">${entry.type}</span>${entry.message}</div>
+      <div class="log-meta">${entry.team}<br/>${time}${entry.ticker ? '<br/>🎞️ Ticker' : ''}</div>
+    </div>`;
+    if (log.querySelector('div[style]')) log.innerHTML = '';
+    log.insertAdjacentHTML('afterbegin', html);
+  }
+
+  // ── FAN MESSAGE POLLING ──
+  async function pollFanMessages() {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/fan_messages?status=eq.pending&order=created_at.desc&limit=30`, {
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+      });
+      if (!res.ok) return;
+      const msgs = await res.json();
+      renderFanMessages(msgs);
+      document.getElementById('msg-count').textContent = msgs.length;
+    } catch (e) {}
+  }
+
+  function renderFanMessages(msgs) {
+    const feed = document.getElementById('fan-feed');
+    if (!msgs.length) {
+      feed.innerHTML = '<div class="empty-feed">No messages yet.<br/>Messages from families will appear here.</div>';
+      return;
+    }
+    feed.innerHTML = msgs.map(m => {
+      const shouted = shoutedIds.has(m.id);
+      const time = new Date(m.created_at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+      return `<div class="fan-msg-card" data-id="${m.id}">
+        <div class="fan-msg-meta">
+          <div>
+            <span class="fan-msg-name">${escHtml(m.name || 'Anonymous')}</span>
+            ${m.team ? `<span class="fan-msg-team">${escHtml(m.team)}</span>` : ''}
+          </div>
+          <span class="fan-msg-time">${time}</span>
+        </div>
+        <div class="fan-msg-text">${escHtml(m.message)}</div>
+        <div class="fan-msg-actions">
+          <button class="shoutout-btn ${shouted ? 'done' : ''}" onclick="shoutout(${m.id}, '${escHtml(m.name||'Fan')}', '${escHtml(m.message)}', this)" ${shouted?'disabled':''}>
+            ${shouted ? '✅ Shouted Out' : '📣 Shoutout'}
+          </button>
+          <button class="dismiss-btn" onclick="dismissMsg(${m.id}, this)">Dismiss</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  async function shoutout(id, name, message, btn) {
+    shoutedIds.add(id);
+    btn.classList.add('done');
+    btn.textContent = '✅ Shouted Out';
+    btn.disabled = true;
+
+    const shoutMsg = `📣 Shoutout to ${name}: "${message}"`;
+    document.getElementById('broadcast-msg').value = shoutMsg;
+    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.type-btn[data-type="Shoutout"]').classList.add('active');
+    selectedType = 'Shoutout';
+  }
+
+  async function dismissMsg(id, btn) {
+    try {
+      await fetch(`${SUPABASE_URL}/rest/v1/fan_messages?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ status: 'dismissed' })
+      });
+      btn.closest('.fan-msg-card').remove();
+    } catch(e) {}
+  }
+
+  // ── NOW PLAYING ──
+  async function fetchNowPlaying() {
+    try {
+      const res = await fetch(`${AZURACAST_URL}/api/nowplaying`);
+      const data = await res.json();
+      const station = Array.isArray(data) ? data[0] : data;
+      document.getElementById('now-playing-text').textContent = station?.now_playing?.song?.title || 'Live Stream';
+      document.getElementById('listener-count').textContent = station?.listeners?.current ?? '—';
+    } catch(e) {
+      document.getElementById('now-playing-text').textContent = 'Stream data unavailable';
+    }
+  }
+
+  // ── LISTENERS ──
+  async function fetchListenerCount() {
+    try {
+      const res = await fetch(`${AZURACAST_URL}/api/nowplaying`);
+      const data = await res.json();
+      const station = Array.isArray(data) ? data[0] : data;
+      document.getElementById('listener-count').textContent = station?.listeners?.current ?? '—';
+    } catch(e) {}
+  }
+
+  // ── SESSION TIMER ──
+  function startSessionTimer() {
+    setInterval(() => {
+      const elapsed = Math.floor((Date.now() - sessionStart) / 1000);
+      const m = String(Math.floor(elapsed / 60)).padStart(2, '0');
+      const s = String(elapsed % 60).padStart(2, '0');
+      document.getElementById('session-time').textContent = `Session: ${m}:${s}`;
+    }, 1000);
+  }
+
+  // ── POLLING ──
+  function startPolling() {
+    pollFanMessages();
+    fetchListenerCount();
+    setInterval(pollFanMessages, POLL_INTERVAL);
+    setInterval(fetchListenerCount, 30000);
+    setInterval(fetchNowPlaying, 60000);
+  }
+
+  function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+</script>
+</body>
+</html>
