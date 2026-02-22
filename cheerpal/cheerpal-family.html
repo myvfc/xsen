@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>CheerPal — Family App</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --pink: #FF2D78;
+    --pink-glow: #ff2d7844;
+    --navy: #0a0e1a;
+    --panel: #111827;
+    --panel2: #1a2236;
+    --border: #1f2d47;
+    --text: #e8eaf6;
+    --muted: #6b7a99;
+    --green: #00e676;
+    --amber: #ffab00;
+    --radius: 14px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    color: var(--text);
+    min-height: 100vh;
+    max-width: 480px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* ── TICKER ── */
+  #ticker-bar {
+    display: none;
+    background: var(--pink);
+    padding: 10px 0;
+    overflow: hidden;
+    position: relative;
+    z-index: 100;
+  }
+  #ticker-bar.visible { display: block; }
+  .ticker-track {
+    display: flex;
+    white-space: nowrap;
+    animation: tickerScroll 18s linear infinite;
+  }
+  .ticker-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    color: #fff;
+    padding: 0 60px;
+  }
+  @keyframes tickerScroll {
+    0%   { transform: translateX(100vw); }
+    100% { transform: translateX(-100%); }
+  }
+
+  /* ── BANNER ── */
+  #banner-container {
+    position: fixed;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 100%; max-width: 480px;
+    z-index: 200;
+    padding: 12px;
+    pointer-events: none;
+  }
+  .broadcast-banner {
+    background: var(--panel);
+    border: 2px solid var(--pink);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    box-shadow: 0 4px 30px var(--pink-glow);
+    animation: bannerDrop .4s cubic-bezier(.34,1.56,.64,1);
+    pointer-events: all;
+  }
+  @keyframes bannerDrop {
+    from { opacity: 0; transform: translateY(-20px) scale(.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .banner-type {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.85rem; letter-spacing: 2px;
+    color: var(--pink); margin-bottom: 4px;
+  }
+  .banner-msg { font-size: 1rem; font-weight: 600; line-height: 1.4; }
+  .banner-dismiss {
+    margin-top: 10px;
+    background: transparent; border: 1px solid var(--border);
+    border-radius: 6px; color: var(--muted);
+    font-size: 0.78rem; padding: 4px 12px; cursor: pointer;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px 12px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .header-top {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem; letter-spacing: 3px;
+    color: var(--pink);
+    text-shadow: 0 0 20px var(--pink-glow);
+  }
+  .logo span { color: var(--text); }
+  .live-pill {
+    display: flex; align-items: center; gap: 6px;
+    background: #ff2d7820; border: 1px solid var(--pink);
+    border-radius: 20px; padding: 4px 12px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 2px; color: var(--pink);
+  }
+  .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pink); animation: pulse 1.2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  /* Team selector */
+  .team-selector { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
+  .team-selector::-webkit-scrollbar { display: none; }
+  .team-chip {
+    flex-shrink: 0;
+    background: var(--navy); border: 2px solid var(--border);
+    border-radius: 20px; padding: 6px 18px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 1px;
+    color: var(--muted); cursor: pointer; transition: all .2s;
+    white-space: nowrap;
+  }
+  .team-chip.active { border-color: var(--pink); color: #fff; background: var(--pink); }
+
+  /* ── ALERTS FEED ── */
+  .section { padding: 16px 16px 8px; }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem; letter-spacing: 2px; color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  #alerts-feed { display: flex; flex-direction: column; gap: 8px; }
+  .alert-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--pink);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    animation: slideIn .35s ease;
+  }
+  .alert-card.hype  { border-left-color: var(--amber); }
+  .alert-card.rotation { border-left-color: #2979ff; }
+  .alert-card.poll  { border-left-color: #d500f9; }
+  @keyframes slideIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  .alert-type {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.78rem; letter-spacing: 2px; color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .alert-msg { font-size: 0.95rem; font-weight: 600; line-height: 1.4; }
+  .alert-time { font-size: 0.72rem; color: var(--muted); margin-top: 6px; }
+
+  .empty-alerts {
+    text-align: center; color: var(--muted);
+    font-size: 0.85rem; padding: 30px 20px;
+    border: 1px dashed var(--border); border-radius: var(--radius);
+  }
+  .empty-alerts .empty-icon { font-size: 2rem; margin-bottom: 8px; }
+
+  /* ── MESSAGE PANEL ── */
+  .msg-panel {
+    margin: 0 16px 24px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .msg-panel-header {
+    background: var(--panel2);
+    padding: 12px 16px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem; letter-spacing: 2px; color: var(--text);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .msg-panel-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+  .msg-panel-body input,
+  .msg-panel-body textarea {
+    width: 100%;
+    background: var(--navy); border: 2px solid var(--border);
+    border-radius: 10px; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+    padding: 12px 14px; outline: none;
+    transition: border-color .2s;
+    -webkit-appearance: none;
+  }
+  .msg-panel-body input::placeholder,
+  .msg-panel-body textarea::placeholder { color: var(--muted); }
+  .msg-panel-body input:focus,
+  .msg-panel-body textarea:focus { border-color: var(--pink); }
+  .msg-panel-body textarea { resize: none; min-height: 80px; }
+  #send-btn {
+    width: 100%; padding: 16px;
+    background: var(--pink); border: none;
+    border-radius: 10px; color: #fff;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem; letter-spacing: 2px;
+    cursor: pointer; transition: all .2s;
+    box-shadow: 0 4px 16px var(--pink-glow);
+  }
+  #send-btn:active { transform: scale(.98); }
+  #send-btn:disabled { background: var(--panel2); color: var(--muted); box-shadow: none; }
+  #msg-status {
+    text-align: center; font-size: 0.82rem;
+    min-height: 18px; color: var(--green);
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px; background: var(--border);
+    margin: 4px 16px 16px;
+  }
+
+  /* ── BOTTOM SAFE AREA ── */
+  .safe-bottom { height: env(safe-area-inset-bottom, 16px); }
+</style>
+</head>
+<body>
+
+<!-- Ticker bar -->
+<div id="ticker-bar">
+  <div class="ticker-track">
+    <span class="ticker-text" id="ticker-text">CheerPal Live</span>
+    <span class="ticker-text" id="ticker-text-2">CheerPal Live</span>
+  </div>
+</div>
+
+<!-- Banner container -->
+<div id="banner-container"></div>
+
+<!-- Header -->
+<header>
+  <div class="header-top">
+    <div class="logo">Cheer<span>Pal</span></div>
+    <div class="live-pill"><div class="live-dot"></div>LIVE</div>
+  </div>
+  <div class="team-selector">
+    <button class="team-chip active" data-team="Elite">🏆 Elite</button>
+    <button class="team-chip" data-team="Senior">⭐ Senior</button>
+    <button class="team-chip" data-team="Junior">🌟 Junior</button>
+  </div>
+</header>
+
+<!-- Alerts -->
+<div class="section">
+  <div class="section-title">📡 Director Alerts</div>
+  <div id="alerts-feed">
+    <div class="empty-alerts">
+      <div class="empty-icon">📣</div>
+      Waiting for alerts from your director.<br/>They'll appear here instantly.
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Message panel -->
+<div class="msg-panel">
+  <div class="msg-panel-header">💬 Message the Director</div>
+  <div class="msg-panel-body">
+    <input type="text" id="fan-name" placeholder="Your name (optional)" autocomplete="off"/>
+    <textarea id="fan-msg" placeholder="Send a message to the director — rotation question, shoutout request, anything…" rows="3"></textarea>
+    <button id="send-btn">SEND MESSAGE</button>
+    <div id="msg-status"></div>
+  </div>
+</div>
+
+<div class="safe-bottom"></div>
+
+<script>
+  // ── CONFIG ──
+  const SUPABASE_URL  = 'https://hvqzrdlbtfezwuveincs.supabase.co';
+  const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2cXpyZGxidGZlend1dmVpbmNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyOTA1MTgsImV4cCI6MjA3ODg2NjUxOH0.30_fdpT1hu_m3zyf-8IywXWIozjIDnqv5RHs6T9hCTo';
+  const POLL_INTERVAL = 8000;
+
+  // ── STATE ──
+  let selectedTeam  = 'Elite';
+  let lastAlertId   = null;
+  let seenIds       = new Set();
+  let activeTicker  = null;
+
+  // ── TEAM CHIPS ──
+  document.querySelectorAll('.team-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.team-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      selectedTeam = chip.dataset.team;
+    });
+  });
+
+  // ── SEND MESSAGE ──
+  const sendBtn   = document.getElementById('send-btn');
+  const nameInput = document.getElementById('fan-name');
+  const msgInput  = document.getElementById('fan-msg');
+  const msgStatus = document.getElementById('msg-status');
+
+  sendBtn.addEventListener('click', async () => {
+    const name    = nameInput.value.trim() || 'Anonymous';
+    const message = msgInput.value.trim();
+    if (!message) { msgStatus.textContent = '⚠️ Please enter a message.'; msgStatus.style.color = 'var(--amber)'; return; }
+
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'SENDING…';
+    msgStatus.textContent = '';
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/fan_messages`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          name,
+          message,
+          team: selectedTeam,
+          source: 'CheerPal Family App',
+          status: 'pending',
+          created_at: new Date().toISOString()
+        })
+      });
+      if (!res.ok) throw new Error();
+      msgStatus.textContent = '✅ Message sent to your director!';
+      msgStatus.style.color = 'var(--green)';
+      msgInput.value = '';
+      setTimeout(() => { msgStatus.textContent = ''; }, 4000);
+    } catch(e) {
+      msgStatus.textContent = '❌ Could not send. Check your connection.';
+      msgStatus.style.color = 'var(--pink)';
+    }
+
+    sendBtn.disabled = false;
+    sendBtn.textContent = 'SEND MESSAGE';
+  });
+
+  // ── POLL BROADCAST QUEUE ──
+  async function pollAlerts() {
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/broadcast_queue?status=eq.active&order=fired_at.desc&limit=20`,
+        { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+      );
+      if (!res.ok) return;
+      const alerts = await res.json();
+
+      // Filter for this team or ALL
+      const relevant = alerts.filter(a => a.team === 'ALL' || a.team === selectedTeam);
+
+      // Check for new ones — show as popup banner
+      const newest = relevant[0];
+      if (newest && !seenIds.has(newest.id)) {
+        seenIds.add(newest.id);
+        if (newest.ticker) {
+          showTicker(newest.message);
+        } else {
+          showBanner(newest);
+        }
+      }
+
+      renderAlerts(relevant);
+    } catch(e) {}
+  }
+
+  function renderAlerts(alerts) {
+    const feed = document.getElementById('alerts-feed');
+    if (!alerts.length) {
+      feed.innerHTML = `<div class="empty-alerts"><div class="empty-icon">📣</div>Waiting for alerts from your director.<br/>They'll appear here instantly.</div>`;
+      return;
+    }
+    feed.innerHTML = alerts.map(a => {
+      const typeClass = a.type ? a.type.toLowerCase() : 'shoutout';
+      const time = new Date(a.fired_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+      return `<div class="alert-card ${typeClass}">
+        <div class="alert-type">${typeIcon(a.type)} ${a.type || 'Alert'}</div>
+        <div class="alert-msg">${escHtml(a.message)}</div>
+        <div class="alert-time">${time} · ${a.team === 'ALL' ? 'All Teams' : a.team + ' Team'}</div>
+      </div>`;
+    }).join('');
+  }
+
+  function typeIcon(type) {
+    const icons = { Shoutout:'📣', Hype:'🔥', Rotation:'📋', Poll:'🗳️' };
+    return icons[type] || '📣';
+  }
+
+  // ── TICKER ──
+  function showTicker(msg) {
+    const bar = document.getElementById('ticker-bar');
+    document.getElementById('ticker-text').textContent = msg;
+    document.getElementById('ticker-text-2').textContent = msg;
+    bar.classList.add('visible');
+    clearTimeout(activeTicker);
+    activeTicker = setTimeout(() => bar.classList.remove('visible'), 20000);
+  }
+
+  // ── POPUP BANNER ──
+  function showBanner(alert) {
+    const container = document.getElementById('banner-container');
+    const div = document.createElement('div');
+    div.className = 'broadcast-banner';
+    div.innerHTML = `
+      <div class="banner-type">${typeIcon(alert.type)} ${alert.type || 'Alert'}</div>
+      <div class="banner-msg">${escHtml(alert.message)}</div>
+      <button class="banner-dismiss" onclick="this.closest('.broadcast-banner').remove()">Dismiss</button>
+    `;
+    container.appendChild(div);
+    setTimeout(() => { if (div.parentNode) div.remove(); }, 12000);
+  }
+
+  // ── HELPERS ──
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;');
+  }
+
+  // ── START ──
+  pollAlerts();
+  setInterval(pollAlerts, POLL_INTERVAL);
+</script>
+</body>
+</html>
