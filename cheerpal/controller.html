@@ -368,13 +368,17 @@
       </div>
 
       <!-- Ticker toggle -->
-      <div class="ticker-row">
-        <div class="field-label" style="margin:0;">Scrolling Ticker</div>
-        <button class="ticker-toggle" id="ticker-toggle">
-          <span class="ticker-dot"></span> OFF
-        </button>
-        <span style="font-size:0.75rem; color:var(--muted);">Scrolls message across family screens</span>
-      </div>
+     <div class="ticker-row">
+  <div class="field-label" style="margin:0;">Scrolling Ticker</div>
+  <button class="ticker-toggle" id="ticker-toggle">
+    <span class="ticker-dot"></span> OFF
+  </button>
+  <div class="field-label" style="margin:0 0 0 12px;">Sound Alert</div>
+  <button class="ticker-toggle" id="sound-toggle">
+    <span class="ticker-dot"></span> OFF
+  </button>
+  <span style="font-size:0.75rem; color:var(--muted);">Plays cheer burst on family screens</span>
+</div>
 
       <!-- Quick messages -->
       <div>
@@ -474,12 +478,20 @@
   });
 
   // ── TICKER TOGGLE ──
-  const tickerToggle = document.getElementById('ticker-toggle');
-  tickerToggle.addEventListener('click', () => {
-    tickerOn = !tickerOn;
-    tickerToggle.classList.toggle('on', tickerOn);
-    tickerToggle.innerHTML = `<span class="ticker-dot"></span> ${tickerOn ? 'ON' : 'OFF'}`;
-  });
+const tickerToggle = document.getElementById('ticker-toggle');
+tickerToggle.addEventListener('click', () => {
+  tickerOn = !tickerOn;
+  tickerToggle.classList.toggle('on', tickerOn);
+  tickerToggle.innerHTML = `<span class="ticker-dot"></span> ${tickerOn ? 'ON' : 'OFF'}`;
+});
+
+let soundOn = false;
+const soundToggle = document.getElementById('sound-toggle');
+soundToggle.addEventListener('click', () => {
+  soundOn = !soundOn;
+  soundToggle.classList.toggle('on', soundOn);
+  soundToggle.innerHTML = `<span class="ticker-dot"></span> ${soundOn ? 'ON' : 'OFF'}`;
+});
 
   // ── QUICK MESSAGES ──
   document.querySelectorAll('.quick-btn').forEach(btn => {
