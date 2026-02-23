@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>CheerPal — Controlador de Transmisión</title>
+<title>CheerPal — Broadcast Controller</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
   :root {
@@ -143,10 +143,10 @@
   .type-btn.active .type-label { color: var(--pink); }
   .type-btn[data-type="Hype"].active { border-color: var(--amber); background: #ffab0022; }
   .type-btn[data-type="Hype"].active .type-label { color: var(--amber); }
-  .type-btn[data-type="Rotación"].active { border-color: var(--blue); background: #2979ff22; }
-  .type-btn[data-type="Rotación"].active .type-label { color: var(--blue); }
-  .type-btn[data-type="Encuesta"].active { border-color: var(--purple); background: #d500f922; }
-  .type-btn[data-type="Encuesta"].active .type-label { color: var(--purple); }
+  .type-btn[data-type="Rotation"].active { border-color: var(--blue); background: #2979ff22; }
+  .type-btn[data-type="Rotation"].active .type-label { color: var(--blue); }
+  .type-btn[data-type="Poll"].active { border-color: var(--purple); background: #d500f922; }
+  .type-btn[data-type="Poll"].active .type-label { color: var(--purple); }
 
   .field-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px; }
   textarea.broadcast-input {
@@ -219,12 +219,12 @@
 <!-- PIN -->
 <div id="pin-screen">
   <div class="pin-box">
-    <div class="pin-logo">📣 Cheer<span>Pal</span></div>
+    <div class="pin-logo">Cheer<span>Pal</span></div>
     <div class="pin-gym-name" id="pin-gym-name"></div>
-    <div class="pin-tagline">Controlador de Transmisión</div>
-    <div class="pin-label">PIN del Director</div>
+    <div class="pin-tagline">Broadcast Controller</div>
+    <div class="pin-label">Director PIN</div>
     <input type="password" id="pin-input" maxlength="4" placeholder="••••" inputmode="numeric"/>
-    <button id="pin-btn">ENTRAR</button>
+    <button id="pin-btn">ENTER</button>
     <div id="pin-error"></div>
   </div>
 </div>
@@ -233,84 +233,84 @@
 
   <header>
     <div>
-      <div class="logo">📣 Cheer<span>Pal</span></div>
-      <div class="header-gym" id="header-gym-name">Cargando…</div>
+      <div class="logo">Cheer<span>Pal</span></div>
+      <div class="header-gym" id="header-gym-name">Loading…</div>
     </div>
     <div class="header-status">
       <div class="live-badge"><div class="live-dot"></div>LIVE</div>
-      <div class="listener-count">Familias: <strong id="listener-count">—</strong></div>
+      <div class="listener-count">Families: <strong id="listener-count">—</strong></div>
     </div>
   </header>
 
   <div class="team-bar" id="team-bar">
-    <span class="team-bar-label">Equipo:</span>
-    <button class="team-btn all-btn active" data-team="TODOS">📣 TODOS LOS EQUIPOS</button>
+    <span class="team-bar-label">Team:</span>
+    <button class="team-btn all-btn active" data-team="ALL">📣 ALL TEAMS</button>
   </div>
 
   <div class="main" style="flex:1; overflow:hidden;">
 
-    <!-- LEFT: Fan Mensajes -->
+    <!-- LEFT: Fan Messages -->
     <div class="panel">
       <div class="panel-title">
-        💬 Mensajes de Familias
+        💬 Fan Messages
         <span class="badge" id="msg-count">0</span>
       </div>
       <div id="fan-feed">
-        <div class="empty-feed">No messages yet.<br/>Mensajes from families appear here.</div>
+        <div class="empty-feed">No messages yet.<br/>Messages from families appear here.</div>
       </div>
     </div>
 
     <!-- RIGHT: Broadcast -->
     <div class="panel">
-      <div class="panel-title">📡 Controles de Transmisión</div>
+      <div class="panel-title">📡 Broadcast Controls</div>
 
       <div>
-        <div class="field-label">Tipo de Alerta</div>
+        <div class="field-label">Alert Type</div>
         <div class="type-grid">
-          <button class="type-btn active" data-type="Reconocimiento"><span class="type-icon">📣</span><span class="type-label">Reconocimiento</span></button>
+          <button class="type-btn active" data-type="Shoutout"><span class="type-icon">📣</span><span class="type-label">Shoutout</span></button>
           <button class="type-btn" data-type="Hype"><span class="type-icon">🔥</span><span class="type-label">Hype</span></button>
-          <button class="type-btn" data-type="Rotación"><span class="type-icon">📋</span><span class="type-label">Rotación</span></button>
-          <button class="type-btn" data-type="Encuesta"><span class="type-icon">🗳️</span><span class="type-label">Encuesta</span></button>
+          <button class="type-btn" data-type="Rotation"><span class="type-icon">📋</span><span class="type-label">Rotation</span></button>
+          <button class="type-btn" data-type="Poll"><span class="type-icon">🗳️</span><span class="type-label">Poll</span></button>
         </div>
       </div>
 
       <div>
-        <div class="field-label">Mensaje</div>
-        <textarea class="broadcast-input" id="broadcast-msg" placeholder="Escribe tu mensaje para las familias…" rows="3"></textarea>
+        <div class="field-label">Message</div>
+        <textarea class="broadcast-input" id="broadcast-msg" placeholder="Type your message to families…" rows="3"></textarea>
       </div>
 
       <div class="ticker-row">
         <div class="field-label" style="margin:0;">Ticker</div>
         <button class="ticker-toggle" id="ticker-toggle"><span class="ticker-dot"></span> OFF</button>
-        <div class="field-label" style="margin:0;">Sonido</div>
+        <div class="field-label" style="margin:0;">Sound</div>
         <button class="ticker-toggle" id="sound-toggle"><span class="ticker-dot"></span> OFF</button>
       </div>
 
       <div>
-        <div class="field-label">Quick Mensajes</div>
+        <div class="field-label">Quick Messages</div>
         <div class="quick-grid" id="quick-grid">
-          <button class="quick-btn" data-msg="📍 Todas las familias se reúnen en la entrada principal después de premiación.">Reunirse en Entrada</button>
-          <button class="quick-btn" data-msg="🏆 ¡Los puntajes están publicados — revisa el marcador!">Puntajes Publicados</button>
-          <button class="quick-btn" data-msg="📸 ¡Las fotos están disponibles! Revisa la galería en la app.">Fotos Disponibles</button>
-          <button class="quick-btn" data-msg="🎉 ¡Excelente trabajo — estamos muy orgullosos de cada atleta!">Excelente Trabajo</button>
-          <button class="quick-btn" data-msg="⚠️ Cambio de horario — consulta con el director de tu equipo.">Cambio de Horario</button>
+          <button class="quick-btn" data-msg="📍 All families meet at the main entrance after awards.">Meet at Entrance</button>
+          <button class="quick-btn" data-msg="🏆 Scores are posted — check the scoreboard!">Scores Posted</button>
+          <button class="quick-btn" data-msg="📸 Photos are live! Check the team app gallery.">Photos Live</button>
+          <button class="quick-btn" data-msg="🎉 Great job out there — we are so proud of every athlete!">Great Job</button>
+          <button class="quick-btn" data-msg="⚠️ Schedule change — check with your team director.">Schedule Change</button>
         </div>
       </div>
 
-      <button id="fire-btn">🚀 ENVIAR ALERTA</button>
+      <button id="fire-btn">🚀 FIRE ALERT</button>
       <div id="fire-status"></div>
 
       <div>
-        <div class="panel-title" style="font-size:1rem;">📋 Registro de Alertas</div>
-        <div id="fire-log"><div style="color:var(--muted);font-size:0.8rem;text-align:center;padding:10px;">Nada enviado aún.</div></div>
+        <div class="panel-title" style="font-size:1rem;">📋 Fire Log</div>
+        <div id="fire-log"><div style="color:var(--muted);font-size:0.8rem;text-align:center;padding:10px;">Nothing fired yet.</div></div>
       </div>
     </div>
   </div>
 
   <div class="bottom-bar">
-    <div id="session-time">Sesión: 00:00</div>
-    <button id="end-session-btn" onclick="endSession()">⏹ FIN DE SESIÓN</button>
-    <div>Gimnasio: <strong id="footer-gym-name" style="color:var(--text);">—</strong></div>
+    <div id="session-time">Session: 00:00</div>
+    <div>Gym: <strong id="footer-gym-name" style="color:var(--text);">—</strong></div>
+    <button id="end-session-btn" onclick="endSession()">⏹ END SESSION</button>
   </div>
 </div>
 
@@ -322,8 +322,8 @@
 
   let gymData      = null;
   let gymSlug      = null;
-  let selectedTeam = 'TODOS';
-  let selectedType = 'Reconocimiento';
+  let selectedTeam = 'ALL';
+  let selectedType = 'Shoutout';
   let tickerOn     = false;
   let soundOn      = false;
   let sessionStart = Date.now();
@@ -336,16 +336,16 @@
   async function boot() {
     const params = new URLSearchParams(window.location.search);
     gymSlug = params.get('gym');
-    if (!gymSlug) { document.getElementById('pin-error').textContent = 'No se especificó gimnasio en la URL.'; return; }
+    if (!gymSlug) { document.getElementById('pin-error').textContent = 'No gym specified in URL.'; return; }
 
     try {
       const res = await supaFetch('GET', `/rest/v1/gyms?slug=eq.${gymSlug}&limit=1`);
       const data = await res.json();
-      if (!data.length) { document.getElementById('pin-error').textContent = 'Gimnasio no encontrado.'; return; }
+      if (!data.length) { document.getElementById('pin-error').textContent = 'Gym not found.'; return; }
       gymData = data[0];
       document.getElementById('pin-gym-name').textContent = gymData.name;
     } catch(e) {
-      document.getElementById('pin-error').textContent = 'No se pudo cargar el gimnasio.';
+      document.getElementById('pin-error').textContent = 'Could not load gym.';
     }
   }
 
@@ -356,12 +356,12 @@
       document.getElementById('app').style.display = 'flex';
       document.getElementById('header-gym-name').textContent = gymData.name;
       document.getElementById('footer-gym-name').textContent = gymData.name;
-      document.title = `${gymData.name} — Controlador`;
+      document.title = `${gymData.name} — Controller`;
       loadTeams();
-      startEncuestaing();
+      startPolling();
       startSessionTimer();
     } else {
-      document.getElementById('pin-error').textContent = 'PIN incorrecto.';
+      document.getElementById('pin-error').textContent = 'Incorrect PIN.';
       document.getElementById('pin-input').value = '';
     }
   }
@@ -377,8 +377,8 @@
 
     const bar = document.getElementById('team-bar');
     // Keep ALL button, add team buttons
-    bar.innerHTML = `<span class="team-bar-label">Equipo:</span>
-      <button class="team-btn all-btn active" data-team="TODOS" onclick="selectTeam(this, 'TODOS')">📣 TODOS LOS EQUIPOS</button>` +
+    bar.innerHTML = `<span class="team-bar-label">Team:</span>
+      <button class="team-btn all-btn active" data-team="ALL" onclick="selectTeam(this, 'ALL')">📣 ALL TEAMS</button>` +
       teams.map(t =>
         `<button class="team-btn" data-team="${escHtml(t.name)}" onclick="selectTeam(this, '${escHtml(t.name)}')">${t.emoji || '⭐'} ${escHtml(t.name)}</button>`
       ).join('');
@@ -386,14 +386,14 @@
     // Quick messages per team
     const qg = document.getElementById('quick-grid');
     const deckBtns = teams.map(t =>
-      `<button class="quick-btn" data-msg="⏰ ${escHtml(t.name)} Team — están en turno. ¡Diríjanse al piso ahora.">${escHtml(t.name)} En Turno</button>`
+      `<button class="quick-btn" data-msg="⏰ ${escHtml(t.name)} Team — you're on deck! Head to floor now.">${escHtml(t.name)} On Deck</button>`
     ).join('');
     qg.innerHTML = deckBtns +
-      `<button class="quick-btn" data-msg="🏆 ¡Los puntajes están publicados — revisa el marcador!">Puntajes Publicados</button>
-       <button class="quick-btn" data-msg="📍 Todas las familias se reúnen en la entrada principal después de premiación.">Reunirse en Entrada</button>
-       <button class="quick-btn" data-msg="📸 ¡Las fotos están disponibles!">Fotos Disponibles</button>
-       <button class="quick-btn" data-msg="🎉 ¡Excelente trabajo — tan orgullosos de cada atleta!">Excelente Trabajo</button>
-       <button class="quick-btn" data-msg="⚠️ Cambio de horario — consulta con el director de tu equipo.">Cambio de Horario</button>`;
+      `<button class="quick-btn" data-msg="🏆 Scores are posted — check the scoreboard!">Scores Posted</button>
+       <button class="quick-btn" data-msg="📍 All families meet at the main entrance after awards.">Meet at Entrance</button>
+       <button class="quick-btn" data-msg="📸 Photos are live!">Photos Live</button>
+       <button class="quick-btn" data-msg="🎉 Great job out there — so proud of every athlete!">Great Job</button>
+       <button class="quick-btn" data-msg="⚠️ Schedule change — check with your team director.">Schedule Change</button>`;
 
     document.querySelectorAll('.quick-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -434,10 +434,10 @@
     const msg = document.getElementById('broadcast-msg').value.trim();
     const btn = document.getElementById('fire-btn');
     const status = document.getElementById('fire-status');
-    if (!msg) { status.textContent = '⚠️ Ingresa un mensaje primero.'; status.style.color = 'var(--amber)'; return; }
+    if (!msg) { status.textContent = '⚠️ Enter a message first.'; status.style.color = 'var(--amber)'; return; }
 
     btn.disabled = true;
-    status.textContent = 'Enviando…'; status.style.color = 'var(--muted)';
+    status.textContent = 'Firing…'; status.style.color = 'var(--muted)';
 
     const payload = {
       gym_id: gymData.gym_id,
@@ -453,13 +453,13 @@
     try {
       const res = await supaFetch('POST', '/rest/v1/broadcast_queue', payload);
       if (!res.ok) throw new Error();
-      status.textContent = `✅ Enviado a ${selectedTeam === 'TODOS' ? 'todos los equipos' : selectedTeam + ' equipo'}!`;
+      status.textContent = `✅ Fired to ${selectedTeam === 'ALL' ? 'all teams' : selectedTeam + ' team'}!`;
       status.style.color = 'var(--green)';
       addToLog(payload);
       document.getElementById('broadcast-msg').value = '';
       setTimeout(() => { status.textContent = ''; }, 4000);
     } catch(e) {
-      status.textContent = '❌ No se pudo enviar. Verifica tu conexión.';
+      status.textContent = '❌ Could not fire. Check connection.';
       status.style.color = 'var(--pink)';
     }
     btn.disabled = false;
@@ -478,7 +478,7 @@
   }
 
   // ── POLL FAN MESSAGES ──
-  async function pollFanMensajes() {
+  async function pollFanMessages() {
     if (!gymData) return;
     try {
       const res = await supaFetch('GET',
@@ -486,7 +486,7 @@
       );
       if (!res.ok) return;
       const msgs = await res.json();
-      renderFanMensajes(msgs);
+      renderFanMessages(msgs);
       document.getElementById('msg-count').textContent = msgs.length;
 
       // Family count from members
@@ -496,10 +496,10 @@
     } catch(e) {}
   }
 
-  function renderFanMensajes(msgs) {
+  function renderFanMessages(msgs) {
     const feed = document.getElementById('fan-feed');
     if (!msgs.length) {
-      feed.innerHTML = '<div class="empty-feed">No messages yet.<br/>Mensajes from families appear here.</div>';
+      feed.innerHTML = '<div class="empty-feed">No messages yet.<br/>Messages from families appear here.</div>';
       return;
     }
     feed.innerHTML = msgs.map(m => {
@@ -516,9 +516,9 @@
         <div class="fan-msg-text">${escHtml(m.message)}</div>
         <div class="fan-msg-actions">
           <button class="shoutout-btn ${shouted?'done':''}" onclick="shoutout(${m.id},'${escHtml(m.name||'Fan')}','${escHtml(m.message)}',this)" ${shouted?'disabled':''}>
-            ${shouted ? '✅ Reconocido' : '📣 Reconocimiento'}
+            ${shouted ? '✅ Shouted Out' : '📣 Shoutout'}
           </button>
-          <button class="dismiss-btn" onclick="dismissMsg(${m.id},this)">Ignorar</button>
+          <button class="dismiss-btn" onclick="dismissMsg(${m.id},this)">Dismiss</button>
         </div>
       </div>`;
     }).join('');
@@ -527,42 +527,42 @@
   function shoutout(id, name, message, btn) {
     shoutedIds.add(id);
     btn.classList.add('done');
-    btn.textContent = '✅ Reconocido';
+    btn.textContent = '✅ Shouted Out';
     btn.disabled = true;
-    document.getElementById('broadcast-msg').value = `📣 Reconocimiento to ${name}: "${message}"`;
+    document.getElementById('broadcast-msg').value = `📣 Shoutout to ${name}: "${message}"`;
     document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
-    document.querySelector('.type-btn[data-type="Reconocimiento"]').classList.add('active');
-    selectedType = 'Reconocimiento';
+    document.querySelector('.type-btn[data-type="Shoutout"]').classList.add('active');
+    selectedType = 'Shoutout';
   }
 
   async function endSession() {
     if (!gymData) return;
-    if (!confirm('¿Finalizar sesión? Esto limpiará todas las alertas activas en las pantallas de las familias.')) return;
+    if (!confirm('End session? This will clear all active alerts from family screens.')) return;
     const btn = document.getElementById('end-session-btn');
     btn.disabled = true;
-    btn.textContent = 'Finalizando…';
+    btn.textContent = 'Ending…';
     try {
       await supaFetch('PATCH',
         `/rest/v1/broadcast_queue?gym_id=eq.${gymData.gym_id}&status=eq.active`,
         { status: 'expired' }
       );
-      btn.textContent = '✓ Sesión Finalizada';
+      btn.textContent = '✓ Session Ended';
       btn.style.color = 'var(--green)';
       btn.style.borderColor = 'var(--green)';
       document.getElementById('fire-status').style.color = 'var(--green)';
-      document.getElementById('fire-status').textContent = 'Sesión finalizada — todas las alertas eliminadas de las pantallas.';
+      document.getElementById('fire-status').textContent = 'Session ended — all alerts cleared from family screens.';
       setTimeout(() => {
         btn.disabled = false;
-        btn.textContent = '⏹ FIN DE SESIÓN';
+        btn.textContent = '⏹ END SESSION';
         btn.style.color = '';
         btn.style.borderColor = '';
         document.getElementById('fire-status').textContent = '';
       }, 5000);
     } catch(e) {
       btn.disabled = false;
-      btn.textContent = '⏹ FIN DE SESIÓN';
+      btn.textContent = '⏹ END SESSION';
       document.getElementById('fire-status').style.color = '#ff4444';
-      document.getElementById('fire-status').textContent = '❌ No se pudo finalizar la sesión. Inténtalo de nuevo.';
+      document.getElementById('fire-status').textContent = '❌ Could not end session. Try again.';
     }
   }
 
@@ -579,13 +579,13 @@
       const elapsed = Math.floor((Date.now() - sessionStart) / 1000);
       const m = String(Math.floor(elapsed/60)).padStart(2,'0');
       const s = String(elapsed%60).padStart(2,'0');
-      document.getElementById('session-time').textContent = `Sesión: ${m}:${s}`;
+      document.getElementById('session-time').textContent = `Session: ${m}:${s}`;
     }, 1000);
   }
 
-  function startEncuestaing() {
-    pollFanMensajes();
-    setInterval(pollFanMensajes, POLL_INTERVAL);
+  function startPolling() {
+    pollFanMessages();
+    setInterval(pollFanMessages, POLL_INTERVAL);
   }
 
   async function supaFetch(method, path, body = null) {
