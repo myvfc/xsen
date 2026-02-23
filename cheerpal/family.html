@@ -19,43 +19,81 @@
     --amber: #ffab00;
     --radius: 14px;
   }
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   body {
     font-family: 'DM Sans', sans-serif;
-    background: var(--navy);
-    color: var(--text);
-    min-height: 100vh;
-    max-width: 480px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    overflow-x: hidden;
+    background: var(--navy); color: var(--text);
+    min-height: 100vh; max-width: 480px;
+    margin: 0 auto; display: flex; flex-direction: column;
+    position: relative; overflow-x: hidden;
   }
+
+  /* ── AUTH GATE ── */
+  #auth-gate {
+    position: fixed; inset: 0;
+    background: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 999; flex-direction: column; padding: 24px;
+    background-image: radial-gradient(ellipse at 30% 20%, #ff2d7818 0%, transparent 60%);
+  }
+  .auth-box {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 20px; padding: 36px 28px;
+    width: 100%; max-width: 380px; text-align: center;
+  }
+  .auth-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem; letter-spacing: 3px; color: var(--pink);
+    text-shadow: 0 0 20px var(--pink-glow); margin-bottom: 4px;
+  }
+  .auth-logo span { color: var(--text); }
+  .auth-gym-name {
+    font-size: 0.82rem; font-weight: 600; color: var(--muted);
+    margin-bottom: 24px; min-height: 20px;
+  }
+  .auth-title { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+  .auth-sub { font-size: 0.82rem; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
+  .auth-input {
+    width: 100%; background: var(--navy); border: 2px solid var(--border);
+    border-radius: 10px; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+    padding: 12px 14px; outline: none; transition: border-color .2s;
+    margin-bottom: 10px; -webkit-appearance: none;
+  }
+  .auth-input:focus { border-color: var(--pink); }
+  .auth-btn {
+    width: 100%; padding: 14px; background: var(--pink);
+    border: none; border-radius: 10px; color: #fff;
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem;
+    letter-spacing: 2px; cursor: pointer; transition: all .2s;
+  }
+  .auth-btn:disabled { background: var(--panel2); color: var(--muted); }
+  #auth-status { font-size: 0.8rem; color: var(--green); margin-top: 10px; min-height: 18px; }
+
+  /* ── INVALID GYM ── */
+  #invalid-gym {
+    display: none; position: fixed; inset: 0;
+    background: var(--navy); z-index: 998;
+    align-items: center; justify-content: center;
+    flex-direction: column; text-align: center; padding: 32px;
+  }
+  #invalid-gym .icon { font-size: 3rem; margin-bottom: 16px; }
+  #invalid-gym h2 { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--text); margin-bottom: 8px; }
+  #invalid-gym p { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
 
   /* ── TICKER ── */
   #ticker-bar {
-    display: none;
-    background: var(--pink);
-    padding: 10px 0;
-    overflow: hidden;
-    position: relative;
-    z-index: 100;
+    display: none; background: var(--pink);
+    padding: 10px 0; overflow: hidden; position: relative; z-index: 100;
   }
   #ticker-bar.visible { display: block; }
   .ticker-track {
-    display: flex;
-    white-space: nowrap;
-    animation: tickerScroll 30s linear infinite;
+    display: flex; white-space: nowrap;
+    animation: tickerScroll 25s linear infinite;
   }
   .ticker-text {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.1rem;
-    letter-spacing: 2px;
-    color: #fff;
-    padding: 0 60px;
+    font-size: 1.1rem; letter-spacing: 2px; color: #fff; padding: 0 60px;
   }
   @keyframes tickerScroll {
     0%   { transform: translateX(100vw); }
@@ -64,19 +102,13 @@
 
   /* ── BANNER ── */
   #banner-container {
-    position: fixed;
-    top: 0; left: 50%;
-    transform: translateX(-50%);
-    width: 100%; max-width: 480px;
-    z-index: 200;
-    padding: 12px;
-    pointer-events: none;
+    position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 480px; z-index: 200;
+    padding: 12px; pointer-events: none;
   }
   .broadcast-banner {
-    background: var(--panel);
-    border: 2px solid var(--pink);
-    border-radius: var(--radius);
-    padding: 16px 18px;
+    background: var(--panel); border: 2px solid var(--pink);
+    border-radius: var(--radius); padding: 16px 18px;
     box-shadow: 0 4px 30px var(--pink-glow);
     animation: bannerDrop .4s cubic-bezier(.34,1.56,.64,1);
     pointer-events: all;
@@ -87,118 +119,92 @@
   }
   .banner-type {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 0.85rem; letter-spacing: 2px;
-    color: var(--pink); margin-bottom: 4px;
+    font-size: 0.85rem; letter-spacing: 2px; color: var(--pink); margin-bottom: 4px;
   }
   .banner-msg { font-size: 1rem; font-weight: 600; line-height: 1.4; }
   .banner-dismiss {
-    margin-top: 10px;
-    background: transparent; border: 1px solid var(--border);
-    border-radius: 6px; color: var(--muted);
-    font-size: 0.78rem; padding: 4px 12px; cursor: pointer;
+    margin-top: 10px; background: transparent; border: 1px solid var(--border);
+    border-radius: 6px; color: var(--muted); font-size: 0.78rem;
+    padding: 4px 12px; cursor: pointer;
   }
 
   /* ── HEADER ── */
   header {
-    background: var(--panel);
-    border-bottom: 1px solid var(--border);
-    padding: 16px 20px 12px;
-    display: flex; flex-direction: column; gap: 12px;
+    background: var(--panel); border-bottom: 1px solid var(--border);
+    padding: 16px 20px 12px; display: flex; flex-direction: column; gap: 12px;
   }
-  .header-top {
-    display: flex; align-items: center; justify-content: space-between;
-  }
+  .header-top { display: flex; align-items: center; justify-content: space-between; }
   .logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2rem; letter-spacing: 3px;
-    color: var(--pink);
-    text-shadow: 0 0 20px var(--pink-glow);
+    font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 3px;
+    color: var(--pink); text-shadow: 0 0 20px var(--pink-glow);
   }
   .logo span { color: var(--text); }
+  .gym-name-display {
+    font-size: 0.72rem; color: var(--muted); font-weight: 600;
+    letter-spacing: 1px; text-transform: uppercase; margin-top: -6px;
+  }
   .live-pill {
     display: flex; align-items: center; gap: 6px;
     background: #ff2d7820; border: 1px solid var(--pink);
     border-radius: 20px; padding: 4px 12px;
-    font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 2px; color: var(--pink);
+    font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem;
+    letter-spacing: 2px; color: var(--pink);
   }
   .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pink); animation: pulse 1.2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
-
-  /* Team selector */
   .team-selector { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
   .team-selector::-webkit-scrollbar { display: none; }
   .team-chip {
-    flex-shrink: 0;
-    background: var(--navy); border: 2px solid var(--border);
+    flex-shrink: 0; background: var(--navy); border: 2px solid var(--border);
     border-radius: 20px; padding: 6px 18px;
     font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 1px;
-    color: var(--muted); cursor: pointer; transition: all .2s;
-    white-space: nowrap;
+    color: var(--muted); cursor: pointer; transition: all .2s; white-space: nowrap;
   }
   .team-chip.active { border-color: var(--pink); color: #fff; background: var(--pink); }
 
-  /* ── ALERTS FEED ── */
+  /* ── ALERTS ── */
   .section { padding: 16px 16px 8px; }
   .section-title {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 1rem; letter-spacing: 2px; color: var(--muted);
-    margin-bottom: 10px;
+    font-size: 1rem; letter-spacing: 2px; color: var(--muted); margin-bottom: 10px;
   }
-
   #alerts-feed { display: flex; flex-direction: column; gap: 8px; }
   .alert-card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-left: 4px solid var(--pink);
-    border-radius: var(--radius);
-    padding: 14px 16px;
-    animation: slideIn .35s ease;
+    background: var(--panel); border: 1px solid var(--border);
+    border-left: 4px solid var(--pink); border-radius: var(--radius);
+    padding: 14px 16px; animation: slideIn .35s ease;
   }
-  .alert-card.hype  { border-left-color: var(--amber); }
+  .alert-card.hype     { border-left-color: var(--amber); }
   .alert-card.rotation { border-left-color: #2979ff; }
-  .alert-card.poll  { border-left-color: #d500f9; }
+  .alert-card.poll     { border-left-color: #d500f9; }
   @keyframes slideIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-  .alert-type {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 0.78rem; letter-spacing: 2px; color: var(--muted);
-    margin-bottom: 4px;
-  }
-  .alert-msg { font-size: 0.95rem; font-weight: 600; line-height: 1.4; }
+  .alert-type { font-family: 'Bebas Neue', sans-serif; font-size: 0.78rem; letter-spacing: 2px; color: var(--muted); margin-bottom: 4px; }
+  .alert-msg  { font-size: 0.95rem; font-weight: 600; line-height: 1.4; }
   .alert-time { font-size: 0.72rem; color: var(--muted); margin-top: 6px; }
-
   .empty-alerts {
-    text-align: center; color: var(--muted);
-    font-size: 0.85rem; padding: 30px 20px;
-    border: 1px dashed var(--border); border-radius: var(--radius);
+    text-align: center; color: var(--muted); font-size: 0.85rem;
+    padding: 30px 20px; border: 1px dashed var(--border); border-radius: var(--radius);
   }
   .empty-alerts .empty-icon { font-size: 2rem; margin-bottom: 8px; }
 
   /* ── MESSAGE PANEL ── */
   .msg-panel {
-    margin: 0 16px 24px;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
+    margin: 0 16px 24px; background: var(--panel);
+    border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
   }
   .msg-panel-header {
-    background: var(--panel2);
-    padding: 12px 16px;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1rem; letter-spacing: 2px; color: var(--text);
+    background: var(--panel2); padding: 12px 16px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 1rem;
+    letter-spacing: 2px; color: var(--text);
     border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; gap: 8px;
   }
   .msg-panel-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
   .msg-panel-body input,
   .msg-panel-body textarea {
-    width: 100%;
-    background: var(--navy); border: 2px solid var(--border);
-    border-radius: 10px; color: var(--text);
-    font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
-    padding: 12px 14px; outline: none;
-    transition: border-color .2s;
-    -webkit-appearance: none;
+    width: 100%; background: var(--navy); border: 2px solid var(--border);
+    border-radius: 10px; color: var(--text); font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem; padding: 12px 14px; outline: none;
+    transition: border-color .2s; -webkit-appearance: none;
   }
   .msg-panel-body input::placeholder,
   .msg-panel-body textarea::placeholder { color: var(--muted); }
@@ -206,34 +212,66 @@
   .msg-panel-body textarea:focus { border-color: var(--pink); }
   .msg-panel-body textarea { resize: none; min-height: 80px; }
   #send-btn {
-    width: 100%; padding: 16px;
-    background: var(--pink); border: none;
-    border-radius: 10px; color: #fff;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.4rem; letter-spacing: 2px;
-    cursor: pointer; transition: all .2s;
-    box-shadow: 0 4px 16px var(--pink-glow);
+    width: 100%; padding: 16px; background: var(--pink); border: none;
+    border-radius: 10px; color: #fff; font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem; letter-spacing: 2px; cursor: pointer;
+    transition: all .2s; box-shadow: 0 4px 16px var(--pink-glow);
   }
   #send-btn:active { transform: scale(.98); }
   #send-btn:disabled { background: var(--panel2); color: var(--muted); box-shadow: none; }
-  #msg-status {
-    text-align: center; font-size: 0.82rem;
-    min-height: 18px; color: var(--green);
-  }
-
-  /* ── DIVIDER ── */
-  .divider {
-    height: 1px; background: var(--border);
-    margin: 4px 16px 16px;
-  }
-
-  /* ── BOTTOM SAFE AREA ── */
+  #msg-status { text-align: center; font-size: 0.82rem; min-height: 18px; color: var(--green); }
+  .divider { height: 1px; background: var(--border); margin: 4px 16px 16px; }
   .safe-bottom { height: env(safe-area-inset-bottom, 16px); }
+
+  /* ── LOADING ── */
+  .loading-screen {
+    position: fixed; inset: 0; background: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 16px; z-index: 997;
+  }
+  .loading-logo {
+    font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem;
+    letter-spacing: 3px; color: var(--pink);
+    text-shadow: 0 0 20px var(--pink-glow);
+    animation: glow 1.5s ease-in-out infinite alternate;
+  }
+  @keyframes glow {
+    from { text-shadow: 0 0 10px var(--pink-glow); }
+    to   { text-shadow: 0 0 30px var(--pink), 0 0 60px var(--pink-glow); }
+  }
+  .loading-logo span { color: var(--text); }
+  .loading-sub { font-size: 0.82rem; color: var(--muted); font-weight: 600; }
 </style>
 </head>
 <body>
 
-<!-- Ticker bar -->
+<!-- Loading -->
+<div class="loading-screen" id="loading-screen">
+  <div class="loading-logo">📣 Cheer<span>Pal</span></div>
+  <div class="loading-sub">Loading your gym…</div>
+</div>
+
+<!-- Invalid gym -->
+<div id="invalid-gym">
+  <div class="icon">😕</div>
+  <h2>Gym Not Found</h2>
+  <p>This link doesn't match an active CheerPal gym.<br/>Check with your gym director for the correct link.</p>
+</div>
+
+<!-- Auth gate -->
+<div id="auth-gate" style="display:none;">
+  <div class="auth-box">
+    <div class="auth-logo">📣 Cheer<span>Pal</span></div>
+    <div class="auth-gym-name" id="auth-gym-name"></div>
+    <div class="auth-title">Sign in to your gym</div>
+    <div class="auth-sub">Enter the email your director used to invite you. We'll send a magic link — no password needed.</div>
+    <input class="auth-input" type="email" id="auth-email" placeholder="your@email.com" inputmode="email"/>
+    <button class="auth-btn" id="auth-btn" onclick="requestAccess()">GET ACCESS LINK</button>
+    <div id="auth-status"></div>
+  </div>
+</div>
+
+<!-- Ticker -->
 <div id="ticker-bar">
   <div class="ticker-track">
     <span class="ticker-text" id="ticker-text">CheerPal Live</span>
@@ -241,24 +279,23 @@
   </div>
 </div>
 
-<!-- Banner container -->
+<!-- Banner -->
 <div id="banner-container"></div>
 
 <!-- Header -->
-<header>
+<header id="app-header" style="display:none;">
   <div class="header-top">
-    <div class="logo">Cheer<span>Pal</span></div>
+    <div>
+      <div class="logo">📣 Cheer<span>Pal</span></div>
+      <div class="gym-name-display" id="gym-name-display"></div>
+    </div>
     <div class="live-pill"><div class="live-dot"></div>LIVE</div>
   </div>
-  <div class="team-selector">
-    <button class="team-chip active" data-team="Elite">🏆 Elite</button>
-    <button class="team-chip" data-team="Senior">⭐ Senior</button>
-    <button class="team-chip" data-team="Junior">🌟 Junior</button>
-  </div>
+  <div class="team-selector" id="team-selector"></div>
 </header>
 
 <!-- Alerts -->
-<div class="section">
+<div class="section" id="alerts-section" style="display:none;">
   <div class="section-title">📡 Director Alerts</div>
   <div id="alerts-feed">
     <div class="empty-alerts">
@@ -268,10 +305,10 @@
   </div>
 </div>
 
-<div class="divider"></div>
+<div class="divider" id="app-divider" style="display:none;"></div>
 
 <!-- Message panel -->
-<div class="msg-panel">
+<div class="msg-panel" id="msg-panel" style="display:none;">
   <div class="msg-panel-header">💬 Message the Director</div>
   <div class="msg-panel-body">
     <input type="text" id="fan-name" placeholder="Your name (optional)" autocomplete="off"/>
@@ -284,97 +321,274 @@
 <div class="safe-bottom"></div>
 
 <script>
-  // ── CONFIG ──
-  const SUPABASE_URL  = 'https://hvqzrdlbtfezwuveincs.supabase.co';
-  const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2cXpyZGxidGZlend1dmVpbmNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyOTA1MTgsImV4cCI6MjA3ODg2NjUxOH0.30_fdpT1hu_m3zyf-8IywXWIozjIDnqv5RHs6T9hCTo';
+  const SUPABASE_URL  = 'https://pexmoqldjbtpjxjtfsxs.supabase.co';
+  const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBleG1vcWxkamJ0cGp4anRmc3hzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3OTg3MDksImV4cCI6MjA4NzM3NDcwOX0.wZNaFCVuApL2ftozAxI52UBmmH6heeVV7co-0OptonA';
+  const BASE_URL      = 'https://cheerpal.fun';
   const POLL_INTERVAL = 8000;
 
-  // ── STATE ──
-  let selectedTeam  = 'Elite';
-  let lastAlertId   = null;
-  let seenIds       = new Set();
-  let activeTicker  = null;
+  let gymData      = null;
+  let gymSlug      = null;
+  let selectedTeam = null;
+  let seenIds      = new Set();
+  let activeTicker = null;
+  let userEmail    = null;
 
-  // ── TEAM CHIPS ──
-  document.querySelectorAll('.team-chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      document.querySelectorAll('.team-chip').forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
-      selectedTeam = chip.dataset.team;
-    });
-  });
+  // ════════════════════════════════════════
+  // BOOT
+  // ════════════════════════════════════════
+  async function boot() {
+    // Get gym slug from URL
+    const params = new URLSearchParams(window.location.search);
+    gymSlug = params.get('gym');
 
-  // ── SEND MESSAGE ──
-  const sendBtn   = document.getElementById('send-btn');
-  const nameInput = document.getElementById('fan-name');
-  const msgInput  = document.getElementById('fan-msg');
-  const msgStatus = document.getElementById('msg-status');
-
-  sendBtn.addEventListener('click', async () => {
-    const name    = nameInput.value.trim() || 'Anonymous';
-    const message = msgInput.value.trim();
-    if (!message) { msgStatus.textContent = '⚠️ Please enter a message.'; msgStatus.style.color = 'var(--amber)'; return; }
-
-    sendBtn.disabled = true;
-    sendBtn.textContent = 'SENDING…';
-    msgStatus.textContent = '';
-
-    try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/fan_messages`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-          'Prefer': 'return=minimal'
-        },
-        body: JSON.stringify({
-          name,
-          message,
-          team: selectedTeam,
-          source: 'CheerPal Family App',
-          status: 'pending',
-          created_at: new Date().toISOString()
-        })
-      });
-      if (!res.ok) throw new Error();
-      msgStatus.textContent = '✅ Message sent to your director!';
-      msgStatus.style.color = 'var(--green)';
-      msgInput.value = '';
-      setTimeout(() => { msgStatus.textContent = ''; }, 4000);
-    } catch(e) {
-      msgStatus.textContent = '❌ Could not send. Check your connection.';
-      msgStatus.style.color = 'var(--pink)';
+    // Handle magic link callback
+    const hash = window.location.hash;
+    if (hash.includes('access_token')) {
+      const hp = new URLSearchParams(hash.substring(1));
+      const token = hp.get('access_token');
+      if (token) {
+        localStorage.setItem(`cp_family_token_${gymSlug}`, token);
+        window.history.replaceState({}, '', window.location.pathname + window.location.search);
+      }
     }
 
-    sendBtn.disabled = false;
-    sendBtn.textContent = 'SEND MESSAGE';
+    if (!gymSlug) { showInvalid(); return; }
+
+    // Load gym
+    try {
+      const res = await supaFetch('GET', `/rest/v1/gyms?slug=eq.${gymSlug}&limit=1`);
+      const data = await res.json();
+
+      if (!data.length || !data[0].active) { showInvalid(); return; }
+      gymData = data[0];
+
+      // Check trial/subscription
+      if (gymData.plan === 'trial') {
+        const trialEnd = new Date(gymData.trial_ends_at);
+        if (trialEnd < new Date()) { showInvalid(); return; }
+      }
+
+      // Check auth
+      const storedEmail = localStorage.getItem(`cp_family_email_${gymSlug}`);
+      if (storedEmail) {
+        userEmail = storedEmail;
+        await launchApp();
+      } else {
+        showAuthGate();
+      }
+    } catch(e) {
+      showInvalid();
+    }
+  }
+
+  async function launchApp() {
+    // Verify member
+    if (userEmail) {
+      const res = await supaFetch('GET',
+        `/rest/v1/gym_members?gym_id=eq.${gymData.gym_id}&email=eq.${encodeURIComponent(userEmail)}&limit=1`
+      );
+      const members = await res.json();
+
+      if (!members.length) {
+        // Not invited — show auth gate with message
+        showAuthGate('Your email is not on this gym\'s invite list. Contact your director.');
+        return;
+      }
+
+      // Mark as joined if first time
+      if (!members[0].joined_at) {
+        await supaFetch('PATCH',
+          `/rest/v1/gym_members?id=eq.${members[0].id}`,
+          { joined_at: new Date().toISOString() }
+        );
+      }
+
+      // Set default team from membership
+      selectedTeam = members[0].team || null;
+    }
+
+    // Load teams
+    await loadTeams();
+
+    // Show app
+    document.getElementById('loading-screen').style.display = 'none';
+    document.getElementById('auth-gate').style.display = 'none';
+    document.getElementById('app-header').style.display = 'flex';
+    document.getElementById('alerts-section').style.display = 'block';
+    document.getElementById('app-divider').style.display = 'block';
+    document.getElementById('msg-panel').style.display = 'block';
+
+    // Set gym name
+    document.getElementById('gym-name-display').textContent = gymData.name;
+    document.title = `${gymData.name} — CheerPal`;
+
+    // Start polling
+    pollAlerts();
+    setInterval(pollAlerts, POLL_INTERVAL);
+  }
+
+  // ════════════════════════════════════════
+  // TEAMS
+  // ════════════════════════════════════════
+  async function loadTeams() {
+    const res = await supaFetch('GET',
+      `/rest/v1/gym_teams?gym_id=eq.${gymData.gym_id}&order=order_num.asc`
+    );
+    const teams = await res.json();
+    const selector = document.getElementById('team-selector');
+
+    if (!teams.length) {
+      selector.style.display = 'none';
+      return;
+    }
+
+    // Default to first team or member's team
+    if (!selectedTeam) selectedTeam = teams[0].name;
+
+    selector.innerHTML = teams.map((t, i) =>
+      `<button class="team-chip ${t.name === selectedTeam ? 'active' : ''}"
+        data-team="${escHtml(t.name)}"
+        onclick="selectTeam(this, '${escHtml(t.name)}')">
+        ${t.emoji || '⭐'} ${escHtml(t.name)}
+      </button>`
+    ).join('');
+  }
+
+  function selectTeam(el, team) {
+    document.querySelectorAll('.team-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    selectedTeam = team;
+  }
+
+  // ════════════════════════════════════════
+  // AUTH
+  // ════════════════════════════════════════
+  function showAuthGate(msg = null) {
+    document.getElementById('loading-screen').style.display = 'none';
+    document.getElementById('auth-gate').style.display = 'flex';
+    if (gymData) {
+      document.getElementById('auth-gym-name').textContent = gymData.name;
+      document.title = `${gymData.name} — CheerPal`;
+    }
+    if (msg) {
+      const status = document.getElementById('auth-status');
+      status.style.color = 'var(--amber)';
+      status.textContent = msg;
+    }
+  }
+
+  async function requestAccess() {
+    const email = document.getElementById('auth-email').value.trim();
+    const btn   = document.getElementById('auth-btn');
+    const status = document.getElementById('auth-status');
+    if (!email || !email.includes('@')) {
+      status.style.color = 'var(--amber)';
+      status.textContent = '⚠️ Please enter a valid email.';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'SENDING…';
+    status.textContent = '';
+
+    try {
+      await fetch(`${SUPABASE_URL}/auth/v1/magiclink`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY },
+        body: JSON.stringify({
+          email,
+          options: { emailRedirectTo: `${BASE_URL}/family.html?gym=${gymSlug}` }
+        })
+      });
+
+      localStorage.setItem(`cp_family_email_${gymSlug}`, email);
+      userEmail = email;
+
+      status.style.color = 'var(--green)';
+      status.textContent = '✅ Check your email for the access link!';
+      btn.textContent = 'LINK SENT';
+
+      // Try to launch anyway (if already invited)
+      setTimeout(() => launchApp(), 1500);
+
+    } catch(e) {
+      status.style.color = 'var(--pink)';
+      status.textContent = '❌ Could not send link. Try again.';
+      btn.disabled = false;
+      btn.textContent = 'GET ACCESS LINK';
+    }
+  }
+
+  document.getElementById('auth-email')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') requestAccess();
   });
 
-  // ── POLL BROADCAST QUEUE ──
-  async function pollAlerts() {
+  function showInvalid() {
+    document.getElementById('loading-screen').style.display = 'none';
+    document.getElementById('invalid-gym').style.display = 'flex';
+  }
+
+  // ════════════════════════════════════════
+  // SEND MESSAGE
+  // ════════════════════════════════════════
+  document.getElementById('send-btn').addEventListener('click', async () => {
+    const name    = document.getElementById('fan-name').value.trim() || userEmail?.split('@')[0] || 'Family';
+    const message = document.getElementById('fan-msg').value.trim();
+    const status  = document.getElementById('msg-status');
+    const btn     = document.getElementById('send-btn');
+
+    if (!message) {
+      status.style.color = 'var(--amber)';
+      status.textContent = '⚠️ Please enter a message.';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'SENDING…';
+    status.textContent = '';
+
     try {
-      const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/broadcast_queue?status=eq.active&order=fired_at.desc&limit=20`,
-        { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+      const res = await supaFetch('POST', '/rest/v1/fan_messages', {
+        gym_id: gymData.gym_id,
+        name, message,
+        team: selectedTeam,
+        source: 'CheerPal Family App',
+        status: 'pending',
+        created_at: new Date().toISOString()
+      });
+      if (!res.ok) throw new Error();
+      status.style.color = 'var(--green)';
+      status.textContent = '✅ Message sent to your director!';
+      document.getElementById('fan-msg').value = '';
+      setTimeout(() => { status.textContent = ''; }, 4000);
+    } catch(e) {
+      status.style.color = 'var(--pink)';
+      status.textContent = '❌ Could not send. Check your connection.';
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'SEND MESSAGE';
+  });
+
+  // ════════════════════════════════════════
+  // POLL ALERTS
+  // ════════════════════════════════════════
+  async function pollAlerts() {
+    if (!gymData) return;
+    try {
+      const res = await supaFetch('GET',
+        `/rest/v1/broadcast_queue?gym_id=eq.${gymData.gym_id}&status=eq.active&order=fired_at.desc&limit=20`
       );
       if (!res.ok) return;
       const alerts = await res.json();
-
-      // Filter for this team or ALL
       const relevant = alerts.filter(a => a.team === 'ALL' || a.team === selectedTeam);
-
-      // Check for new ones — show as popup banner
       const newest = relevant[0];
       if (newest && !seenIds.has(newest.id)) {
         seenIds.add(newest.id);
-        if (newest.ticker) {
-          showTicker(newest.message);
-        } else {
-          showBanner(newest);
-        }
+        if (newest.ticker) showTicker(newest.message);
+        else showBanner(newest);
+        if (newest.sound) playCrowdCheer();
       }
-
       renderAlerts(relevant);
     } catch(e) {}
   }
@@ -391,7 +605,7 @@
       return `<div class="alert-card ${typeClass}">
         <div class="alert-type">${typeIcon(a.type)} ${a.type || 'Alert'}</div>
         <div class="alert-msg">${escHtml(a.message)}</div>
-        <div class="alert-time">${time} · ${a.team === 'ALL' ? 'All Teams' : a.team + ' Team'}</div>
+        <div class="alert-time">${time} · ${a.team === 'ALL' ? 'All Teams' : escHtml(a.team) + ' Team'}</div>
       </div>`;
     }).join('');
   }
@@ -401,17 +615,18 @@
     return icons[type] || '📣';
   }
 
-  // ── TICKER ──
+  // ════════════════════════════════════════
+  // TICKER & BANNER
+  // ════════════════════════════════════════
   function showTicker(msg) {
     const bar = document.getElementById('ticker-bar');
     document.getElementById('ticker-text').textContent = msg;
     document.getElementById('ticker-text-2').textContent = msg;
     bar.classList.add('visible');
     clearTimeout(activeTicker);
-    activeTicker = setTimeout(() => bar.classList.remove('visible'), 20000);
+    activeTicker = setTimeout(() => bar.classList.remove('visible'), 30000);
   }
 
-  // ── POPUP BANNER ──
   function showBanner(alert) {
     const container = document.getElementById('banner-container');
     const div = document.createElement('div');
@@ -425,18 +640,72 @@
     setTimeout(() => { if (div.parentNode) div.remove(); }, 12000);
   }
 
-  // ── HELPERS ──
-  function escHtml(str) {
-    return String(str)
-      .replace(/&/g,'&amp;')
-      .replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;')
-      .replace(/"/g,'&quot;');
+  // ════════════════════════════════════════
+  // CROWD CHEER SOUND
+  // ════════════════════════════════════════
+  function playCrowdCheer() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const bufferSize = ctx.sampleRate * 1.2;
+      const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+      const noiseSource = ctx.createBufferSource();
+      noiseSource.buffer = noiseBuffer;
+      const bandpass = ctx.createBiquadFilter();
+      bandpass.type = 'bandpass'; bandpass.frequency.value = 1200; bandpass.Q.value = 0.8;
+      const noiseGain = ctx.createGain();
+      noiseGain.gain.setValueAtTime(0, ctx.currentTime);
+      noiseGain.gain.linearRampToValueAtTime(0.6, ctx.currentTime + 0.05);
+      noiseGain.gain.linearRampToValueAtTime(0.4, ctx.currentTime + 0.3);
+      noiseGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.1);
+      noiseSource.connect(bandpass); bandpass.connect(noiseGain); noiseGain.connect(ctx.destination);
+      noiseSource.start(); noiseSource.stop(ctx.currentTime + 1.2);
+      [[220,0],[330,.05],[440,.08],[550,.1],[660,.12]].forEach(([freq, delay]) => {
+        const osc = ctx.createOscillator(); const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+        osc.frequency.linearRampToValueAtTime(freq * 1.15, ctx.currentTime + delay + 0.4);
+        gain.gain.setValueAtTime(0, ctx.currentTime + delay);
+        gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + delay + 0.08);
+        gain.gain.linearRampToValueAtTime(0, ctx.currentTime + delay + 0.7);
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + delay); osc.stop(ctx.currentTime + delay + 0.8);
+      });
+      [0,.18,.35,.5,.62].forEach(time => {
+        const clapBuffer = ctx.createBuffer(1, ctx.sampleRate * 0.08, ctx.sampleRate);
+        const clapData = clapBuffer.getChannelData(0);
+        for (let i = 0; i < clapData.length; i++) clapData[i] = (Math.random()*2-1) * Math.pow(1-i/clapData.length, 2);
+        const clap = ctx.createBufferSource(); clap.buffer = clapBuffer;
+        const cf = ctx.createBiquadFilter(); cf.type = 'highpass'; cf.frequency.value = 1800;
+        const cg = ctx.createGain(); cg.gain.value = 0.5;
+        clap.connect(cf); cf.connect(cg); cg.connect(ctx.destination);
+        clap.start(ctx.currentTime + time);
+      });
+    } catch(e) {}
   }
 
-  // ── START ──
-  pollAlerts();
-  setInterval(pollAlerts, POLL_INTERVAL);
+  // ════════════════════════════════════════
+  // HELPERS
+  // ════════════════════════════════════════
+  async function supaFetch(method, path, body = null) {
+    const headers = {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation'
+    };
+    const opts = { method, headers };
+    if (body) opts.body = JSON.stringify(body);
+    return fetch(`${SUPABASE_URL}${path}`, opts);
+  }
+
+  function escHtml(str) {
+    return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── BOOT ──
+  boot();
 </script>
 </body>
 </html>
